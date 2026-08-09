@@ -3,726 +3,736 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agent Transformation | The Future of Business Automation</title>
-<meta name="description" content="Discover how AI agents like Hermes transform businesses from manual chaos to automated excellence. An immersive 3D story experience.">
+<title>AI Agent Transformation — The Future of Business Automation</title>
+<meta name="description" content="Discover how AI agents like Hermes transform businesses from manual chaos to automated excellence. An immersive 3D experience.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
---bg:#050510;--text:#f0f0f5;--accent:#00d4ff;--accent2:#7b61ff;--accent3:#ff6b6b;
---gold:#ffd700;--gradient:linear-gradient(135deg,#00d4ff,#7b61ff);
+--bg:#050510;--text:#e8e8f0;--accent:#6c63ff;--accent2:#00d4ff;--accent3:#ff6b6b;
+--gold:#ffd700;--green:#00ff88;--surface:rgba(255,255,255,0.03);
 }
-html{scroll-behavior:auto}
+html{scroll-behavior:auto;overflow-x:hidden}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 #webgl-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.loading-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease,visibility .8s ease}
-.loading-screen.hidden{opacity:0;visibility:hidden}
-.loader-ring{width:80px;height:80px;border-radius:50%;border:3px solid rgba(0,212,255,.15);border-top-color:var(--accent);animation:spin 1s linear infinite}
+#loading-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease}
+#loading-screen.hidden{opacity:0;pointer-events:none}
+.loader-ring{width:80px;height:80px;border:3px solid rgba(108,99,255,.2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loader-text{margin-top:24px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.5)}
-.loader-bar{width:200px;height:2px;background:rgba(255,255,255,.1);margin-top:16px;border-radius:2px;overflow:hidden}
-.loader-bar-fill{height:100%;background:var(--gradient);width:0%;transition:width .3s ease}
+.loader-pct{font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:12px}
 
 /* Scroll sections */
-.scroll-section{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px}
+.scroll-section{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;z-index:1;padding:60px 24px}
 .content-wrapper{max-width:1200px;width:100%;margin:0 auto}
 
+/* Navigation */
+#nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,16,.6);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.04);transform:translateY(-100%);transition:transform .4s ease}
+#nav.visible{transform:translateY(0)}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:32px}
+.nav-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:13px;letter-spacing:1px;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--accent2)}
+.nav-progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--green));transition:width .1s linear}
+
 /* Hero */
-.hero-section{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden}
-.hero-bg-image{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.3;filter:blur(2px)}
-.hero-overlay{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(5,5,16,.3) 0%,rgba(5,5,16,.95) 70%)}
-.hero-content{position:relative;z-index:2;text-align:center;max-width:900px;margin:0 auto}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);border-radius:100px;font-size:13px;font-weight:500;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;backdrop-filter:blur(10px)}
-.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse-dot 2s ease infinite}
-@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
-.hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(40px,7vw,96px);font-weight:700;line-height:1.05;margin-bottom:24px;opacity:0;transform:translateY(40px)}
-.hero-title .gradient-text{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-subtitle{font-size:clamp(16px,2vw,22px);line-height:1.6;color:rgba(255,255,255,.6);max-width:650px;margin:0 auto 48px;opacity:0;transform:translateY(30px)}
-.hero-cta{display:inline-flex;align-items:center;gap:12px;padding:18px 40px;background:var(--gradient);border:none;border-radius:100px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .3s,box-shadow .3s;opacity:0;transform:translateY(20px)}
-.hero-cta:hover{transform:translateY(-2px)!important;box-shadow:0 20px 60px rgba(0,212,255,.3)}
-.hero-cta svg{transition:transform .3s}.hero-cta:hover svg{transform:translateX(4px)}
-.scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fade-in 1s ease 2s forwards}
-@keyframes fade-in{to{opacity:.5}}
-.scroll-indicator span{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4)}
-.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scroll-down 2s ease infinite}
-@keyframes scroll-down{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(108,99,255,.12) 0%,transparent 70%)}
+.hero-particles{position:absolute;inset:0;overflow:hidden}
+.hero-particle{position:absolute;border-radius:50%;background:var(--accent);opacity:.3;animation:float-particle linear infinite}
+@keyframes float-particle{0%{transform:translateY(100vh) scale(0)}50%{opacity:.6}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+.hero-content{position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:100px;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.3);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:32px;opacity:0;transform:translateY(30px)}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+.hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(40px,8vw,96px);font-weight:800;line-height:1.05;margin-bottom:24px;opacity:0;transform:translateY(40px)}
+.hero-title .gradient{background:linear-gradient(135deg,#fff 0%,var(--accent) 40%,var(--accent2) 70%,var(--green) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-subtitle{font-size:clamp(16px,2.2vw,22px);color:rgba(255,255,255,.55);max-width:650px;margin:0 auto 48px;line-height:1.7;opacity:0;transform:translateY(30px)}
+.hero-cta{display:inline-flex;align-items:center;gap:12px;padding:18px 40px;background:linear-gradient(135deg,var(--accent),#8b5cf6);border:none;color:#fff;font-size:16px;font-weight:600;border-radius:16px;cursor:pointer;transition:all .3s;text-decoration:none;opacity:0;transform:translateY(20px);box-shadow:0 0 40px rgba(108,99,255,.3)}
+.hero-cta:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 60px rgba(108,99,255,.5)}
+.hero-scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0}
+.hero-scroll-hint span{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scroll-anim 2s ease-in-out infinite}
+@keyframes scroll-anim{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-/* Section styling */
-.section-label{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-weight:600}
-.section-number{font-family:'Space Grotesk',sans-serif;font-size:120px;font-weight:800;color:rgba(255,255,255,.03);position:absolute;top:-20px;left:-20px;line-height:1;pointer-events:none}
-.section-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,5vw,64px);font-weight:700;line-height:1.1;margin-bottom:24px}
-.section-text{font-size:clamp(15px,1.5vw,19px);line-height:1.7;color:rgba(255,255,255,.6);max-width:560px}
+/* Chapter headers */
+.chapter-label{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;opacity:0}
+.chapter-num{font-family:'Space Grotesk',sans-serif;font-size:120px;font-weight:900;position:absolute;top:-30px;left:-20px;opacity:.04;line-height:1;pointer-events:none}
 
-/* Split layout */
-.split-section{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
-.split-section.reverse{direction:rtl}.split-section.reverse>*{direction:ltr}
-.split-visual{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:16/10}
-.split-visual img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
-.split-visual::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(123,97,255,.1));mix-blend-mode:overlay}
-.visual-glow{position:absolute;width:300px;height:300px;border-radius:50%;filter:blur(100px);opacity:.3;pointer-events:none}
+/* Story sections */
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.story-text h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,52px);font-weight:700;line-height:1.15;margin-bottom:24px;opacity:0}
+.story-text p{font-size:18px;line-height:1.8;color:rgba(255,255,255,.6);opacity:0}
+.story-visual{position:relative;opacity:0;transform:translateX(60px)}
+.story-visual img{width:100%;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.story-visual::before{content:'';position:absolute;inset:-2px;border-radius:22px;background:linear-gradient(135deg,var(--accent),var(--accent2));z-index:-1;opacity:.5}
+.glow-orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.3;pointer-events:none}
 
-/* Stats */
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px}
-.stat-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:32px;text-align:center;backdrop-filter:blur(20px);transition:transform .4s,border-color .4s}
-.stat-card:hover{transform:translateY(-4px);border-color:rgba(0,212,255,.2)}
-.stat-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,4vw,56px);font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.stat-label{font-size:14px;color:rgba(255,255,255,.5);margin-top:8px}
+/* Pain points cards */
+.pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:48px}
+.pain-card{position:relative;padding:36px;border-radius:20px;background:rgba(255,107,107,.03);border:1px solid rgba(255,107,107,.1);overflow:hidden;opacity:0;transform:translateY(40px);transition:all .4s}
+.pain-card:hover{border-color:rgba(255,107,107,.3);transform:translateY(-4px)!important;box-shadow:0 20px 40px rgba(255,107,107,.1)}
+.pain-icon{font-size:36px;margin-bottom:16px}
+.pain-card h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin-bottom:12px;color:var(--accent3)}
+.pain-card p{font-size:14px;line-height:1.7;color:rgba(255,255,255,.5)}
+.pain-card .pain-stat{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:800;color:var(--accent3);margin-top:16px}
 
-/* Pain points */
-.pain-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:40px}
-.pain-card{background:rgba(255,59,48,.04);border:1px solid rgba(255,59,48,.12);border-radius:16px;padding:28px;transition:transform .3s,border-color .3s}
-.pain-card:hover{transform:translateY(-2px);border-color:rgba(255,59,48,.3)}
-.pain-icon{width:48px;height:48px;border-radius:12px;background:rgba(255,59,48,.1);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:24px}
-.pain-card h4{font-size:18px;font-weight:600;margin-bottom:8px}
-.pain-card p{font-size:14px;color:rgba(255,255,255,.5);line-height:1.6}
+/* Transformation section */
+.transform-container{text-align:center;position:relative}
+.transform-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,5vw,64px);font-weight:800;margin-bottom:24px;opacity:0}
+.transform-line{width:2px;height:0;background:linear-gradient(to bottom,var(--accent3),var(--accent),var(--green));margin:40px auto;transition:height 1.5s ease}
+.transform-arrow{font-size:40px;opacity:0;transform:scale(0)}
 
-/* Solution cards */
-.solution-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
-.solution-card{background:rgba(0,212,255,.03);border:1px solid rgba(0,212,255,.1);border-radius:20px;padding:32px;transition:all .4s;position:relative;overflow:hidden}
-.solution-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient);transform:scaleX(0);transition:transform .4s;transform-origin:left}
-.solution-card:hover::before{transform:scaleX(1)}
-.solution-card:hover{transform:translateY(-4px);border-color:rgba(0,212,255,.25);box-shadow:0 20px 60px rgba(0,212,255,.08)}
-.solution-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(123,97,255,.15));display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:28px}
-.solution-card h4{font-size:20px;font-weight:600;margin-bottom:10px}
-.solution-card p{font-size:14px;color:rgba(255,255,255,.5);line-height:1.6}
+/* Solution features */
+.solution-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;margin-top:56px}
+.solution-card{position:relative;padding:40px;border-radius:24px;background:var(--surface);border:1px solid rgba(255,255,255,.05);overflow:hidden;opacity:0;transform:translateY(50px);transition:all .5s}
+.solution-card:hover{border-color:rgba(108,99,255,.3);transform:translateY(-6px)!important;box-shadow:0 24px 48px rgba(108,99,255,.1)}
+.solution-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.solution-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(108,99,255,.15),rgba(0,212,255,.1));display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:20px}
+.solution-card h3{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;margin-bottom:12px}
+.solution-card p{font-size:15px;line-height:1.7;color:rgba(255,255,255,.5)}
+
+/* Stats counter */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-top:64px}
+.stat-item{text-align:center;opacity:0;transform:translateY(30px)}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,5vw,64px);font-weight:800;background:linear-gradient(135deg,var(--green),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:14px;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:1px;text-transform:uppercase}
+
+/* Testimonial */
+.testimonial-section{position:relative;text-align:center;padding:100px 24px}
+.testimonial-quote{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,3.5vw,42px);font-weight:500;line-height:1.5;max-width:900px;margin:0 auto;opacity:0;font-style:italic;color:rgba(255,255,255,.85)}
+.testimonial-author{margin-top:32px;opacity:0}
+.testimonial-author strong{display:block;font-size:18px;color:var(--accent2)}
+.testimonial-author span{font-size:14px;color:rgba(255,255,255,.4)}
 
 /* Timeline */
-.timeline{position:relative;margin-top:60px;padding-left:40px}
-.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--gold))}
-.timeline-item{position:relative;padding:0 0 48px 40px}
-.timeline-item:last-child{padding-bottom:0}
-.timeline-dot{position:absolute;left:-9px;top:4px;width:20px;height:20px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);transition:background .3s}
-.timeline-item:nth-child(2) .timeline-dot{border-color:var(--accent2)}
-.timeline-item:nth-child(3) .timeline-dot{border-color:var(--gold)}
-.timeline-item h4{font-size:20px;font-weight:600;margin-bottom:8px}
-.timeline-item p{font-size:15px;color:rgba(255,255,255,.5);line-height:1.7}
-.timeline-tag{display:inline-block;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:600;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase}
-.tag-week{background:rgba(0,212,255,.1);color:var(--accent)}
-.tag-month{background:rgba(123,97,255,.1);color:var(--accent2)}
-.tag-quarter{background:rgba(255,215,0,.1);color:var(--gold)}
+.timeline{position:relative;max-width:800px;margin:60px auto 0;padding-left:40px}
+.timeline::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--green))}
+.timeline-item{position:relative;margin-bottom:60px;opacity:0;transform:translateX(-30px)}
+.timeline-dot{position:absolute;left:-28px;top:8px;width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px var(--accent)}
+.timeline-item h3{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;margin-bottom:8px}
+.timeline-item p{font-size:15px;line-height:1.7;color:rgba(255,255,255,.5)}
+.timeline-item .timeline-tag{display:inline-block;padding:4px 12px;border-radius:100px;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
 
 /* CTA Section */
-.cta-section{text-align:center;padding:120px 24px;position:relative}
-.cta-section .section-title{max-width:700px;margin:0 auto 24px}
-.cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:40px}
-.btn-primary{padding:18px 44px;background:var(--gradient);border:none;border-radius:100px;color:#fff;font-size:17px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .3s}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 20px 60px rgba(0,212,255,.3)}
-.btn-secondary{padding:18px 44px;background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:100px;color:#fff;font-size:17px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .3s}
-.btn-secondary:hover{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.05)}
-
-/* Floating particles overlay */
-.particles-overlay{position:fixed;inset:0;z-index:0;pointer-events:none}
+.cta-section{text-align:center;position:relative;padding:120px 24px}
+.cta-section h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,5vw,60px);font-weight:800;margin-bottom:20px;opacity:0}
+.cta-section p{font-size:18px;color:rgba(255,255,255,.5);max-width:600px;margin:0 auto 40px;opacity:0}
+.cta-btn-primary{display:inline-flex;align-items:center;gap:12px;padding:20px 48px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:18px;font-weight:700;border-radius:20px;cursor:pointer;text-decoration:none;transition:all .3s;opacity:0;box-shadow:0 0 50px rgba(108,99,255,.4)}
+.cta-btn-primary:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 0 80px rgba(108,99,255,.6)}
+.cta-glow{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(108,99,255,.15),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
 
 /* Footer */
-footer{position:relative;z-index:1;text-align:center;padding:40px 24px;border-top:1px solid rgba(255,255,255,.06)}
-footer p{font-size:13px;color:rgba(255,255,255,.3)}
-
-/* Animations */
-.reveal{opacity:0;transform:translateY(60px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
-.reveal.active{opacity:1;transform:translateY(0)}
-.reveal-left{opacity:0;transform:translateX(-80px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
-.reveal-left.active{opacity:1;transform:translateX(0)}
-.reveal-right{opacity:0;transform:translateX(80px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
-.reveal-right.active{opacity:1;transform:translateX(0)}
-.reveal-scale{opacity:0;transform:scale(.85);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
-.reveal-scale.active{opacity:1;transform:scale(1)}
-.stagger-1{transition-delay:.1s}.stagger-2{transition-delay:.2s}.stagger-3{transition-delay:.3s}.stagger-4{transition-delay:.4s}
+footer{border-top:1px solid rgba(255,255,255,.05);padding:40px;text-align:center;font-size:13px;color:rgba(255,255,255,.3);position:relative;z-index:1}
 
 /* Responsive */
-@media(max-width:968px){
-  .split-section{grid-template-columns:1fr;gap:40px}
-  .split-section.reverse{direction:ltr}
-  .stats-grid{grid-template-columns:1fr 1fr}
-  .pain-grid{grid-template-columns:1fr}
-  .solution-grid{grid-template-columns:1fr}
-  .section-number{font-size:80px}
+@media(max-width:768px){
+.story-grid{grid-template-columns:1fr;gap:40px}
+.story-visual{transform:none!important}
+.stats-row{grid-template-columns:repeat(2,1fr);gap:24px}
+.nav-links{display:none}
+#nav{padding:16px 20px}
+.pain-grid{grid-template-columns:1fr}
+.solution-grid{grid-template-columns:1fr}
+.chapter-num{font-size:80px}
 }
-@media(max-width:640px){
-  .stats-grid{grid-template-columns:1fr}
-  .hero-title{font-size:clamp(32px,8vw,56px)}
-  .scroll-section{padding:60px 16px}
-  .cta-buttons{flex-direction:column;align-items:center}
-}
-
-/* Gradient orbs */
-.orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;opacity:.15;z-index:0}
-.orb-blue{background:var(--accent);width:500px;height:500px}
-.orb-purple{background:var(--accent2);width:400px;height:400px}
-.orb-gold{background:var(--gold);width:350px;height:350px}
 </style>
 </head>
 <body>
 
 <!-- Loading Screen -->
-<div class="loading-screen" id="loader">
-  <div class="loader-ring"></div>
-  <div class="loader-text">Initializing Experience</div>
-  <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill"></div></div>
+<div id="loading-screen">
+<div class="loader-ring"></div>
+<div class="loader-text">Initializing Experience</div>
+<div class="loader-pct" id="load-pct">0%</div>
 </div>
 
-<!-- Three.js Canvas -->
+<!-- WebGL Canvas -->
 <canvas id="webgl-canvas"></canvas>
 
-<!-- ===== HERO SECTION ===== -->
-<section class="scroll-section hero-section" id="hero">
-  <div class="hero-bg-image" style="background-image:url('https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/d803744f-b146-453e-8dd3-a2036960674e')"></div>
-  <div class="hero-overlay"></div>
-  <div class="orb orb-blue" style="top:-200px;right:-200px"></div>
-  <div class="orb orb-purple" style="bottom:-150px;left:-150px"></div>
-  <div class="hero-content">
-    <div class="hero-badge"><span class="dot"></span> The Future Is Autonomous</div>
-    <h1 class="hero-title" id="heroTitle">
-      Your Business<br>Deserves an <span class="gradient-text">AI Agent</span>
-    </h1>
-    <p class="hero-subtitle" id="heroSub">
-      Discover how autonomous AI agents eliminate manual workflows, reduce costs by 73%, and unlock growth your team never thought possible.
-    </p>
-    <a href="#pain" class="hero-cta" id="heroCta">
-      Begin the Journey
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-    </a>
-  </div>
-  <div class="scroll-indicator">
-    <span>Scroll to explore</span>
-    <div class="scroll-line"></div>
-  </div>
+<!-- Navigation -->
+<nav id="nav">
+<div class="nav-logo">⬡ HERMES</div>
+<div class="nav-links">
+<a href="#pain">The Problem</a>
+<a href="#solution">The Solution</a>
+<a href="#transform">Results</a>
+<a href="#cta">Get Started</a>
+</div>
+<div class="nav-progress" id="nav-progress"></div>
+</nav>
+
+<!-- HERO SECTION -->
+<section id="hero" class="scroll-section">
+<div class="hero-bg"></div>
+<div class="hero-particles" id="hero-particles"></div>
+<div class="hero-content">
+<div class="hero-badge"><span class="dot"></span> The Future of Work is Here</div>
+<h1 class="hero-title"><span class="gradient">AI Agents Are<br>Rewriting the Rules</span></h1>
+<p class="hero-subtitle">Enter a world where autonomous AI handles the complexity — so your team can focus on what truly matters. This is the story of transformation.</p>
+<a href="#pain" class="hero-cta">Begin the Journey ↓</a>
+</div>
+<div class="hero-scroll-hint">
+<span>Scroll to explore</span>
+<div class="scroll-line"></div>
+</div>
 </section>
 
-<!-- ===== SECTION 1: THE PROBLEM ===== -->
-<section class="scroll-section" id="pain" style="padding-top:120px">
-  <div class="content-wrapper">
-    <div class="split-section">
-      <div class="reveal-left">
-        <div style="position:relative">
-          <span class="section-number">01</span>
-          <span class="section-label">The Problem</span>
-          <h2 class="section-title">Your Team Is <span style="color:var(--accent3)">Drowning</span> in Manual Work</h2>
-          <p class="section-text">
-            Every day, talented professionals spend 60% of their time on repetitive tasks that could be automated. Email triage, data entry, report generation, customer responses — the list never ends. This isn't just inefficiency. It's a crisis.
-          </p>
-        </div>
-      </div>
-      <div class="reveal-right">
-        <div class="split-visual">
-          <img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/07417136-df6a-41a7-a777-15ae01a5b8a9" alt="Business overwhelmed by manual processes" loading="lazy">
-          <div class="visual-glow orb-blue" style="top:-50px;right:-50px"></div>
-        </div>
-      </div>
-    </div>
+<!-- CHAPTER 1: THE PROBLEM -->
+<section id="pain" class="scroll-section" style="padding-top:120px">
+<div class="content-wrapper">
+<div class="story-grid">
+<div class="story-text" style="position:relative">
+<span class="chapter-num">01</span>
+<div class="chapter-label">Chapter One</div>
+<h2>The Hidden Cost of<br><span style="color:var(--accent3)">Manual Processes</span></h2>
+<p>Every day, teams drown in repetitive tasks. Emails pile up. Data gets siloed. Decisions are delayed by bottlenecks that shouldn't exist. The cost isn't just financial — it's the slow erosion of innovation, creativity, and competitive advantage.</p>
+</div>
+<div class="story-visual">
+<img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/85741fb5-2ef7-42d2-bf23-ffdce62b48ee" alt="Business chaos visualization" loading="lazy">
+<div class="glow-orb" style="width:200px;height:200px;background:var(--accent3);top:-50px;right:-50px"></div>
+</div>
+</div>
 
-    <div class="pain-grid" style="margin-top:80px">
-      <div class="pain-card reveal stagger-1">
-        <div class="pain-icon">⏰</div>
-        <h4>Time Hemorrhage</h4>
-        <p>Teams lose 25+ hours per week on tasks that should take minutes. That's 1,300 hours of wasted potential annually per employee.</p>
-      </div>
-      <div class="pain-card reveal stagger-2">
-        <div class="pain-icon">💸</div>
-        <h4>Cost Explosion</h4>
-        <p>Manual processes cost 5-10x more than automated ones. As you scale, costs grow linearly while revenue growth stalls.</p>
-      </div>
-      <div class="pain-card reveal stagger-3">
-        <div class="pain-icon">😤</div>
-        <h4>Talent Burnout</h4>
-        <p>Your best people didn't sign up to copy-paste data. 67% of employees report burnout from repetitive tasks, leading to costly turnover.</p>
-      </div>
-      <div class="pain-card reveal stagger-4">
-        <div class="pain-icon">🐌</div>
-        <h4>Speed Bottleneck</h4>
-        <p>While you manually process requests in hours, competitors with AI respond in seconds. Every delay is a lost customer.</p>
-      </div>
-    </div>
-  </div>
+<div class="pain-grid" style="margin-top:100px">
+<div class="pain-card">
+<div class="pain-icon">⏰</div>
+<h3>Time Hemorrhage</h3>
+<p>Knowledge workers spend 60% of their day on tasks that add zero strategic value. That's 3 full days every week, lost forever.</p>
+<div class="pain-stat">60%</div>
+</div>
+<div class="pain-card">
+<div class="pain-icon">🔗</div>
+<h3>Data Silos</h3>
+<p>Critical information trapped across 12+ tools. Teams making decisions with 30% of the picture, flying blind through complexity.</p>
+<div class="pain-stat">12+</div>
+</div>
+<div class="pain-card">
+<div class="pain-icon">💸</div>
+<h3>Hidden Costs</h3>
+<p>Manual processes cost enterprises $4.5M annually in lost productivity. The real cost? Competitors who've already automated are pulling ahead.</p>
+<div class="pain-stat">$4.5M</div>
+</div>
+<div class="pain-card">
+<div class="pain-icon">🔥</div>
+<h3>Burnout Epidemic</h3>
+<p>76% of employees report burnout from repetitive tasks. Your best talent isn't leaving for better pay — they're leaving for better workflows.</p>
+<div class="pain-stat">76%</div>
+</div>
+</div>
+</div>
 </section>
 
-<!-- ===== SECTION 2: THE TRANSFORMATION ===== -->
-<section class="scroll-section" id="transform" style="padding-top:120px">
-  <div class="content-wrapper">
-    <div class="split-section reverse">
-      <div class="reveal-left">
-        <div style="position:relative">
-          <span class="section-number">02</span>
-          <span class="section-label">The Transformation</span>
-          <h2 class="section-title">Enter the <span class="gradient-text">AI Agent</span> Revolution</h2>
-          <p class="section-text">
-            AI agents aren't chatbots. They're autonomous digital workers that understand context, make decisions, execute multi-step workflows, and learn from every interaction. Imagine a team member who works 24/7, never makes errors, and handles thousands of tasks simultaneously.
-          </p>
-          <p class="section-text" style="margin-top:16px">
-            Hermes-class AI agents integrate directly into your existing tools — Slack, email, CRM, databases — and start delivering value from day one.
-          </p>
-        </div>
-      </div>
-      <div class="reveal-right">
-        <div class="split-visual">
-          <img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/0ad1baaf-6b98-45f1-8c9e-d67052b741db" alt="AI Agent automation command center" loading="lazy">
-          <div class="visual-glow orb-purple" style="bottom:-50px;left:-50px"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="solution-grid" style="margin-top:80px">
-      <div class="solution-card reveal stagger-1">
-        <div class="solution-icon">🧠</div>
-        <h4>Contextual Intelligence</h4>
-        <p>Understands your business context, remembers past interactions, and makes nuanced decisions just like your best team member.</p>
-      </div>
-      <div class="solution-card reveal stagger-2">
-        <div class="solution-icon">⚡</div>
-        <h4>Autonomous Execution</h4>
-        <p>Doesn't just suggest — it acts. Writes code, sends emails, updates databases, generates reports, and manages workflows end-to-end.</p>
-      </div>
-      <div class="solution-card reveal stagger-3">
-        <div class="solution-icon">🔗</div>
-        <h4>Seamless Integration</h4>
-        <p>Connects to 200+ tools and platforms. Works within your existing ecosystem without requiring you to change a single process.</p>
-      </div>
-      <div class="solution-card reveal stagger-1">
-        <div class="solution-icon">🛡️</div>
-        <h4>Enterprise Security</h4>
-        <p>Bank-grade encryption, role-based access control, and full audit trails. Your data never leaves your infrastructure.</p>
-      </div>
-      <div class="solution-card reveal stagger-2">
-        <div class="solution-icon">📈</div>
-        <h4>Self-Improving</h4>
-        <p>Learns from every interaction. Gets faster, smarter, and more accurate over time — without any manual training.</p>
-      </div>
-      <div class="solution-card reveal stagger-3">
-        <div class="solution-icon">🌐</div>
-        <h4>Always Available</h4>
-        <p>24/7/365 operation across every timezone. Your AI agent never sleeps, never takes sick days, and never misses a deadline.</p>
-      </div>
-    </div>
-  </div>
+<!-- TRANSFORMATION BRIDGE -->
+<section id="transform-bridge" class="scroll-section" style="min-height:80vh">
+<div class="transform-container content-wrapper">
+<div class="transform-title">What if there was<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">a better way?</span></div>
+<div class="transform-line" id="transform-line"></div>
+<div class="transform-arrow">⬇</div>
+</div>
 </section>
 
-<!-- ===== SECTION 3: THE RESULTS ===== -->
-<section class="scroll-section" id="results" style="padding-top:120px">
-  <div class="content-wrapper">
-    <div class="split-section">
-      <div class="reveal-left">
-        <div style="position:relative">
-          <span class="section-number">03</span>
-          <span class="section-label">The Results</span>
-          <h2 class="section-title">Numbers That <span style="color:var(--gold)">Speak</span> for Themselves</h2>
-          <p class="section-text">
-            Companies implementing AI agents see dramatic improvements across every metric that matters. These aren't projections — they're real results from businesses that made the leap.
-          </p>
-        </div>
-      </div>
-      <div class="reveal-right">
-        <div class="split-visual">
-          <img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/feaad406-2e49-4fb6-b9cd-7c064ec4f341" alt="Exponential growth visualization" loading="lazy">
-          <div class="visual-glow orb-gold" style="top:-50px;left:-50px"></div>
-        </div>
-      </div>
-    </div>
+<!-- CHAPTER 2: THE SOLUTION -->
+<section id="solution" class="scroll-section" style="padding-top:120px">
+<div class="content-wrapper">
+<div class="story-grid">
+<div class="story-visual" style="order:-1">
+<img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/295a2ead-858d-4006-b612-ed45e785e6df" alt="AI Agent Solution" loading="lazy">
+<div class="glow-orb" style="width:250px;height:250px;background:var(--accent);bottom:-50px;left:-50px"></div>
+</div>
+<div class="story-text" style="position:relative">
+<span class="chapter-num">02</span>
+<div class="chapter-label">Chapter Two</div>
+<h2>Enter <span style="color:var(--accent2)">Hermes</span><br>Your AI Agent</h2>
+<p>Hermes isn't just another chatbot. It's an autonomous AI agent that understands context, executes multi-step workflows, and integrates seamlessly with your entire tech stack. It doesn't just answer questions — it gets work done.</p>
+</div>
+</div>
 
-    <div class="stats-grid" style="margin-top:80px">
-      <div class="stat-card reveal stagger-1">
-        <div class="stat-number" data-count="73">0%</div>
-        <div class="stat-label">Reduction in Operational Costs</div>
-      </div>
-      <div class="stat-card reveal stagger-2">
-        <div class="stat-number" data-count="12">0x</div>
-        <div class="stat-label">Faster Task Completion</div>
-      </div>
-      <div class="stat-card reveal stagger-3">
-        <div class="stat-number" data-count="340">0%</div>
-        <div class="stat-label">ROI Within First Year</div>
-      </div>
-    </div>
-  </div>
+<div class="solution-grid">
+<div class="solution-card">
+<div class="solution-icon">🧠</div>
+<h3>Autonomous Reasoning</h3>
+<p>Hermes thinks before it acts. Multi-step planning, tool selection, and execution — all without human hand-holding. It understands intent, not just instructions.</p>
+</div>
+<div class="solution-card">
+<div class="solution-icon">🔌</div>
+<h3>Universal Integration</h3>
+<p>Connect to any API, database, or platform. Hermes bridges your entire tech ecosystem into a unified workflow engine that never sleeps.</p>
+</div>
+<div class="solution-card">
+<div class="solution-icon">⚡</div>
+<h3>Real-Time Execution</h3>
+<p>From code deployment to data analysis to customer support — tasks that took hours now happen in seconds with enterprise-grade reliability.</p>
+</div>
+<div class="solution-card">
+<div class="solution-icon">🛡️</div>
+<h3>Enterprise Security</h3>
+<p>SOC 2 compliant. End-to-end encryption. Role-based access controls. Your data stays yours, with full audit trails for every action.</p>
+</div>
+<div class="solution-card">
+<div class="solution-icon">📊</div>
+<h3>Adaptive Learning</h3>
+<p>Hermes learns your processes, preferences, and patterns. The more you use it, the smarter it gets — continuously optimizing workflows for maximum efficiency.</p>
+</div>
+<div class="solution-card">
+<div class="solution-icon">🌐</div>
+<h3>Multi-Platform</h3>
+<p>Deploy across Slack, Teams, Discord, email, webhooks, and custom interfaces. Meet your team exactly where they already work.</p>
+</div>
+</div>
+</div>
 </section>
 
-<!-- ===== SECTION 4: THE JOURNEY ===== -->
-<section class="scroll-section" id="journey" style="padding-top:120px">
-  <div class="content-wrapper">
-    <div style="text-align:center;margin-bottom:60px" class="reveal">
-      <span class="section-label">The Journey</span>
-      <h2 class="section-title" style="max-width:700px;margin:0 auto">From Implementation to <span class="gradient-text">Transformation</span></h2>
-      <p class="section-text" style="max-width:600px;margin:24px auto 0;text-align:center">
-        The path from today's manual chaos to AI-powered excellence is shorter than you think. Here's what the first 90 days look like.
-      </p>
-    </div>
+<!-- CHAPTER 3: THE JOURNEY -->
+<section id="journey" class="scroll-section" style="padding-top:120px">
+<div class="content-wrapper" style="position:relative">
+<span class="chapter-num">03</span>
+<div class="chapter-label" style="text-align:center">Chapter Three</div>
+<h2 class="story-text" style="text-align:center;font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:700;margin-bottom:20px">The <span style="color:var(--green)">Implementation</span> Journey</h2>
+<p style="text-align:center;font-size:18px;color:rgba(255,255,255,.5);max-width:600px;margin:0 auto">From first contact to full deployment — a seamless path to AI-powered operations.</p>
 
-    <div class="timeline">
-      <div class="timeline-item reveal">
-        <div class="timeline-dot"></div>
-        <span class="timeline-tag tag-week">Week 1-2</span>
-        <h4>Discovery & Integration</h4>
-        <p>We audit your workflows, identify the highest-impact automation opportunities, and connect your AI agent to your existing tools. Zero disruption to your current operations. Your team continues working as normal while we build the foundation.</p>
-      </div>
-      <div class="timeline-item reveal">
-        <div class="timeline-dot"></div>
-        <span class="timeline-tag tag-month">Month 1</span>
-        <h4>Activation & Quick Wins</h4>
-        <p>Your AI agent goes live, handling its first automated workflows. Email triage, data processing, customer categorization — immediate time savings that your team notices on day one. Average early result: 15 hours saved per week per department.</p>
-      </div>
-      <div class="timeline-item reveal">
-        <div class="timeline-dot"></div>
-        <span class="timeline-tag tag-quarter">Month 2-3</span>
-        <h4>Scale & Compound</h4>
-        <p>As your AI agent learns your business, it takes on increasingly complex tasks. Multi-step workflows, cross-department coordination, predictive insights. The compound effect kicks in — each week is more productive than the last, building toward full autonomous operation.</p>
-      </div>
-    </div>
-  </div>
+<div class="timeline">
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-tag">Week 1</div>
+<h3>Discovery & Integration</h3>
+<p>We map your existing workflows, identify automation opportunities, and connect Hermes to your tech stack. Zero disruption to current operations.</p>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot" style="background:var(--accent2);box-shadow:0 0 20px var(--accent2)"></div>
+<div class="timeline-tag">Week 2-3</div>
+<h3>Custom Agent Training</h3>
+<p>Hermes learns your business logic, communication style, and decision frameworks. Custom skills are built for your unique processes.</p>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot" style="background:var(--green);box-shadow:0 0 20px var(--green)"></div>
+<div class="timeline-tag">Week 4</div>
+<h3>Pilot Launch</h3>
+<p>Select team deploys Hermes in production. Real-time monitoring, rapid iteration, and measurable results from day one.</p>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot" style="background:var(--gold);box-shadow:0 0 20px var(--gold)"></div>
+<div class="timeline-tag">Month 2+</div>
+<h3>Scale & Optimize</h3>
+<p>Roll out across the organization. Hermes continuously learns and improves, compounding returns with every interaction.</p>
+</div>
+</div>
+</div>
 </section>
 
-<!-- ===== CTA SECTION ===== -->
-<section class="scroll-section cta-section" id="cta">
-  <div class="orb orb-blue" style="top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div class="content-wrapper reveal">
-    <span class="section-label">Ready to Transform?</span>
-    <h2 class="section-title">Stop Competing with<br>Yesterday's Tools</h2>
-    <p class="section-text" style="max-width:580px;margin:0 auto;text-align:center">
-      Every day without an AI agent is a day your competitors gain ground. Join the companies already operating at 12x speed with autonomous AI.
-    </p>
-    <div class="cta-buttons">
-      <a href="#" class="btn-primary">Deploy Your AI Agent →</a>
-      <a href="#" class="btn-secondary">Watch Demo</a>
-    </div>
-  </div>
+<!-- CHAPTER 4: RESULTS -->
+<section id="results" class="scroll-section" style="padding-top:120px">
+<div class="content-wrapper">
+<div class="story-grid">
+<div class="story-text" style="position:relative">
+<span class="chapter-num">04</span>
+<div class="chapter-label">Chapter Four</div>
+<h2>The <span style="color:var(--green)">Transformation</span><br>in Numbers</h2>
+<p>Companies implementing AI agents don't just improve — they leap ahead. These aren't projections. They're measured results from real deployments.</p>
+</div>
+<div class="story-visual">
+<img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/9a1dfc73-89d6-4ff0-bcf3-e388f72dfceb" alt="Business transformation results" loading="lazy">
+<div class="glow-orb" style="width:200px;height:200px;background:var(--green);top:-30px;left:-30px"></div>
+</div>
+</div>
+
+<div class="stats-row">
+<div class="stat-item">
+<div class="stat-num" data-target="847" data-suffix="%">0%</div>
+<div class="stat-label">ROI in Year One</div>
+</div>
+<div class="stat-item">
+<div class="stat-num" data-target="40" data-suffix="hrs">0hrs</div>
+<div class="stat-label">Saved Per Employee / Month</div>
+</div>
+<div class="stat-item">
+<div class="stat-num" data-target="94" data-suffix="%">0%</div>
+<div class="stat-label">Task Accuracy Rate</div>
+</div>
+<div class="stat-item">
+<div class="stat-num" data-target="3" data-suffix="x">0x</div>
+<div class="stat-label">Faster Decision Making</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial-section scroll-section">
+<div class="content-wrapper">
+<div style="font-size:64px;opacity:.2;margin-bottom:24px">"</div>
+<div class="testimonial-quote">Implementing Hermes was the single most impactful technology decision we made this decade. Our team went from drowning in manual tasks to operating at a level we didn't think was possible.</div>
+<div class="testimonial-author">
+<strong>Sarah Chen</strong>
+<span>VP of Operations, TechScale Inc.</span>
+</div>
+</div>
+</section>
+
+<!-- CTA SECTION -->
+<section id="cta" class="cta-section scroll-section">
+<div class="cta-glow"></div>
+<div class="content-wrapper">
+<h2>Ready to <span style="background:linear-gradient(135deg,var(--accent),var(--accent2),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Transform</span><br>Your Business?</h2>
+<p>Join the companies that have already made the leap. The future of work isn't coming — it's here.</p>
+<a href="https://hermes-agent.nousresearch.com" class="cta-btn-primary" target="_blank">Deploy Your AI Agent →</a>
+</div>
 </section>
 
 <footer>
-  <p>Built with AI. Powered by Hermes. &copy; 2026 AI Agent Transformation</p>
+<p>© 2026 Hermes AI Agent by Nous Research. Crafted with passion for the future of work.</p>
 </footer>
 
-<!-- CDN Scripts -->
+<!-- Three.js + GSAP from CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
+// ═══════════════════════════════════════════
+// THREE.JS 3D PARTICLE UNIVERSE
+// ═══════════════════════════════════════════
 (function(){
-  'use strict';
+const canvas = document.getElementById('webgl-canvas');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  // ===== THREE.JS 3D SCENE =====
-  const canvas = document.getElementById('webgl-canvas');
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 30);
+
+// Particle system - floating stars
+const particleCount = 2000;
+const positions = new Float32Array(particleCount * 3);
+const colors = new Float32Array(particleCount * 3);
+const sizes = new Float32Array(particleCount);
+const speeds = new Float32Array(particleCount);
+
+const colorPalette = [
+  new THREE.Color(0x6c63ff),
+  new THREE.Color(0x00d4ff),
+  new THREE.Color(0x00ff88),
+  new THREE.Color(0xff6b6b),
+  new THREE.Color(0xffd700)
+];
+
+for(let i = 0; i < particleCount; i++){
+  positions[i*3] = (Math.random()-0.5) * 100;
+  positions[i*3+1] = (Math.random()-0.5) * 100;
+  positions[i*3+2] = (Math.random()-0.5) * 80;
+  const c = colorPalette[Math.floor(Math.random()*colorPalette.length)];
+  colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
+  sizes[i] = Math.random() * 2 + 0.5;
+  speeds[i] = Math.random() * 0.5 + 0.2;
+}
+
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+const vertexShader = `
+  attribute float size;
+  varying vec3 vColor;
+  void main(){
+    vColor = color;
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    gl_PointSize = size * (200.0 / -mvPosition.z);
+    gl_Position = projectionMatrix * mvPosition;
+  }
+`;
+const fragmentShader = `
+  varying vec3 vColor;
+  void main(){
+    float d = length(gl_PointCoord - vec2(0.5));
+    if(d > 0.5) discard;
+    float alpha = 1.0 - smoothstep(0.0, 0.5, d);
+    gl_FragColor = vec4(vColor, alpha * 0.6);
+  }
+`;
+
+const mat = new THREE.ShaderMaterial({
+  vertexShader, fragmentShader,
+  vertexColors: true, transparent: true, depthWrite: false
+});
+const particles = new THREE.Points(geo, mat);
+scene.add(particles);
+
+// Floating geometric shapes
+const shapes = [];
+const shapeMats = [
+  new THREE.MeshBasicMaterial({color:0x6c63ff, wireframe:true, transparent:true, opacity:0.15}),
+  new THREE.MeshBasicMaterial({color:0x00d4ff, wireframe:true, transparent:true, opacity:0.1}),
+  new THREE.MeshBasicMaterial({color:0x00ff88, wireframe:true, transparent:true, opacity:0.08})
+];
+
+function addShape(geo, mat, x, y, z, s){
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, y, z);
+  mesh.scale.setScalar(s);
+  mesh.userData = {rotSpeed: {x: Math.random()*0.003, y: Math.random()*0.005, z: Math.random()*0.002}};
+  scene.add(mesh);
+  shapes.push(mesh);
+}
+
+addShape(new THREE.IcosahedronGeometry(1,1), shapeMats[0], -15, 8, -10, 3);
+addShape(new THREE.OctahedronGeometry(1), shapeMats[1], 18, -5, -15, 2.5);
+addShape(new THREE.TorusGeometry(1, 0.3, 8, 20), shapeMats[2], -20, -12, -8, 2);
+addShape(new THREE.TetrahedronGeometry(1), shapeMats[0], 12, 15, -12, 2);
+addShape(new THREE.DodecahedronGeometry(1), shapeMats[1], -8, -18, -20, 3.5);
+addShape(new THREE.TorusKnotGeometry(1, 0.3, 50, 8), shapeMats[2], 22, 10, -25, 1.5);
+
+// Scroll-linked camera
+let scrollY = 0;
+let targetCamY = 0;
+let targetCamZ = 30;
+let mouseX = 0, mouseY = 0;
+
+window.addEventListener('scroll', () => {
+  scrollY = window.scrollY;
+  const totalHeight = document.body.scrollHeight - window.innerHeight;
+  const progress = scrollY / totalHeight;
+  targetCamY = -progress * 40;
+  targetCamZ = 30 - progress * 15;
+  
+  // Nav progress bar
+  document.getElementById('nav-progress').style.width = (progress * 100) + '%';
+  
+  // Nav visibility
+  document.getElementById('nav').classList.toggle('visible', scrollY > 300);
+});
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+  mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+let time = 0;
+function animate(){
+  requestAnimationFrame(animate);
+  time += 0.005;
+  
+  // Smooth camera follow
+  camera.position.y += (targetCamY - camera.position.y) * 0.05;
+  camera.position.z += (targetCamZ - camera.position.z) * 0.05;
+  camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
+  camera.rotation.x += (mouseY * 0.05 - camera.rotation.x) * 0.02;
+  
+  // Animate particles
+  const pos = geo.attributes.position.array;
+  for(let i = 0; i < particleCount; i++){
+    pos[i*3+1] += Math.sin(time + i * 0.01) * 0.01 * speeds[i];
+    pos[i*3] += Math.cos(time + i * 0.01) * 0.005 * speeds[i];
+  }
+  geo.attributes.position.needsUpdate = true;
+  
+  // Rotate shapes
+  shapes.forEach(s => {
+    s.rotation.x += s.userData.rotSpeed.x;
+    s.rotation.y += s.userData.rotSpeed.y;
+    s.rotation.z += s.userData.rotSpeed.z;
+    s.position.y += Math.sin(time * 2 + s.position.x) * 0.005;
+  });
+  
+  // Subtle particle field rotation
+  particles.rotation.y = time * 0.05;
+  particles.rotation.x = Math.sin(time * 0.3) * 0.02;
+  
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.z = 30;
-
-  // Particle system - floating nodes
-  const particleCount = 800;
-  const particleGeometry = new THREE.BufferGeometry();
-  const positions = new Float32Array(particleCount * 3);
-  const velocities = new Float32Array(particleCount * 3);
-  const sizes = new Float32Array(particleCount);
-
-  for (let i = 0; i < particleCount; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 80;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 80;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 80;
-    velocities[i * 3] = (Math.random() - 0.5) * 0.02;
-    velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
-    velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
-    sizes[i] = Math.random() * 2 + 0.5;
+// ═══════════════════════════════════════════
+// LOADING SCREEN
+// ═══════════════════════════════════════════
+let loadProgress = 0;
+const loadEl = document.getElementById('load-pct');
+const loadScreen = document.getElementById('loading-screen');
+const loadInterval = setInterval(() => {
+  loadProgress += Math.random() * 15 + 5;
+  if(loadProgress >= 100){
+    loadProgress = 100;
+    loadEl.textContent = '100%';
+    clearInterval(loadInterval);
+    setTimeout(() => {
+      loadScreen.classList.add('hidden');
+      initAnimations();
+    }, 500);
+  } else {
+    loadEl.textContent = Math.floor(loadProgress) + '%';
   }
+}, 200);
 
-  particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-  const particleMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-      uTime: { value: 0 },
-      uColor1: { value: new THREE.Color(0x00d4ff) },
-      uColor2: { value: new THREE.Color(0x7b61ff) },
-      uScrollProgress: { value: 0 }
-    },
-    vertexShader: `
-      attribute float size;
-      uniform float uTime;
-      uniform float uScrollProgress;
-      varying float vAlpha;
-      varying float vColorMix;
-      void main() {
-        vec3 pos = position;
-        pos.x += sin(uTime * 0.5 + position.y * 0.1) * 0.5;
-        pos.y += cos(uTime * 0.3 + position.x * 0.1) * 0.5;
-        pos.z += sin(uTime * 0.4 + position.z * 0.1) * 0.3;
-        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-        gl_PointSize = size * (200.0 / -mvPosition.z);
-        gl_Position = projectionMatrix * mvPosition;
-        vAlpha = smoothstep(80.0, 20.0, length(pos)) * 0.6;
-        vColorMix = uScrollProgress;
-      }
-    `,
-    fragmentShader: `
-      uniform vec3 uColor1;
-      uniform vec3 uColor2;
-      varying float vAlpha;
-      varying float vColorMix;
-      void main() {
-        float d = length(gl_PointCoord - vec2(0.5));
-        if (d > 0.5) discard;
-        float alpha = smoothstep(0.5, 0.1, d) * vAlpha;
-        vec3 color = mix(uColor1, uColor2, vColorMix);
-        gl_FragColor = vec4(color, alpha);
-      }
-    `,
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-  });
-
-  const particles = new THREE.Points(particleGeometry, particleMaterial);
-  scene.add(particles);
-
-  // Connection lines between nearby particles
-  const lineGeometry = new THREE.BufferGeometry();
-  const maxLines = 300;
-  const linePositions = new Float32Array(maxLines * 6);
-  const lineColors = new Float32Array(maxLines * 6);
-  lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-  lineGeometry.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
-
-  const lineMaterial = new THREE.LineBasicMaterial({
-    vertexColors: true, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending
-  });
-  const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
-  scene.add(lines);
-
-  // Floating geometric shapes
-  const shapes = [];
-  const shapeGeometries = [
-    new THREE.IcosahedronGeometry(1, 0),
-    new THREE.OctahedronGeometry(0.8, 0),
-    new THREE.TetrahedronGeometry(0.7, 0)
-  ];
-  const shapeMaterial = new THREE.MeshBasicMaterial({
-    color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.15
-  });
-
-  for (let i = 0; i < 8; i++) {
-    const geo = shapeGeometries[i % shapeGeometries.length];
-    const mesh = new THREE.Mesh(geo, shapeMaterial.clone());
-    mesh.position.set(
-      (Math.random() - 0.5) * 50,
-      (Math.random() - 0.5) * 50,
-      (Math.random() - 0.5) * 30 - 10
-    );
-    mesh.userData = {
-      rotSpeed: { x: Math.random() * 0.01, y: Math.random() * 0.01, z: Math.random() * 0.01 },
-      floatSpeed: Math.random() * 0.5 + 0.2,
-      floatAmp: Math.random() * 2 + 1,
-      baseY: mesh.position.y
-    };
-    scene.add(mesh);
-    shapes.push(mesh);
-  }
-
-  // Scroll progress tracker
-  let scrollProgress = 0;
-  let mouseX = 0, mouseY = 0;
-
-  document.addEventListener('mousemove', (e) => {
-    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-  });
-
-  window.addEventListener('scroll', () => {
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    scrollProgress = window.scrollY / maxScroll;
-  });
-
-  // Update connections
-  function updateLines() {
-    const pos = particleGeometry.attributes.position.array;
-    let lineIdx = 0;
-    const threshold = 8;
-    const c1 = new THREE.Color(0x00d4ff);
-    const c2 = new THREE.Color(0x7b61ff);
-
-    for (let i = 0; i < particleCount && lineIdx < maxLines; i += 4) {
-      for (let j = i + 4; j < particleCount && lineIdx < maxLines; j += 4) {
-        const dx = pos[i*3] - pos[j*3];
-        const dy = pos[i*3+1] - pos[j*3+1];
-        const dz = pos[i*3+2] - pos[j*3+2];
-        const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
-        if (dist < threshold) {
-          const idx = lineIdx * 6;
-          linePositions[idx] = pos[i*3]; linePositions[idx+1] = pos[i*3+1]; linePositions[idx+2] = pos[i*3+2];
-          linePositions[idx+3] = pos[j*3]; linePositions[idx+4] = pos[j*3+1]; linePositions[idx+5] = pos[j*3+2];
-          const c = new THREE.Color().lerpColors(c1, c2, scrollProgress);
-          lineColors[idx] = c.r; lineColors[idx+1] = c.g; lineColors[idx+2] = c.b;
-          lineColors[idx+3] = c.r; lineColors[idx+4] = c.g; lineColors[idx+5] = c.b;
-          lineIdx++;
-        }
-      }
-    }
-    lineGeometry.setDrawRange(0, lineIdx * 2);
-    lineGeometry.attributes.position.needsUpdate = true;
-    lineGeometry.attributes.color.needsUpdate = true;
-  }
-
-  // Animate
-  let time = 0;
-  function animate() {
-    requestAnimationFrame(animate);
-    time += 0.016;
-
-    // Update particle uniforms
-    particleMaterial.uniforms.uTime.value = time;
-    particleMaterial.uniforms.uScrollProgress.value = scrollProgress;
-
-    // Camera movement based on scroll and mouse
-    camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
-    camera.position.y += (-mouseY * 2 + scrollProgress * -20 - camera.position.y) * 0.02;
-    camera.position.z = 30 - scrollProgress * 15;
-    camera.lookAt(0, scrollProgress * -10, 0);
-
-    // Rotate particle system
-    particles.rotation.y = time * 0.03 + scrollProgress * Math.PI;
-    particles.rotation.x = scrollProgress * 0.3;
-
-    // Animate shapes
-    shapes.forEach((shape, i) => {
-      shape.rotation.x += shape.userData.rotSpeed.x;
-      shape.rotation.y += shape.userData.rotSpeed.y;
-      shape.rotation.z += shape.userData.rotSpeed.z;
-      shape.position.y = shape.userData.baseY + Math.sin(time * shape.userData.floatSpeed) * shape.userData.floatAmp;
-      shape.material.opacity = 0.08 + Math.sin(time * 0.5 + i) * 0.05;
-      const c = new THREE.Color().lerpColors(new THREE.Color(0x00d4ff), new THREE.Color(0x7b61ff), scrollProgress);
-      shape.material.color = c;
-    });
-
-    // Update lines every few frames
-    if (Math.floor(time * 10) % 3 === 0) updateLines();
-
-    renderer.render(scene, camera);
-  }
-
-  // Resize handler
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-
-  // ===== GSAP ANIMATIONS =====
+// ═══════════════════════════════════════════
+// GSAP SCROLL ANIMATIONS
+// ═══════════════════════════════════════════
+function initAnimations(){
   gsap.registerPlugin(ScrollTrigger);
-
-  // Hero animations
-  gsap.to('#heroTitle', { opacity: 1, y: 0, duration: 1.2, delay: 0.3, ease: 'power3.out' });
-  gsap.to('#heroSub', { opacity: 1, y: 0, duration: 1.2, delay: 0.6, ease: 'power3.out' });
-  gsap.to('#heroCta', { opacity: 1, y: 0, duration: 1.2, delay: 0.9, ease: 'power3.out' });
-
-  // Reveal animations on scroll
-  const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
-  revealElements.forEach(el => {
-    ScrollTrigger.create({
-      trigger: el,
-      start: 'top 85%',
-      onEnter: () => el.classList.add('active'),
-      once: true
+  
+  // Hero entrance
+  const heroTL = gsap.timeline({delay: 0.3});
+  heroTL
+    .to('.hero-badge', {opacity:1, y:0, duration:0.8, ease:'power3.out'})
+    .to('.hero-title', {opacity:1, y:0, duration:1, ease:'power3.out'}, '-=0.4')
+    .to('.hero-subtitle', {opacity:1, y:0, duration:0.8, ease:'power3.out'}, '-=0.5')
+    .to('.hero-cta', {opacity:1, y:0, duration:0.8, ease:'power3.out'}, '-=0.4')
+    .to('.hero-scroll-hint', {opacity:1, duration:1, ease:'power2.out'}, '-=0.2');
+  
+  // Chapter labels
+  gsap.utils.toArray('.chapter-label').forEach(el => {
+    gsap.to(el, {
+      opacity:1, scrollTrigger:{trigger:el, start:'top 80%', toggleActions:'play none none reverse'}
     });
   });
-
-  // Parallax for section images
-  document.querySelectorAll('.split-visual img').forEach(img => {
-    gsap.to(img, {
-      y: -30,
-      scale: 1.05,
-      scrollTrigger: {
-        trigger: img,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1
-      }
+  
+  // Story text animations
+  gsap.utils.toArray('.story-text h2').forEach(el => {
+    gsap.to(el, {
+      opacity:1, y:0, duration:1, ease:'power3.out',
+      scrollTrigger:{trigger:el, start:'top 80%', toggleActions:'play none none reverse'}
     });
   });
-
-  // Counter animation for stats
-  document.querySelectorAll('.stat-number').forEach(el => {
-    const target = parseInt(el.dataset.count);
-    const suffix = el.textContent.replace('0', '');
-    ScrollTrigger.create({
-      trigger: el,
-      start: 'top 85%',
-      once: true,
-      onEnter: () => {
-        gsap.to({ val: 0 }, {
-          val: target,
-          duration: 2,
-          ease: 'power2.out',
-          onUpdate: function() {
-            el.textContent = Math.round(this.targets()[0].val) + suffix;
-          }
+  gsap.utils.toArray('.story-text p').forEach(el => {
+    gsap.to(el, {
+      opacity:1, duration:0.8, delay:0.2, ease:'power2.out',
+      scrollTrigger:{trigger:el, start:'top 85%', toggleActions:'play none none reverse'}
+    });
+  });
+  
+  // Story visuals fly-in
+  gsap.utils.toArray('.story-visual').forEach(el => {
+    gsap.to(el, {
+      opacity:1, x:0, duration:1.2, ease:'power3.out',
+      scrollTrigger:{trigger:el, start:'top 80%', toggleActions:'play none none reverse'}
+    });
+  });
+  
+  // Pain cards stagger
+  gsap.utils.toArray('.pain-card').forEach((el, i) => {
+    gsap.to(el, {
+      opacity:1, y:0, duration:0.8, delay:i*0.15, ease:'power3.out',
+      scrollTrigger:{trigger:el.parentElement, start:'top 75%', toggleActions:'play none none reverse'}
+    });
+  });
+  
+  // Transform bridge
+  gsap.to('.transform-title', {
+    opacity:1, duration:1, ease:'power3.out',
+    scrollTrigger:{trigger:'.transform-container', start:'top 70%', toggleActions:'play none none reverse'}
+  });
+  
+  ScrollTrigger.create({
+    trigger:'#transform-bridge',
+    start:'top 60%',
+    onEnter:() => document.getElementById('transform-line').style.height = '120px',
+    onLeaveBack:() => document.getElementById('transform-line').style.height = '0'
+  });
+  
+  gsap.to('.transform-arrow', {
+    opacity:1, scale:1, duration:0.6, delay:0.8,
+    scrollTrigger:{trigger:'#transform-bridge', start:'top 50%', toggleActions:'play none none reverse'}
+  });
+  
+  // Solution cards
+  gsap.utils.toArray('.solution-card').forEach((el, i) => {
+    gsap.to(el, {
+      opacity:1, y:0, duration:0.8, delay:i*0.1, ease:'power3.out',
+      scrollTrigger:{trigger:el.parentElement, start:'top 75%', toggleActions:'play none none reverse'}
+    });
+  });
+  
+  // Timeline items
+  gsap.utils.toArray('.timeline-item').forEach((el, i) => {
+    gsap.to(el, {
+      opacity:1, x:0, duration:0.8, delay:i*0.2, ease:'power3.out',
+      scrollTrigger:{trigger:el, start:'top 80%', toggleActions:'play none none reverse'}
+    });
+  });
+  
+  // Stats counter animation
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        gsap.utils.toArray('.stat-item').forEach((el, i) => {
+          gsap.to(el, {opacity:1, y:0, duration:0.8, delay:i*0.15, ease:'power3.out'});
         });
+        document.querySelectorAll('.stat-num').forEach(el => {
+          const target = parseInt(el.dataset.target);
+          const suffix = el.dataset.suffix;
+          let current = 0;
+          const increment = target / 60;
+          const counter = setInterval(() => {
+            current += increment;
+            if(current >= target){
+              current = target;
+              clearInterval(counter);
+            }
+            el.textContent = Math.floor(current) + suffix;
+          }, 25);
+        });
+        statsObserver.disconnect();
       }
     });
+  }, {threshold:0.3});
+  statsObserver.observe(document.querySelector('.stats-row'));
+  
+  // Testimonial
+  gsap.to('.testimonial-quote', {
+    opacity:1, duration:1.2, ease:'power2.out',
+    scrollTrigger:{trigger:'.testimonial-section', start:'top 65%', toggleActions:'play none none reverse'}
   });
-
-  // Section titles fly-in
-  document.querySelectorAll('.section-title').forEach(title => {
-    gsap.from(title, {
-      x: -60, opacity: 0, duration: 1,
-      scrollTrigger: { trigger: title, start: 'top 80%', once: true }
+  gsap.to('.testimonial-author', {
+    opacity:1, duration:0.8, delay:0.4,
+    scrollTrigger:{trigger:'.testimonial-section', start:'top 60%', toggleActions:'play none none reverse'}
+  });
+  
+  // CTA
+  gsap.to('.cta-section h2', {
+    opacity:1, duration:1, ease:'power3.out',
+    scrollTrigger:{trigger:'.cta-section', start:'top 70%', toggleActions:'play none none reverse'}
+  });
+  gsap.to('.cta-section p', {
+    opacity:1, duration:0.8, delay:0.2,
+    scrollTrigger:{trigger:'.cta-section', start:'top 70%', toggleActions:'play none none reverse'}
+  });
+  gsap.to('.cta-btn-primary', {
+    opacity:1, duration:0.8, delay:0.4,
+    scrollTrigger:{trigger:'.cta-section', start:'top 65%', toggleActions:'play none none reverse'}
+  });
+  
+  // Parallax depth on images
+  gsap.utils.toArray('.story-visual img').forEach(img => {
+    gsap.to(img, {
+      y: -30, ease:'none',
+      scrollTrigger:{trigger:img, start:'top bottom', end:'bottom top', scrub:1}
     });
   });
-
-  // Orb movement on scroll
-  document.querySelectorAll('.orb').forEach(orb => {
+  
+  // Glow orbs parallax
+  gsap.utils.toArray('.glow-orb').forEach(orb => {
     gsap.to(orb, {
-      x: () => Math.random() * 100 - 50,
-      y: () => Math.random() * 100 - 50,
-      scrollTrigger: {
-        trigger: orb.parentElement,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 2
-      }
+      y: -50, x: 20, ease:'none',
+      scrollTrigger:{trigger:orb.parentElement, start:'top bottom', end:'bottom top', scrub:1.5}
     });
   });
+}
 
-  // Timeline items stagger
-  gsap.utils.toArray('.timeline-item').forEach((item, i) => {
-    gsap.from(item, {
-      opacity: 0, x: -40, duration: 0.8,
-      delay: i * 0.2,
-      scrollTrigger: { trigger: item, start: 'top 85%', once: true }
-    });
-    gsap.from(item.querySelector('.timeline-dot'), {
-      scale: 0, duration: 0.5,
-      delay: i * 0.2 + 0.3,
-      ease: 'back.out(2)',
-      scrollTrigger: { trigger: item, start: 'top 85%', once: true }
-    });
-  });
-
-  // ===== LOADING SCREEN =====
-  const loader = document.getElementById('loader');
-  const fill = document.getElementById('loaderFill');
-  let progress = 0;
-  const loadInterval = setInterval(() => {
-    progress += Math.random() * 15 + 5;
-    if (progress >= 100) {
-      progress = 100;
-      fill.style.width = '100%';
-      clearInterval(loadInterval);
-      setTimeout(() => loader.classList.add('hidden'), 400);
-    } else {
-      fill.style.width = progress + '%';
-    }
-  }, 150);
-
-  // Start animation loop
-  animate();
-
-  // Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-    });
-  });
+// Hero particles (CSS-based)
+const hp = document.getElementById('hero-particles');
+for(let i = 0; i < 30; i++){
+  const p = document.createElement('div');
+  p.className = 'hero-particle';
+  p.style.cssText = `left:${Math.random()*100}%;width:${Math.random()*4+1}px;height:${Math.random()*4+1}px;animation-duration:${Math.random()*8+4}s;animation-delay:${Math.random()*5}s;`;
+  hp.appendChild(p);
+}
 
 })();
 </script>
