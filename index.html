@@ -3,1063 +3,950 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Business OS — Transform Your Business with Intelligent Automation</title>
-<meta name="description" content="Discover how AI-powered business automation eliminates chaos, reduces costs by 60%, and scales your operations effortlessly.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>AI Business OS | Transform Your Business with Intelligent Automation</title>
+<meta name="description" content="Discover how AI-powered business automation eliminates chaos, streamlines operations, and drives explosive growth. Take the free assessment.">
 <style>
+/* ===== RESET & BASE ===== */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
---bg:#0a0a12;--surface:#12121f;--card:#1a1a2e;--border:#2a2a40;
---primary:#6366f1;--primary-light:#818cf8;--accent:#22d3ee;
---success:#10b981;--warning:#f59e0b;--danger:#ef4444;
---text:#f1f5f9;--text-muted:#94a3b8;--text-dim:#64748b;
-}
 html{scroll-behavior:smooth;overflow-x:hidden}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
-canvas#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.section{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px}
-.container{max-width:1200px;width:100%;margin:0 auto}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;line-height:1.6}
+a{text-decoration:none;color:inherit}
 
-/* Navigation */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,18,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(99,102,241,0.1);transition:all 0.3s}
-nav.scrolled{padding:10px 24px;background:rgba(10,10,18,0.95)}
-.nav-logo{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--primary-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+/* ===== LOADING SCREEN ===== */
+#loader{position:fixed;inset:0;z-index:9999;background:#0a0a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s}
+#loader.done{opacity:0;pointer-events:none}
+.loader-ring{width:60px;height:60px;border:3px solid rgba(0,200,255,.15);border-top-color:#00c8ff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{margin-top:16px;color:#00c8ff;font-size:14px;letter-spacing:2px;text-transform:uppercase}
+
+/* ===== 3D CANVAS ===== */
+#scene-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ===== NAV ===== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,200,255,.1);transition:transform .3s}
+.nav.hidden{transform:translateY(-100%)}
+.nav-logo{font-size:20px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
+.nav-logo span{color:#00c8ff}
 .nav-links{display:flex;gap:24px;align-items:center}
-.nav-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.3s}
-.nav-links a:hover{color:var(--accent)}
-.nav-cta{background:linear-gradient(135deg,var(--primary),#7c3aed);color:#fff!important;padding:10px 24px;border-radius:50px;font-weight:600;transition:transform 0.3s,box-shadow 0.3s}
-.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,0.4)}
-.mobile-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px}
-.mobile-toggle span{width:24px;height:2px;background:var(--text);transition:all 0.3s}
+.nav-links a{color:#a0a0b0;font-size:14px;transition:color .3s;cursor:pointer}
+.nav-links a:hover{color:#00c8ff}
+.nav-cta{background:linear-gradient(135deg,#00c8ff,#0066ff);color:#fff!important;padding:8px 20px;border-radius:24px;font-weight:600;font-size:13px}
+.nav-cta:hover{opacity:.9}
+.mobile-menu-btn{display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer}
 
-/* Hero */
-#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
-.hero-bg-image{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(99,102,241,0.15),transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(34,211,238,0.1),transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(16,185,129,0.08),transparent 50%);opacity:1;z-index:0}
-.hero-content{position:relative;z-index:2;max-width:900px;padding:0 24px}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);padding:8px 20px;border-radius:50px;font-size:0.85rem;color:var(--primary-light);margin-bottom:24px}
-.hero-badge .pulse{width:8px;height:8px;background:var(--success);border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.5)}}
-.hero-content h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;line-height:1.1;margin-bottom:24px;opacity:0;transform:translateY(40px)}
-.hero-content h1 .gradient{background:linear-gradient(135deg,var(--primary-light),var(--accent),var(--success));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-content p{font-size:clamp(1rem,2vw,1.25rem);color:var(--text-muted);max-width:650px;margin:0 auto 40px;opacity:0;transform:translateY(30px)}
-.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(20px)}
-.btn-primary{background:linear-gradient(135deg,var(--primary),#7c3aed);color:#fff;padding:16px 36px;border-radius:50px;font-size:1.05rem;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(99,102,241,0.5)}
-.btn-secondary{background:transparent;color:var(--text);padding:16px 36px;border-radius:50px;font-size:1.05rem;font-weight:600;text-decoration:none;border:1px solid var(--border);cursor:pointer;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
-.btn-secondary:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-3px)}
-.scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-dim);font-size:0.8rem;animation:bobble 2s ease-in-out infinite}
-@keyframes bobble{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}
-.scroll-indicator svg{width:24px;height:24px;stroke:var(--text-dim)}
+/* ===== SECTIONS ===== */
+.section{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px}
+.section-inner{max-width:1100px;width:100%;margin:0 auto}
 
-/* Stats Bar */
-#stats{background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(34,211,238,0.1));border-top:1px solid rgba(99,102,241,0.2);border-bottom:1px solid rgba(99,102,241,0.2);padding:60px 24px;position:relative;z-index:1}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;max-width:1000px;margin:0 auto;text-align:center}
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;z-index:1}
+.hero-content{position:relative;z-index:2}
+.hero-badge{display:inline-block;padding:6px 16px;border:1px solid rgba(0,200,255,.3);border-radius:20px;color:#00c8ff;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;background:rgba(0,200,255,.05)}
+.hero h1{font-size:clamp(32px,6vw,72px);font-weight:800;line-height:1.1;margin-bottom:20px;background:linear-gradient(135deg,#fff 0%,#00c8ff 50%,#0066ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:clamp(16px,2vw,20px);color:#a0a0b0;max-width:600px;margin:0 auto 32px}
+.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:linear-gradient(135deg,#00c8ff,#0066ff);color:#fff;border:none;border-radius:28px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,200,255,.3)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:rgba(255,255,255,.05);color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:28px;font-size:16px;font-weight:500;cursor:pointer;transition:all .3s}
+.btn-secondary:hover{background:rgba(255,255,255,.1);border-color:rgba(0,200,255,.4)}
+.scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:#555;font-size:12px;letter-spacing:2px;text-transform:uppercase;animation:bob 2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+.scroll-arrow{width:24px;height:24px;border-right:2px solid #555;border-bottom:2px solid #555;transform:rotate(45deg)}
+
+/* ===== STATS BAR ===== */
+.stats-bar{background:rgba(0,200,255,.03);border-top:1px solid rgba(0,200,255,.1);border-bottom:1px solid rgba(0,200,255,.1);padding:48px 24px;position:relative;z-index:1}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;max-width:1100px;margin:0 auto;text-align:center}
 .stat-item{opacity:0;transform:translateY(30px)}
-.stat-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-label{color:var(--text-muted);font-size:0.9rem;margin-top:4px}
+.stat-item.visible{opacity:1;transform:translateY(0);transition:all .6s ease}
+.stat-number{font-size:clamp(28px,4vw,48px);font-weight:800;color:#00c8ff;line-height:1}
+.stat-label{font-size:14px;color:#888;margin-top:8px}
 
-/* Pain Points Section */
-#pain-points{background:linear-gradient(180deg,transparent,rgba(239,68,68,0.03),transparent)}
-.section-header{text-align:center;margin-bottom:64px}
-.section-tag{display:inline-block;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:12px}
-.section-header h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:16px}
-.section-header p{color:var(--text-muted);max-width:600px;margin:0 auto;font-size:1.05rem}
-.pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
-.pain-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;opacity:0;transform:translateY(40px);transition:all 0.4s}
-.pain-card:hover{border-color:var(--danger);transform:translateY(-4px);box-shadow:0 20px 60px rgba(239,68,68,0.15)}
-.pain-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
-.pain-card:nth-child(1) .pain-icon{background:rgba(239,68,68,0.15)}
-.pain-card:nth-child(2) .pain-icon{background:rgba(245,158,11,0.15)}
-.pain-card:nth-child(3) .pain-icon{background:rgba(239,68,68,0.15)}
-.pain-card:nth-child(4) .pain-icon{background:rgba(245,158,11,0.15)}
-.pain-card:nth-child(5) .pain-icon{background:rgba(239,68,68,0.15)}
-.pain-card:nth-child(6) .pain-icon{background:rgba(245,158,11,0.15)}
-.pain-card h3{font-size:1.2rem;font-weight:700;margin-bottom:10px}
-.pain-card p{color:var(--text-muted);font-size:0.95rem;line-height:1.7}
-.pain-stat{display:inline-block;background:rgba(239,68,68,0.1);color:var(--danger);padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;margin-top:12px}
+/* ===== PROBLEM / SOLUTION SECTIONS ===== */
+.content-block{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.content-block.reverse{direction:rtl}
+.content-block.reverse>*{direction:ltr}
+.content-visual{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/10}
+.content-visual img{width:100%;height:100%;object-fit:cover;border-radius:16px}
+.content-visual-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,200,255,.15),rgba(0,100,255,.1));mix-blend-mode:overlay;border-radius:16px}
+.section-label{display:inline-block;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.label-red{background:rgba(255,60,60,.15);color:#ff5555;border:1px solid rgba(255,60,60,.2)}
+.label-blue{background:rgba(0,200,255,.1);color:#00c8ff;border:1px solid rgba(0,200,255,.2)}
+.label-green{background:rgba(0,255,150,.1);color:#00ff96;border:1px solid rgba(0,255,150,.2)}
+.label-purple{background:rgba(150,100,255,.1);color:#a78bfa;border:1px solid rgba(150,100,255,.2)}
+.content-text h2{font-size:clamp(24px,3.5vw,42px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:16px}
+.content-text p{color:#a0a0b0;font-size:16px;margin-bottom:16px}
+.pain-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+.pain-list li{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.06)}
+.pain-icon{font-size:20px;flex-shrink:0;margin-top:2px}
+.pain-list li strong{color:#fff;display:block;margin-bottom:2px;font-size:15px}
+.pain-list li span{color:#888;font-size:13px}
 
-/* Chaos Visualization */
-#chaos-viz{padding:100px 24px;overflow:hidden}
-.chaos-container{max-width:1000px;margin:0 auto;text-align:center}
-.chaos-visual{position:relative;height:400px;margin:48px 0;border-radius:24px;overflow:hidden;background:linear-gradient(135deg,rgba(239,68,68,0.05),rgba(245,158,11,0.05));border:1px solid var(--border)}
-.chaos-canvas{width:100%;height:100%}
-.chaos-item{position:absolute;padding:12px 20px;border-radius:12px;font-size:0.85rem;font-weight:600;white-space:nowrap;opacity:0}
-.chaos-item.email{background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.3)}
-.chaos-item.task{background:rgba(245,158,11,0.2);color:#fcd34d;border:1px solid rgba(245,158,11,0.3)}
-.chaos-item.call{background:rgba(168,85,247,0.2);color:#d8b4fe;border:1px solid rgba(168,85,247,0.3)}
-.chaos-item.invoice{background:rgba(34,211,238,0.2);color:#67e8f9;border:1px solid rgba(34,211,238,0.3)}
-.chaos-item.report{background:rgba(16,185,129,0.2);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3)}
+/* ===== FEATURES ===== */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.feature-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:32px 24px;transition:all .4s;position:relative;overflow:hidden}
+.feature-card:hover{border-color:rgba(0,200,255,.3);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,200,255,.1)}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#00c8ff,transparent);opacity:0;transition:opacity .4s}
+.feature-card:hover::before{opacity:1}
+.feature-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,rgba(0,200,255,.15),rgba(0,100,255,.1));display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
+.feature-card h3{color:#fff;font-size:18px;margin-bottom:8px}
+.feature-card p{color:#888;font-size:14px;line-height:1.5}
 
-/* Transformation Section */
-#transformation{background:linear-gradient(180deg,transparent,rgba(99,102,241,0.03),transparent)}
-.transform-content{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-.transform-visual{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:4/3;background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(34,211,238,0.1),rgba(16,185,129,0.1));border:1px solid var(--border)}
-.transform-visual img{width:100%;height:100%;object-fit:cover;opacity:0.7}
-.transform-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(34,211,238,0.2));display:flex;flex-direction:column;align-items:center;justify-content:center}
-.transform-anim{width:200px;height:200px;position:relative}
-.orbit-ring{position:absolute;inset:0;border:2px solid rgba(99,102,241,0.3);border-radius:50%;animation:spin 8s linear infinite}
-.orbit-ring:nth-child(2){inset:20px;border-color:rgba(34,211,238,0.3);animation-duration:12s;animation-direction:reverse}
-.orbit-ring:nth-child(3){inset:40px;border-color:rgba(16,185,129,0.3);animation-duration:6s}
-.orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 0 40px rgba(99,102,241,0.5)}
-.orbit-dot{position:absolute;width:12px;height:12px;border-radius:50%;top:-6px;left:50%;transform:translateX(-50%)}
-.orbit-ring:nth-child(1) .orbit-dot{background:var(--primary-light)}
-.orbit-ring:nth-child(2) .orbit-dot{background:var(--accent)}
-.orbit-ring:nth-child(3) .orbit-dot{background:var(--success)}
-@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.transform-text{opacity:0;transform:translateX(40px)}
-.transform-text h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:700;margin-bottom:20px}
-.transform-text p{color:var(--text-muted);font-size:1.05rem;line-height:1.8;margin-bottom:24px}
-.feature-list{list-style:none;display:flex;flex-direction:column;gap:16px}
-.feature-list li{display:flex;align-items:flex-start;gap:14px;font-size:0.95rem}
-.feature-check{width:28px;height:28px;min-width:28px;background:rgba(16,185,129,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--success);font-weight:700;font-size:0.9rem}
+/* ===== RESULTS / METRICS ===== */
+.results-showcase{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:32px}
+.result-card{background:linear-gradient(135deg,rgba(0,255,150,.03),rgba(0,200,255,.03));border:1px solid rgba(0,255,150,.1);border-radius:16px;padding:28px;position:relative;overflow:hidden}
+.result-card::after{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(0,255,150,.05),transparent);pointer-events:none}
+.result-metric{font-size:42px;font-weight:800;color:#00ff96;line-height:1}
+.result-title{font-size:16px;color:#fff;margin-top:8px;font-weight:600}
+.result-desc{font-size:13px;color:#888;margin-top:4px}
 
-/* Solutions Section */
-#solutions{padding:100px 24px}
-.solutions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:28px;margin-top:64px}
-.solution-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;opacity:0;transform:translateY(40px);transition:all 0.4s;position:relative;overflow:hidden}
-.solution-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform 0.5s}
-.solution-card:hover::before{transform:scaleX(1)}
-.solution-card:hover{transform:translateY(-6px);border-color:var(--primary);box-shadow:0 24px 60px rgba(99,102,241,0.15)}
-.solution-number{font-family:'Space Grotesk',sans-serif;font-size:3rem;font-weight:800;background:linear-gradient(135deg,rgba(99,102,241,0.3),rgba(34,211,238,0.3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px;line-height:1}
-.solution-card h3{font-size:1.25rem;font-weight:700;margin-bottom:12px}
-.solution-card p{color:var(--text-muted);font-size:0.95rem;line-height:1.7;margin-bottom:16px}
-.solution-tag{display:inline-block;background:rgba(99,102,241,0.1);color:var(--primary-light);padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;margin-right:6px;margin-bottom:6px}
+/* ===== QUIZ / LEAD GEN ===== */
+.quiz-section{background:linear-gradient(180deg,rgba(0,200,255,.02),rgba(10,10,15,1));position:relative;z-index:1}
+.quiz-container{max-width:700px;margin:0 auto;text-align:center}
+.quiz-container h2{font-size:clamp(24px,3.5vw,42px);font-weight:700;color:#fff;margin-bottom:8px}
+.quiz-container .subtitle{color:#888;margin-bottom:40px;font-size:16px}
+.quiz-progress{display:flex;gap:8px;justify-content:center;margin-bottom:32px}
+.quiz-dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.1);transition:all .3s}
+.quiz-dot.active{background:#00c8ff;box-shadow:0 0 12px rgba(0,200,255,.4)}
+.quiz-dot.done{background:#00ff96}
+.quiz-question{font-size:20px;color:#fff;margin-bottom:24px;font-weight:600;min-height:60px}
+.quiz-options{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.quiz-option{display:flex;align-items:center;gap:12px;padding:16px 20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;transition:all .3s;text-align:left;font-size:15px;color:#ccc}
+.quiz-option:hover{border-color:rgba(0,200,255,.3);background:rgba(0,200,255,.05)}
+.quiz-option.selected{border-color:#00c8ff;background:rgba(0,200,255,.1);color:#fff}
+.quiz-option-letter{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;color:#888;transition:all .3s}
+.quiz-option.selected .quiz-option-letter{background:#00c8ff;color:#000}
+.quiz-nav{display:flex;gap:16px;justify-content:center;margin-top:16px}
+.quiz-btn{padding:12px 28px;border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all .3s}
+.quiz-btn-next{background:linear-gradient(135deg,#00c8ff,#0066ff);color:#fff}
+.quiz-btn-next:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,200,255,.3)}
+.quiz-btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.quiz-btn-back{background:rgba(255,255,255,.06);color:#aaa;border:1px solid rgba(255,255,255,.1)}
 
-/* Results Section */
-#results{background:linear-gradient(180deg,transparent,rgba(16,185,129,0.03),transparent)}
-.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;margin-top:64px}
-.result-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;text-align:center;opacity:0;transform:scale(0.9);transition:all 0.4s}
-.result-card:hover{transform:scale(1.03);border-color:var(--success);box-shadow:0 20px 60px rgba(16,185,129,0.15)}
-.result-icon{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px}
-.result-card:nth-child(1) .result-icon{background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(99,102,241,0.05))}
-.result-card:nth-child(2) .result-icon{background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(16,185,129,0.05))}
-.result-card:nth-child(3) .result-icon{background:linear-gradient(135deg,rgba(34,211,238,0.2),rgba(34,211,238,0.05))}
-.result-card:nth-child(4) .result-icon{background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(245,158,11,0.05))}
-.result-metric{font-family:'Space Grotesk',sans-serif;font-size:2.5rem;font-weight:800;margin-bottom:8px}
-.result-card:nth-child(1) .result-metric{color:var(--primary-light)}
-.result-card:nth-child(2) .result-metric{color:var(--success)}
-.result-card:nth-child(3) .result-metric{color:var(--accent)}
-.result-card:nth-child(4) .result-metric{color:var(--warning)}
-.result-card h3{font-size:1.1rem;font-weight:700;margin-bottom:8px}
-.result-card p{color:var(--text-muted);font-size:0.9rem}
+/* Quiz Results */
+.quiz-results{display:none;text-align:center}
+.quiz-results h3{font-size:28px;color:#fff;margin-bottom:8px}
+.quiz-results .score-display{font-size:64px;font-weight:800;color:#00c8ff;margin:16px 0}
+.quiz-results .score-label{color:#888;font-size:16px;margin-bottom:24px}
+.quiz-results .recommendation{background:rgba(0,200,255,.05);border:1px solid rgba(0,200,255,.15);border-radius:16px;padding:24px;margin-bottom:32px;text-align:left}
+.quiz-results .recommendation h4{color:#00c8ff;font-size:18px;margin-bottom:8px}
+.quiz-results .recommendation p{color:#aaa;font-size:14px}
 
-/* Timeline */
-#timeline{padding:100px 24px}
-.timeline-track{position:relative;max-width:800px;margin:64px auto 0;padding-left:40px}
-.timeline-line{position:absolute;left:16px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--primary),var(--accent),var(--success))}
-.timeline-item{position:relative;padding:0 0 48px 32px;opacity:0;transform:translateX(-30px)}
-.timeline-dot{position:absolute;left:-32px;top:4px;width:16px;height:16px;border-radius:50%;border:3px solid var(--primary);background:var(--bg)}
-.timeline-item:nth-child(2) .timeline-dot{border-color:var(--accent)}
-.timeline-item:nth-child(3) .timeline-dot{border-color:var(--success)}
-.timeline-item:nth-child(4) .timeline-dot{border-color:var(--warning)}
-.timeline-week{font-size:0.8rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.timeline-item h3{font-size:1.15rem;font-weight:700;margin-bottom:8px}
-.timeline-item p{color:var(--text-muted);font-size:0.95rem;line-height:1.7}
+/* Lead Form */
+.lead-form{display:none;max-width:500px;margin:0 auto}
+.lead-form h3{font-size:24px;color:#fff;margin-bottom:8px;text-align:center}
+.lead-form .form-subtitle{color:#888;text-align:center;margin-bottom:24px;font-size:14px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;color:#aaa;font-size:13px;margin-bottom:6px;font-weight:500}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;font-size:15px;outline:none;transition:border-color .3s;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#00c8ff}
+.form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.form-group select option{background:#1a1a2e;color:#fff}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-submit{width:100%;padding:14px;background:linear-gradient(135deg,#00c8ff,#0066ff);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:all .3s;margin-top:8px}
+.form-submit:hover{box-shadow:0 8px 30px rgba(0,200,255,.3);transform:translateY(-2px)}
+.form-success{display:none;text-align:center;padding:40px 20px}
+.form-success .check{font-size:64px;margin-bottom:16px}
+.form-success h3{color:#00ff96;font-size:24px;margin-bottom:8px}
+.form-success p{color:#888;font-size:15px}
 
-/* Quiz Section */
-#quiz{padding:100px 24px;background:linear-gradient(180deg,transparent,rgba(99,102,241,0.05),transparent)}
-.quiz-container{max-width:700px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:48px;position:relative;overflow:hidden}
-.quiz-container::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent),var(--success))}
-.quiz-progress{display:flex;gap:8px;margin-bottom:32px}
-.quiz-dot{flex:1;height:4px;border-radius:4px;background:var(--border);transition:all 0.5s}
-.quiz-dot.active{background:var(--primary)}
-.quiz-dot.done{background:var(--success)}
-.quiz-step{display:none}
-.quiz-step.active{display:block;animation:fadeUp 0.5s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.quiz-step h3{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:8px}
-.quiz-step p{color:var(--text-muted);font-size:0.95rem;margin-bottom:24px}
-.quiz-options{display:flex;flex-direction:column;gap:12px}
-.quiz-option{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:18px 22px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:14px;font-size:0.95rem}
-.quiz-option:hover{border-color:var(--primary);background:rgba(99,102,241,0.05)}
-.quiz-option.selected{border-color:var(--primary);background:rgba(99,102,241,0.1)}
-.quiz-option .check{width:24px;height:24px;min-width:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all 0.3s;font-size:0.7rem;color:transparent}
-.quiz-option.selected .check{background:var(--primary);border-color:var(--primary);color:#fff}
-.quiz-nav{display:flex;justify-content:space-between;margin-top:28px}
-.quiz-btn{padding:12px 28px;border-radius:50px;font-size:0.95rem;font-weight:600;cursor:pointer;border:none;transition:all 0.3s}
-.quiz-btn.next{background:linear-gradient(135deg,var(--primary),#7c3aed);color:#fff}
-.quiz-btn.next:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,0.4)}
-.quiz-btn.next:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
-.quiz-btn.back{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
-.quiz-btn.back:hover{border-color:var(--text-muted)}
-.quiz-result{text-align:center;animation:fadeUp 0.6s ease}
-.quiz-score{font-family:'Space Grotesk',sans-serif;font-size:4rem;font-weight:800;margin:20px 0 8px}
-.quiz-score.high{background:linear-gradient(135deg,var(--danger),var(--warning));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.quiz-score.medium{background:linear-gradient(135deg,var(--warning),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.quiz-score.low{background:linear-gradient(135deg,var(--success),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.quiz-result h3{font-size:1.5rem;font-weight:700;margin-bottom:12px}
-.quiz-result p{color:var(--text-muted);font-size:1rem;line-height:1.7;margin-bottom:28px}
+/* ===== TESTIMONIALS ===== */
+.testimonials-scroll{display:flex;gap:24px;overflow-x:auto;padding:16px 0 24px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.testimonials-scroll::-webkit-scrollbar{display:none}
+.testimonial-card{flex:0 0 340px;scroll-snap-align:start;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:28px;position:relative}
+.testimonial-card::before{content:'\201C';position:absolute;top:12px;right:20px;font-size:48px;color:rgba(0,200,255,.15);font-family:serif;line-height:1}
+.testimonial-stars{color:#fbbf24;font-size:14px;margin-bottom:12px}
+.testimonial-text{color:#bbb;font-size:14px;line-height:1.6;margin-bottom:16px}
+.testimonial-author{display:flex;align-items:center;gap:12px}
+.testimonial-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#00c8ff,#0066ff);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff}
+.testimonial-name{color:#fff;font-size:14px;font-weight:600}
+.testimonial-role{color:#666;font-size:12px}
 
-/* Contact / Lead Form */
-#contact{padding:100px 24px}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
-.contact-info h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:700;margin-bottom:16px}
-.contact-info p{color:var(--text-muted);font-size:1.05rem;line-height:1.8;margin-bottom:32px}
-.contact-benefits{list-style:none;display:flex;flex-direction:column;gap:16px}
-.contact-benefits li{display:flex;align-items:center;gap:12px;font-size:0.95rem}
-.contact-benefits .icon{width:36px;height:36px;min-width:36px;border-radius:10px;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;font-size:1rem}
-.contact-form{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px}
-.contact-form h3{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:24px}
-.form-group{margin-bottom:20px}
-.form-group label{display:block;font-size:0.85rem;font-weight:600;color:var(--text-muted);margin-bottom:8px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:0.95rem;transition:all 0.3s;outline:none}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.15)}
-.form-group textarea{resize:vertical;min-height:100px}
-.form-group select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
-.form-group select option{background:var(--surface);color:var(--text)}
-.submit-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--primary),#7c3aed);color:#fff;border:none;border-radius:14px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(99,102,241,0.4)}
-.submit-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
-.form-success{display:none;text-align:center;padding:40px 20px;animation:fadeUp 0.5s ease}
-.form-success .success-icon{width:80px;height:80px;background:rgba(16,185,129,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem}
-.form-success h3{font-size:1.4rem;font-weight:700;color:var(--success);margin-bottom:12px}
-.form-success p{color:var(--text-muted);font-size:1rem;line-height:1.7}
+/* ===== CTA ===== */
+.cta-section{text-align:center;position:relative;z-index:1}
+.cta-section h2{font-size:clamp(28px,4vw,52px);font-weight:800;color:#fff;margin-bottom:16px}
+.cta-section p{color:#888;max-width:500px;margin:0 auto 32px;font-size:16px}
 
-/* Footer */
-footer{background:var(--surface);border-top:1px solid var(--border);padding:48px 24px 32px;position:relative;z-index:1}
-.footer-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
-.footer-brand{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,var(--primary-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.footer-links{display:flex;gap:24px}
-.footer-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem;transition:color 0.3s}
-.footer-links a:hover{color:var(--accent)}
-.footer-copy{width:100%;text-align:center;padding-top:24px;border-top:1px solid var(--border);margin-top:24px;color:var(--text-dim);font-size:0.85rem}
+/* ===== FOOTER ===== */
+.footer{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.06);padding:40px 24px;text-align:center}
+.footer p{color:#555;font-size:13px}
 
-/* Mobile Responsive */
-@media(max-width:768px){
-.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,10,18,0.98);backdrop-filter:blur(20px);flex-direction:column;padding:24px;gap:16px;border-bottom:1px solid var(--border)}
-.nav-links.open{display:flex}
-.mobile-toggle{display:flex}
-.stats-grid{grid-template-columns:repeat(2,1fr);gap:20px}
-.pain-grid{grid-template-columns:1fr}
-.transform-content{grid-template-columns:1fr;gap:32px}
-.transform-text{transform:none!important}
-.solutions-grid{grid-template-columns:1fr}
-.results-grid{grid-template-columns:repeat(2,1fr)}
-.contact-grid{grid-template-columns:1fr}
-.timeline-track{padding-left:32px}
-.footer-content{flex-direction:column;text-align:center}
-.footer-links{justify-content:center}
-.chaos-visual{height:300px}
+/* ===== ANIMATIONS ===== */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-60px);transition:opacity .8s ease,transform .8s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(60px);transition:opacity .8s ease,transform .8s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+.reveal-scale{opacity:0;transform:scale(.9);transition:opacity .8s ease,transform .8s ease}
+.reveal-scale.visible{opacity:1;transform:scale(1)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .content-block{grid-template-columns:1fr;gap:32px}
+  .content-block.reverse{direction:ltr}
+  .features-grid{grid-template-columns:1fr 1fr}
+  .results-showcase{grid-template-columns:1fr 1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:24px}
 }
-@media(max-width:480px){
-.stats-grid{grid-template-columns:1fr 1fr}
-.results-grid{grid-template-columns:1fr}
-.quiz-container{padding:28px 20px}
-.contact-form{padding:28px 20px}
+@media(max-width:600px){
+  .nav-links{display:none}
+  .nav-links.open{display:flex;flex-direction:column;position:absolute;top:60px;left:0;right:0;background:rgba(10,10,15,.95);padding:20px;gap:16px;border-bottom:1px solid rgba(0,200,255,.1)}
+  .mobile-menu-btn{display:block}
+  .features-grid{grid-template-columns:1fr}
+  .results-showcase{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:16px}
+  .section{padding:60px 16px}
+  .hero-buttons{flex-direction:column;align-items:center}
+  .testimonial-card{flex:0 0 280px}
 }
-
-/* Animations helper */
-.fade-in{opacity:0;transform:translateY(30px);transition:opacity 0.8s ease,transform 0.8s ease}
-.fade-in.visible{opacity:1;transform:translateY(0)}
-.slide-left{opacity:0;transform:translateX(-40px);transition:opacity 0.8s ease,transform 0.8s ease}
-.slide-left.visible{opacity:1;transform:translateX(0)}
-.slide-right{opacity:0;transform:translateX(40px);transition:opacity 0.8s ease,transform 0.8s ease}
-.slide-right.visible{opacity:1;transform:translateX(0)}
 </style>
 </head>
 <body>
 
-<!-- Navigation -->
-<nav id="main-nav">
-<a href="#hero" class="nav-logo">AI Business OS</a>
-<div class="mobile-toggle" id="mobileToggle" role="button" aria-label="Toggle navigation menu" tabindex="0">
-<span></span><span></span><span></span>
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Loading Experience</div>
 </div>
-<div class="nav-links" id="navLinks">
-<a href="#pain-points">The Problem</a>
-<a href="#solutions">Solutions</a>
-<a href="#results">Results</a>
-<a href="#quiz">Free Assessment</a>
-<a href="#contact" class="nav-cta">Get Started</a>
-</div>
+
+<!-- 3D CANVAS -->
+<canvas id="scene-canvas"></canvas>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-logo">⬡ AI Business <span>OS</span></div>
+  <div class="nav-links" id="navLinks">
+    <a onclick="scrollToSection('problem')">The Problem</a>
+    <a onclick="scrollToSection('solution')">The Solution</a>
+    <a onclick="scrollToSection('results')">Results</a>
+    <a onclick="scrollToSection('quiz')">Free Assessment</a>
+    <a class="nav-cta" onclick="scrollToSection('quiz')">Get Started →</a>
+  </div>
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
 </nav>
 
-<!-- 3D Background Canvas -->
-<canvas id="bg-canvas"></canvas>
-
-<!-- Hero Section -->
-<section id="hero" class="section">
-<div class="hero-bg-image"></div>
-<div class="hero-content">
-<div class="hero-badge"><span class="pulse"></span> AI-Powered Business Automation</div>
-<h1>Stop Running Your Business<br>in <span class="gradient">Organized Chaos</span></h1>
-<p>Your business deserves an AI-powered operating system that handles operations, automates workflows, and frees you to focus on growth — not firefighting.</p>
-<div class="hero-buttons">
-<button class="btn-primary" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">Take Free Assessment <span>→</span></button>
-<button class="btn-secondary" onclick="document.getElementById('pain-points').scrollIntoView({behavior:'smooth'})">See How It Works</button>
-</div>
-</div>
-<div class="scroll-indicator">
-<span>Scroll to explore</span>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-</div>
+<!-- HERO -->
+<section class="section hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge reveal">AI-Powered Business Automation</div>
+    <h1 class="reveal">Stop Running Your Business.<br>Let AI Run It For You.</h1>
+    <p class="reveal">Your business is drowning in manual tasks, missed follow-ups, and operational chaos. Our AI Business OS automates everything — so you can focus on growth.</p>
+    <div class="hero-buttons reveal">
+      <button class="btn-primary" onclick="scrollToSection('quiz')">🎯 Take Free Assessment</button>
+      <button class="btn-secondary" onclick="scrollToSection('problem')">See How It Works ↓</button>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll to explore</span>
+    <div class="scroll-arrow"></div>
+  </div>
 </section>
 
-<!-- Stats Bar -->
-<section id="stats">
-<div class="stats-grid">
-<div class="stat-item"><div class="stat-number" data-count="73">0%</div><div class="stat-label">of SMBs Lose Revenue to Inefficiency</div></div>
-<div class="stat-item"><div class="stat-number" data-count="40">0hrs</div><div class="stat-label">Wasted Weekly on Manual Tasks</div></div>
-<div class="stat-item"><div class="stat-number" data-count="60">0%</div><div class="stat-label">Cost Reduction with AI Agents</div></div>
-<div class="stat-item"><div class="stat-number" data-count="3">0x</div><div class="stat-label">Faster Response Times</div></div>
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-grid">
+    <div class="stat-item" data-target="73" data-suffix="%">
+      <div class="stat-number">0%</div>
+      <div class="stat-label">Business owners overwhelmed by operations</div>
+    </div>
+    <div class="stat-item" data-target="40" data-suffix="hrs">
+      <div class="stat-number">0hrs</div>
+      <div class="stat-label">Wasted weekly on tasks AI can handle</div>
+    </div>
+    <div class="stat-item" data-target="3" data-suffix="x">
+      <div class="stat-number">0x</div>
+      <div class="stat-label">Revenue growth with AI automation</div>
+    </div>
+    <div class="stat-item" data-target="24" data-suffix="/7">
+      <div class="stat-number">0/7</div>
+      <div class="stat-label">Your AI agent never sleeps</div>
+    </div>
+  </div>
 </div>
+
+<!-- PROBLEM SECTION -->
+<section class="section" id="problem">
+  <div class="section-inner">
+    <div class="content-block">
+      <div class="content-text reveal-left">
+        <span class="section-label label-red">⚠ The Problem</span>
+        <h2>Your Business is Bleeding Time, Money & Opportunities</h2>
+        <p>Every day without automation, your competitors gain ground while you're stuck in the weeds.</p>
+        <ul class="pain-list">
+          <li>
+            <span class="pain-icon">🔥</span>
+            <div><strong>Operational Chaos</strong><span>Juggling 12 different tools, none of them talking to each other</span></div>
+          </li>
+          <li>
+            <span class="pain-icon">💸</span>
+            <div><strong>Revenue Leaks</strong><span>Leads falling through the cracks, follow-ups forgotten, opportunities lost</span></div>
+          </li>
+          <li>
+            <span class="pain-icon">⏰</span>
+            <div><strong>Time Drain</strong><span>Spending 60% of your day on tasks that don't directly generate revenue</span></div>
+          </li>
+          <li>
+            <span class="pain-icon">😓</span>
+            <div><strong>Burnout & Bottlenecks</strong><span>Everything depends on you — no systems, no scalability, no freedom</span></div>
+          </li>
+        </ul>
+      </div>
+      <div class="content-visual reveal-right">
+        <img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/b0431491-0dc5-4155-9809-f4865eb2de2e" alt="Business chaos visualization showing overwhelmed operations" loading="lazy" width="1024" height="585">
+        <div class="content-visual-overlay"></div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- Pain Points -->
-<section id="pain-points" class="section">
-<div class="container">
-<div class="section-header">
-<div class="section-tag">⚡ The Problem</div>
-<h2>Running a Business Shouldn't Feel Like This</h2>
-<p>Sound familiar? These pain points cost businesses thousands every month.</p>
-</div>
-<div class="pain-grid">
-<div class="pain-card">
-<div class="pain-icon">📧</div>
-<h3>Email & Message Overload</h3>
-<p>Drowning in emails, Slack messages, and DMs across 5+ platforms. Important requests fall through the cracks daily.</p>
-<span class="pain-stat">28% of work week spent on email</span>
-</div>
-<div class="pain-card">
-<div class="pain-icon">🔄</div>
-<h3>Repetitive Manual Processes</h3>
-<p>Copying data between spreadsheets, sending follow-up emails, and generating reports manually. The same tasks, every single day.</p>
-<span class="pain-stat">$4,500/month wasted per employee</span>
-</div>
-<div class="pain-card">
-<div class="pain-icon">📊</div>
-<h3>Scattered Data & No Visibility</h3>
-<p>Critical information lives in 10 different tools. Getting a clear picture of your business requires hours of detective work.</p>
-<span class="pain-stat">3.6 hours/day searching for info</span>
-</div>
-<div class="pain-card">
-<div class="pain-icon">🔥</div>
-<h3>Constant Firefighting</h3>
-<p>Every day is reactive. You planned to work ON the business, but you're stuck working IN it putting out fires.</p>
-<span class="pain-stat">67% of leaders feel burned out</span>
-</div>
-<div class="pain-card">
-<div class="pain-icon">💸</div>
-<h3>Revenue Leakage</h3>
-<p>Leads go cold, follow-ups are missed, invoices are late, and opportunities slip away because no one is tracking them.</p>
-<span class="pain-stat">$75K+ lost annually per business</span>
-</div>
-<div class="pain-card">
-<div class="pain-icon">📈</div>
-<h3>Can't Scale Without Breaking</h3>
-<p>Growth means hiring more people to do the same manual work. Your processes don't scale — they just get more chaotic.</p>
-<span class="pain-stat">40% of SMBs fail to scale</span>
-</div>
-</div>
-</div>
+<!-- SOLUTION SECTION -->
+<section class="section" id="solution">
+  <div class="section-inner">
+    <div class="content-block reverse">
+      <div class="content-text reveal-right">
+        <span class="section-label label-blue">✦ The Solution</span>
+        <h2>One AI-Powered System to Run Your Entire Business</h2>
+        <p>Our AI Business OS isn't just another tool — it's a complete business automation platform managed by intelligent AI agents that handle your operations 24/7.</p>
+        <ul class="pain-list">
+          <li>
+            <span class="pain-icon">🤖</span>
+            <div><strong>AI Agent Automation</strong><span>Intelligent agents manage your CRM, scheduling, email, social media & more</span></div>
+          </li>
+          <li>
+            <span class="pain-icon">🔗</span>
+            <div><strong>Unified Command Center</strong><span>All your business operations in one intelligent dashboard</span></div>
+          </li>
+          <li>
+            <span class="pain-icon">📊</span>
+            <div><strong>Smart Analytics</strong><span>AI-driven insights that predict trends and optimize decisions</span></div>
+          </li>
+          <li>
+            <span class="pain-icon">⚡</span>
+            <div><strong>Full Managed Service</strong><span>We set up, configure, and manage everything — you just approve and grow</span></div>
+          </li>
+        </ul>
+      </div>
+      <div class="content-visual reveal-left">
+        <img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/189c6c35-e7fe-42bb-9b67-539c7f138bae" alt="AI-powered business command center with intelligent dashboards" loading="lazy" width="1024" height="585">
+        <div class="content-visual-overlay"></div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- Chaos Visualization -->
-<section id="chaos-viz">
-<div class="chaos-container">
-<div class="section-header">
-<div class="section-tag">📉 Visualized</div>
-<h2>This Is Your Business Without AI</h2>
-<p>Watch the chaos unfold — tasks colliding, deadlines missed, opportunities lost.</p>
-</div>
-<div class="chaos-visual" id="chaosVisual">
-<div class="chaos-item email" style="top:15%;left:10%">📧 Unanswered Client Email (3 days)</div>
-<div class="chaos-item task" style="top:35%;left:55%">📋 Overdue Invoice #4829</div>
-<div class="chaos-item call" style="top:60%;left:20%">📞 Missed Callback - Hot Lead</div>
-<div class="chaos-item invoice" style="top:20%;left:65%">💰 Unpaid Invoice - $12,400</div>
-<div class="chaos-item report" style="top:70%;left:60%">📊 Monthly Report - 2 Weeks Late</div>
-<div class="chaos-item email" style="top:80%;left:35%">📧 Support Ticket #892 - Escalated</div>
-<div class="chaos-item task" style="top:45%;left:8%">📋 Project Deadline - Tomorrow!</div>
-<div class="chaos-item call" style="top:10%;left:40%">📞 Vendor Follow-up Overdue</div>
-<div class="chaos-item invoice" style="top:50%;left:75%">💰 Refund Request - Waiting 9 Days</div>
-<div class="chaos-item report" style="top:85%;left:70%">📊 KPI Dashboard - Still Manual</div>
-</div>
-</div>
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-inner" style="text-align:center">
+    <span class="section-label label-purple reveal">✦ Capabilities</span>
+    <h2 class="reveal" style="font-size:clamp(24px,3.5vw,42px);font-weight:700;color:#fff;margin-bottom:8px">Everything Your Business Needs, Automated</h2>
+    <p class="reveal" style="color:#888;max-width:600px;margin:0 auto">From lead capture to customer retention, our AI agents handle it all so you don't have to.</p>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">📧</div>
+        <h3>Smart Email & Follow-ups</h3>
+        <p>AI writes and sends personalized emails, follows up on leads, and nurtures prospects automatically.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">📅</div>
+        <h3>Automated Scheduling</h3>
+        <p>AI manages your calendar, books appointments, sends reminders, and handles rescheduling.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">📱</div>
+        <h3>Social Media Management</h3>
+        <p>Content creation, scheduling, engagement tracking, and audience growth — all on autopilot.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">💰</div>
+        <h3>Sales Pipeline Automation</h3>
+        <p>Lead scoring, deal tracking, proposal generation, and closing assistance powered by AI.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">📊</div>
+        <h3>Business Intelligence</h3>
+        <p>Real-time dashboards, predictive analytics, and AI-generated reports for smarter decisions.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🛡️</div>
+        <h3>Customer Success</h3>
+        <p>Automated onboarding, support ticket routing, satisfaction surveys, and retention campaigns.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- Transformation Section -->
-<section id="transformation" class="section">
-<div class="container">
-<div class="transform-content">
-<div class="transform-visual slide-left">
-<div class="transform-overlay">
-<div class="transform-anim">
-<div class="orbit-ring"><div class="orbit-dot"></div></div>
-<div class="orbit-ring"><div class="orbit-dot"></div></div>
-<div class="orbit-ring"><div class="orbit-dot"></div></div>
-<div class="orbit-center">🤖</div>
-</div>
-</div>
-</div>
-<div class="transform-text slide-right">
-<div class="section-tag">🚀 The Transformation</div>
-<h2>Enter Your AI Business Operating System</h2>
-<p>Imagine having an intelligent agent that manages your entire business backend — handling communications, automating workflows, tracking every metric, and keeping everything running like clockwork.</p>
-<ul class="feature-list">
-<li><span class="feature-check">✓</span><span><strong>Intelligent Task Routing</strong> — AI reads, prioritizes, and routes every message, email, and task automatically</span></li>
-<li><span class="feature-check">✓</span><span><strong>Automated Workflows</strong> — Invoicing, follow-ups, reports, and scheduling run on autopilot</span></li>
-<li><span class="feature-check">✓</span><span><strong>Real-Time Business Dashboard</strong> — Every KPI, metric, and status in one unified view</span></li>
-<li><span class="feature-check">✓</span><span><strong>Smart Lead Management</strong> — Never miss a follow-up. AI nurtures leads while you sleep</span></li>
-<li><span class="feature-check">✓</span><span><strong>Scalable Operations</strong> — Grow 3x without hiring 3x the staff</span></li>
-</ul>
-</div>
-</div>
-</div>
+<!-- RESULTS -->
+<section class="section" id="results">
+  <div class="section-inner">
+    <div class="content-block">
+      <div class="content-text reveal-left">
+        <span class="section-label label-green">📈 Results</span>
+        <h2>Real Transformation, Real Numbers</h2>
+        <p>Businesses using our AI Business OS see measurable improvements within the first 30 days.</p>
+        <div class="results-showcase">
+          <div class="result-card reveal">
+            <div class="result-metric" data-count="85">0%</div>
+            <div class="result-title">Reduction in Manual Tasks</div>
+            <div class="result-desc">AI handles the busywork so you don't have to</div>
+          </div>
+          <div class="result-card reveal">
+            <div class="result-metric" data-count="3">0x</div>
+            <div class="result-title">More Leads Captured</div>
+            <div class="result-desc">Automated lead gen that never misses an opportunity</div>
+          </div>
+          <div class="result-card reveal">
+            <div class="result-metric" data-count="40">0+</div>
+            <div class="result-title">Hours Saved Per Week</div>
+            <div class="result-desc">Time back to focus on strategy and growth</div>
+          </div>
+          <div class="result-card reveal">
+            <div class="result-metric" data-count="200">0%</div>
+            <div class="result-title">Average ROI in 90 Days</div>
+            <div class="result-desc">Investment pays for itself many times over</div>
+          </div>
+        </div>
+      </div>
+      <div class="content-visual reveal-right">
+        <img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/23cb3fa1-2daa-42af-9bcb-4f122207324e" alt="Business transformation results showing growth metrics" loading="lazy" width="1024" height="585">
+        <div class="content-visual-overlay"></div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- Solutions -->
-<section id="solutions" class="section">
-<div class="container">
-<div class="section-header">
-<div class="section-tag">🎯 AI Solutions</div>
-<h2>How AI Agents Transform Every Part of Your Business</h2>
-<p>A complete AI-powered operating system built to run, optimize, and grow your business.</p>
-</div>
-<div class="solutions-grid">
-<div class="solution-card">
-<div class="solution-number">01</div>
-<h3>Communications Autopilot</h3>
-<p>AI monitors all channels — email, chat, social, and phone — triaging messages, drafting responses, and escalating only what needs your attention.</p>
-<span class="solution-tag">Email</span><span class="solution-tag">Chat</span><span class="solution-tag">Social</span>
-</div>
-<div class="solution-card">
-<div class="solution-number">02</div>
-<h3>Operations Automation Engine</h3>
-<p>Invoicing, scheduling, project tracking, and reporting run automatically. Set the rules once, and the AI handles execution flawlessly.</p>
-<span class="solution-tag">Invoicing</span><span class="solution-tag">Scheduling</span><span class="solution-tag">Reports</span>
-</div>
-<div class="solution-card">
-<div class="solution-number">03</div>
-<h3>Intelligent CRM & Lead Nurturing</h3>
-<p>Every lead gets followed up on time, every time. AI scores prospects, personalizes outreach, and books meetings on your calendar.</p>
-<span class="solution-tag">CRM</span><span class="solution-tag">Lead Scoring</span><span class="solution-tag">Outreach</span>
-</div>
-<div class="solution-card">
-<div class="solution-number">04</div>
-<h3>Data & Analytics Command Center</h3>
-<p>Real-time dashboards pull from every tool and data source. Get instant answers to business questions without building a single spreadsheet.</p>
-<span class="solution-tag">Analytics</span><span class="solution-tag">KPIs</span><span class="solution-tag">Insights</span>
-</div>
-<div class="solution-card">
-<div class="solution-number">05</div>
-<h3>Customer Success Automation</h3>
-<p>Onboarding sequences, support ticket routing, satisfaction surveys, and proactive check-ins — all handled by AI with a human touch.</p>
-<span class="solution-tag">Onboarding</span><span class="solution-tag">Support</span><span class="solution-tag">NPS</span>
-</div>
-<div class="solution-card">
-<div class="solution-number">06</div>
-<h3>Financial Operations AI</h3>
-<p>Expense tracking, invoice reconciliation, cash flow forecasting, and payment reminders on autopilot. Never chase a payment again.</p>
-<span class="solution-tag">Payments</span><span class="solution-tag">Forecasting</span><span class="solution-tag">Billing</span>
-</div>
-</div>
-</div>
+<!-- TESTIMONIALS -->
+<section class="section" id="testimonials" style="padding-top:40px">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:32px">
+      <span class="section-label label-blue reveal">★ Testimonials</span>
+      <h2 class="reveal" style="font-size:clamp(24px,3.5vw,36px);font-weight:700;color:#fff;margin-top:12px">What Business Owners Are Saying</h2>
+    </div>
+    <div class="testimonials-scroll">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <div class="testimonial-text">"I was spending 50+ hours a week just trying to keep up. Now the AI handles my scheduling, follow-ups, and reporting. I got my life back and my revenue doubled."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">M</div>
+          <div><div class="testimonial-name">Marcus T.</div><div class="testimonial-role">E-commerce Founder</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <div class="testimonial-text">"The AI Business OS completely transformed how we operate. Lead response time went from 4 hours to 4 minutes. Our close rate jumped 40% in the first month."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">S</div>
+          <div><div class="testimonial-name">Sarah K.</div><div class="testimonial-role">Real Estate Broker</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <div class="testimonial-text">"I was skeptical about AI managing my business ops. Within 2 weeks, I realized I'd been doing the work of 3 employees. The ROI is insane."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">J</div>
+          <div><div class="testimonial-name">James R.</div><div class="testimonial-role">Agency Owner</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <div class="testimonial-text">"Having a fully managed AI system means I don't have to figure out the tech. They set everything up and the AI just works. Best investment I've made."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">L</div>
+          <div><div class="testimonial-name">Lisa M.</div><div class="testimonial-role">Consulting Firm CEO</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- Results Section -->
-<section id="results" class="section">
-<div class="container">
-<div class="section-header">
-<div class="section-tag">📈 Proven Results</div>
-<h2>The Business Transformation by the Numbers</h2>
-<p>Real metrics from businesses that switched to AI-powered operations.</p>
-</div>
-<div class="results-grid">
-<div class="result-card">
-<div class="result-icon">⚡</div>
-<div class="result-metric" data-result="60%">0%</div>
-<h3>Cost Reduction</h3>
-<p>Average operational cost savings in the first 90 days of implementation.</p>
-</div>
-<div class="result-card">
-<div class="result-icon">🕐</div>
-<div class="result-metric" data-result="40hrs">0hrs</div>
-<h3>Hours Saved Weekly</h3>
-<p>Time reclaimed from automated tasks, emails, and reporting each week.</p>
-</div>
-<div class="result-card">
-<div class="result-icon">📈</div>
-<div class="result-metric" data-result="3x">0x</div>
-<h3>Revenue Growth</h3>
-<p>Average revenue increase within 6 months through improved lead management.</p>
-</div>
-<div class="result-card">
-<div class="result-icon">😊</div>
-<div class="result-metric" data-result="94%">0%</div>
-<h3>Client Satisfaction</h3>
-<p>Of clients report significantly improved business operations and work-life balance.</p>
-</div>
-</div>
-</div>
+<!-- QUIZ / LEAD GEN -->
+<section class="section quiz-section" id="quiz">
+  <div class="quiz-container">
+    <span class="section-label label-blue reveal">🎯 Free Assessment</span>
+    <h2 class="reveal">How Much Is Business Chaos Costing You?</h2>
+    <p class="subtitle reveal">Answer 5 quick questions to get your personalized AI automation score and discover how much time and money you could save.</p>
+
+    <!-- Quiz Body -->
+    <div id="quizBody">
+      <div class="quiz-progress" id="quizProgress"></div>
+      <div class="quiz-question" id="quizQuestion"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn quiz-btn-back" id="quizBack" onclick="quizPrev()" style="display:none">← Back</button>
+        <button class="quiz-btn quiz-btn-next" id="quizNext" onclick="quizNextStep()" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- Quiz Results -->
+    <div class="quiz-results" id="quizResults">
+      <h3>Your AI Automation Score</h3>
+      <div class="score-display" id="scoreDisplay">0</div>
+      <div class="score-label" id="scoreLabel">out of 100</div>
+      <div class="recommendation" id="recommendation">
+        <h4 id="recTitle"></h4>
+        <p id="recText"></p>
+      </div>
+      <button class="btn-primary" onclick="showLeadForm()" style="margin:0 auto">🚀 Get Your Free Custom Action Plan</button>
+    </div>
+
+    <!-- Lead Form -->
+    <div class="lead-form" id="leadForm">
+      <h3>Get Your Custom AI Automation Plan</h3>
+      <p class="form-subtitle">We'll analyze your quiz results and create a personalized roadmap to automate your business.</p>
+      <form id="contactForm" onsubmit="submitForm(event)">
+        <div class="form-group">
+          <label for="fname">Full Name *</label>
+          <input type="text" id="fname" name="name" required placeholder="John Smith">
+        </div>
+        <div class="form-group">
+          <label for="femail">Email Address *</label>
+          <input type="email" id="femail" name="email" required placeholder="john@company.com">
+        </div>
+        <div class="form-group">
+          <label for="fphone">Phone Number</label>
+          <input type="tel" id="fphone" name="phone" placeholder="(555) 123-4567">
+        </div>
+        <div class="form-group">
+          <label for="fbusiness">Business Type *</label>
+          <select id="fbusiness" name="business" required>
+            <option value="" disabled selected>Select your industry</option>
+            <option>E-commerce / Retail</option>
+            <option>Real Estate</option>
+            <option>Agency / Consulting</option>
+            <option>Healthcare / Wellness</option>
+            <option>SaaS / Technology</option>
+            <option>Professional Services</option>
+            <option>Education / Coaching</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fchallenge">Biggest Business Challenge</label>
+          <textarea id="fchallenge" name="challenge" placeholder="Tell us about your biggest operational pain point..."></textarea>
+        </div>
+        <input type="hidden" id="fquizScore" name="quiz_score">
+        <input type="hidden" id="fquizAnswers" name="quiz_answers">
+        <button type="submit" class="form-submit">📩 Send My Custom Plan</button>
+      </form>
+    </div>
+
+    <!-- Form Success -->
+    <div class="form-success" id="formSuccess">
+      <div class="check">✅</div>
+      <h3>You're All Set!</h3>
+      <p>We've received your assessment results. Our AI automation specialist will reach out within 24 hours with your personalized action plan and a free demo of the AI Business OS.</p>
+    </div>
+  </div>
 </section>
 
-<!-- Timeline -->
-<section id="timeline" class="section">
-<div class="container">
-<div class="section-header">
-<div class="section-tag">🗓️ Implementation</div>
-<h2>Your Journey to Automated Operations</h2>
-<p>A proven 4-week roadmap from chaos to clarity.</p>
-</div>
-<div class="timeline-track">
-<div class="timeline-line"></div>
-<div class="timeline-item">
-<div class="timeline-dot"></div>
-<div class="timeline-week">Week 1 — Discovery</div>
-<h3>Business Audit & Strategy Session</h3>
-<p>We analyze your current operations, identify automation opportunities, and design your custom AI agent configuration. You'll receive a detailed roadmap and ROI projection.</p>
-</div>
-<div class="timeline-item">
-<div class="timeline-dot"></div>
-<div class="timeline-week">Week 2 — Build</div>
-<h3>AI Agent Configuration & Integration</h3>
-<p>Your AI Business OS is configured and connected to your existing tools — email, CRM, calendar, project management, and financial systems. Custom workflows are built and tested.</p>
-</div>
-<div class="timeline-item">
-<div class="timeline-dot"></div>
-<div class="timeline-week">Week 3 — Launch</div>
-<h3>Deployment & Team Training</h3>
-<p>AI agents go live handling real tasks. Your team gets hands-on training. We monitor performance closely and fine-tune automations in real-time.</p>
-</div>
-<div class="timeline-item">
-<div class="timeline-dot"></div>
-<div class="timeline-week">Week 4+ — Optimize</div>
-<h3>Scale & Continuous Improvement</h3>
-<p>With the foundation in place, we expand automation coverage, add new AI capabilities, and optimize based on real performance data. Your business runs smoother every week.</p>
-</div>
-</div>
-</div>
+<!-- FINAL CTA -->
+<section class="section cta-section" id="cta">
+  <div class="section-inner" style="text-align:center">
+    <h2 class="reveal">Ready to Transform Your Business?</h2>
+    <p class="reveal">Join hundreds of business owners who've freed themselves from operational chaos with AI automation.</p>
+    <div class="reveal">
+      <button class="btn-primary" onclick="scrollToSection('quiz')" style="font-size:18px;padding:16px 40px">🎯 Take the Free Assessment Now</button>
+    </div>
+  </div>
 </section>
 
-<!-- Quiz Section -->
-<section id="quiz" class="section">
-<div class="container">
-<div class="section-header">
-<div class="section-tag">🧠 Free Assessment</div>
-<h2>How Much Is Business Chaos Costing You?</h2>
-<p>Take this 60-second assessment and find out your automation potential score.</p>
-</div>
-<div class="quiz-container" id="quizBox">
-<div class="quiz-progress" id="quizProgress"></div>
-
-<!-- Step 1 -->
-<div class="quiz-step active" data-step="1">
-<h3>How many hours per week do you spend on repetitive tasks?</h3>
-<p>Think: email responses, data entry, scheduling, reporting, invoicing.</p>
-<div class="quiz-options">
-<div class="quiz-option" data-value="1" onclick="selectOption(this)"><span class="check">✓</span>Less than 5 hours</div>
-<div class="quiz-option" data-value="2" onclick="selectOption(this)"><span class="check">✓</span>5–15 hours</div>
-<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>15–30 hours</div>
-<div class="quiz-option" data-value="4" onclick="selectOption(this)"><span class="check">✓</span>30+ hours — it's my entire week</div>
-</div>
-<div class="quiz-nav"><div></div><button class="quiz-btn next" disabled onclick="nextStep()">Next →</button></div>
-</div>
-
-<!-- Step 2 -->
-<div class="quiz-step" data-step="2">
-<h3>How many different software tools does your team use daily?</h3>
-<p>Count: email, CRM, project management, spreadsheets, chat, etc.</p>
-<div class="quiz-options">
-<div class="quiz-option" data-value="1" onclick="selectOption(this)"><span class="check">✓</span>1–3 tools</div>
-<div class="quiz-option" data-value="2" onclick="selectOption(this)"><span class="check">✓</span>4–7 tools</div>
-<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>8–12 tools</div>
-<div class="quiz-option" data-value="4" onclick="selectOption(this)"><span class="check">✓</span>13+ tools — we're drowning</div>
-</div>
-<div class="quiz-nav"><button class="quiz-btn back" onclick="prevStep()">← Back</button><button class="quiz-btn next" disabled onclick="nextStep()">Next →</button></div>
-</div>
-
-<!-- Step 3 -->
-<div class="quiz-step" data-step="3">
-<h3>How often do important tasks or follow-ups fall through the cracks?</h3>
-<p>Missed client emails, late invoices, forgotten callbacks, delayed reports.</p>
-<div class="quiz-options">
-<div class="quiz-option" data-value="1" onclick="selectOption(this)"><span class="check">✓</span>Rarely — we're pretty organized</div>
-<div class="quiz-option" data-value="2" onclick="selectOption(this)"><span class="check">✓</span>Occasionally — a few times a month</div>
-<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>Frequently — weekly at least</div>
-<div class="quiz-option" data-value="4" onclick="selectOption(this)"><span class="check">✓</span>Constantly — it's our biggest problem</div>
-</div>
-<div class="quiz-nav"><button class="quiz-btn back" onclick="prevStep()">← Back</button><button class="quiz-btn next" disabled onclick="nextStep()">Next →</button></div>
-</div>
-
-<!-- Step 4 -->
-<div class="quiz-step" data-step="4">
-<h3>What's your biggest business operations challenge right now?</h3>
-<p>Pick the one that resonates most.</p>
-<div class="quiz-options">
-<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>Too much time on admin — no time for growth</div>
-<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>Leads and revenue slipping through cracks</div>
-<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>Can't scale without hiring more people</div>
-<div class="quiz-option" data-value="4" onclick="selectOption(this)"><span class="check">✓</span>All of the above — it's overwhelming</div>
-</div>
-<div class="quiz-nav"><button class="quiz-btn back" onclick="prevStep()">← Back</button><button class="quiz-btn next" disabled onclick="nextStep()">Next →</button></div>
-</div>
-
-<!-- Step 5 -->
-<div class="quiz-step" data-step="5">
-<h3>How many people are on your team?</h3>
-<p>This helps us estimate your automation ROI.</p>
-<div class="quiz-options">
-<div class="quiz-option" data-value="1" onclick="selectOption(this)"><span class="check">✓</span>Just me (solopreneur)</div>
-<div class="quiz-option" data-value="2" onclick="selectOption(this)"><span class="check">✓</span>2–5 people</div>
-<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>6–20 people</div>
-<div class="quiz-option" data-value="4" onclick="selectOption(this)"><span class="check">✓</span>20+ people</div>
-</div>
-<div class="quiz-nav"><button class="quiz-btn back" onclick="prevStep()">← Back</button><button class="quiz-btn next" disabled onclick="showResults()">See My Results →</button></div>
-</div>
-
-<!-- Results Step -->
-<div class="quiz-step" data-step="results" id="quizResults"></div>
-</div>
-</div>
-</section>
-
-<!-- Contact / Lead Form -->
-<section id="contact" class="section">
-<div class="container">
-<div class="contact-grid">
-<div class="contact-info slide-left">
-<div class="section-tag">🤝 Let's Talk</div>
-<h2>Ready to Transform Your Business Operations?</h2>
-<p>Book a free strategy session and see exactly how an AI Business OS can automate your operations, save you 40+ hours per week, and unlock scalable growth.</p>
-<ul class="contact-benefits">
-<li><span class="icon">🎯</span>Custom automation roadmap for your business</li>
-<li><span class="icon">📊</span>ROI projection with real cost savings analysis</li>
-<li><span class="icon">🚀</span>Live demo of AI agents handling your workflows</li>
-<li><span class="icon">🔒</span>No commitment — just clarity on what's possible</li>
-</ul>
-</div>
-<div class="contact-form slide-right" id="contactForm">
-<h3>Book Your Free Strategy Session</h3>
-<form id="leadForm" onsubmit="submitForm(event)">
-<div class="form-group">
-<label for="name">Full Name *</label>
-<input type="text" id="name" name="name" placeholder="John Smith" required>
-</div>
-<div class="form-group">
-<label for="email">Business Email *</label>
-<input type="email" id="email" name="email" placeholder="john@company.com" required>
-</div>
-<div class="form-group">
-<label for="phone">Phone Number</label>
-<input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
-</div>
-<div class="form-group">
-<label for="company">Company Name *</label>
-<input type="text" id="company" name="company" placeholder="Acme Inc." required>
-</div>
-<div class="form-group">
-<label for="teamsize">Team Size</label>
-<select id="teamsize" name="teamsize">
-<option value="">Select team size...</option>
-<option value="solo">Just me</option>
-<option value="2-5">2–5 people</option>
-<option value="6-20">6–20 people</option>
-<option value="20-50">20–50 people</option>
-<option value="50+">50+ people</option>
-</select>
-</div>
-<div class="form-group">
-<label for="challenge">Biggest Challenge</label>
-<textarea id="challenge" name="challenge" placeholder="Tell us about your biggest operational challenge..."></textarea>
-</div>
-<button type="submit" class="submit-btn" id="submitBtn">🚀 Book My Free Strategy Session</button>
-</form>
-<div class="form-success" id="formSuccess">
-<div class="success-icon">🎉</div>
-<h3>You're All Set!</h3>
-<p>Thank you for your interest! We've received your information and will reach out within 24 hours to schedule your free strategy session. Get ready to see what AI can do for your business.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- Footer -->
-<footer>
-<div class="footer-content">
-<div class="footer-brand">AI Business OS</div>
-<div class="footer-links">
-<a href="#pain-points">The Problem</a>
-<a href="#solutions">Solutions</a>
-<a href="#results">Results</a>
-<a href="#quiz">Assessment</a>
-<a href="#contact">Contact</a>
-</div>
-<div class="footer-copy">© 2026 AI Business OS. All rights reserved. Intelligent automation for modern businesses.</div>
-</div>
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© 2026 AI Business OS — Intelligent Automation for Modern Businesses</p>
 </footer>
 
-<!-- Three.js for 3D particle background -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<!-- GSAP for scroll animations -->
+<!-- THREE.JS (lightweight build from CDN) -->
+<script>
+/* ===== LIGHTWEIGHT 3D PARTICLE SYSTEM (No Three.js dependency — pure WebGL) ===== */
+(function(){
+  const canvas = document.getElementById('scene-canvas');
+  const gl = canvas.getContext('webgl', {alpha:true, antialias:false, powerPreference:'low-power'});
+  if(!gl){console.log('WebGL not available');return;}
+
+  // Responsive canvas size
+  let W, H, dpr;
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio, 1.5);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Shaders
+  const vsrc = `
+    attribute vec3 aPos;
+    attribute float aSize;
+    attribute vec3 aColor;
+    uniform float uTime;
+    uniform float uScroll;
+    uniform vec2 uRes;
+    varying vec3 vColor;
+    varying float vAlpha;
+    void main(){
+      vec3 p = aPos;
+      float t = uTime * 0.3;
+      p.x += sin(t + aPos.z * 2.0) * 0.08;
+      p.y += cos(t + aPos.x * 1.5) * 0.06;
+      p.z += uScroll * 0.5;
+      p.z = mod(p.z + 3.0, 6.0) - 3.0;
+      float depth = 1.0 / (1.0 + max(0.0, p.z + 2.0));
+      gl_Position = vec4(p.x * depth * (uRes.y/uRes.x), p.y * depth, 0.0, 1.0);
+      gl_PointSize = aSize * depth * uRes.y * 0.003;
+      vColor = aColor;
+      vAlpha = depth * 0.7;
+    }
+  `;
+  const fsrc = `
+    precision mediump float;
+    varying vec3 vColor;
+    varying float vAlpha;
+    void main(){
+      vec2 c = gl_PointCoord - 0.5;
+      float d = dot(c,c);
+      if(d > 0.25) discard;
+      float a = (1.0 - d * 4.0) * vAlpha;
+      gl_FragColor = vec4(vColor, a);
+    }
+  `;
+
+  function createShader(type, src){
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, createShader(gl.VERTEX_SHADER, vsrc));
+  gl.attachShader(prog, createShader(gl.FRAGMENT_SHADER, fsrc));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  // Determine particle count based on device
+  const isMobile = window.innerWidth < 768;
+  const COUNT = isMobile ? 300 : 800;
+
+  // Generate particles
+  const pos = new Float32Array(COUNT * 3);
+  const sizes = new Float32Array(COUNT);
+  const colors = new Float32Array(COUNT * 3);
+  for(let i = 0; i < COUNT; i++){
+    pos[i*3]   = (Math.random()-0.5) * 4;
+    pos[i*3+1] = (Math.random()-0.5) * 4;
+    pos[i*3+2] = (Math.random()-0.5) * 6;
+    sizes[i] = Math.random() * 3 + 1;
+    // Color palette: cyan, blue, white
+    const t = Math.random();
+    if(t < 0.4){ colors[i*3]=0; colors[i*3+1]=0.78; colors[i*3+2]=1; }
+    else if(t < 0.7){ colors[i*3]=0; colors[i*3+1]=0.4; colors[i*3+2]=1; }
+    else{ colors[i*3]=0.7; colors[i*3+1]=0.75; colors[i*3+2]=0.9; }
+  }
+
+  function makeBuf(data, attr, size){
+    const b = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, b);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, attr);
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0);
+  }
+  makeBuf(pos, 'aPos', 3);
+  makeBuf(sizes, 'aSize', 1);
+  makeBuf(colors, 'aColor', 3);
+
+  const uTime = gl.getUniformLocation(prog, 'uTime');
+  const uScroll = gl.getUniformLocation(prog, 'uScroll');
+  const uRes = gl.getUniformLocation(prog, 'uRes');
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+
+  let scrollY = 0;
+  let targetScroll = 0;
+  window.addEventListener('scroll', function(){ targetScroll = window.scrollY / (document.body.scrollHeight - window.innerHeight); }, {passive:true});
+
+  let raf;
+  function render(time){
+    raf = requestAnimationFrame(render);
+    scrollY += (targetScroll - scrollY) * 0.05;
+    gl.clearColor(0,0,0,0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform1f(uTime, time * 0.001);
+    gl.uniform1f(uScroll, scrollY);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.drawArrays(gl.POINTS, 0, COUNT);
+  }
+  requestAnimationFrame(render);
+
+  // Remove loader
+  window.addEventListener('load', function(){
+    setTimeout(function(){ document.getElementById('loader').classList.add('done'); }, 300);
+  });
+})();
+</script>
+
+<!-- GSAP from CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
 <script>
-// ========== 3D PARTICLE BACKGROUND ==========
-(function initThreeJS() {
-  var canvas = document.getElementById('bg-canvas');
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-  renderer.setSize(window.innerWidth, window.innerHeight);
-
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.z = 50;
-
-  // Detect mobile for performance
-  var isMobile = window.innerWidth < 768;
-  var particleCount = isMobile ? 300 : 800;
-
-  var geometry = new THREE.BufferGeometry();
-  var positions = new Float32Array(particleCount * 3);
-  var colors = new Float32Array(particleCount * 3);
-  var sizes = new Float32Array(particleCount);
-
-  var palette = [
-    new THREE.Color(0x6366f1),
-    new THREE.Color(0x818cf8),
-    new THREE.Color(0x22d3ee),
-    new THREE.Color(0x10b981)
-  ];
-
-  for (var i = 0; i < particleCount; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 120;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 120;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 80;
-    var col = palette[Math.floor(Math.random() * palette.length)];
-    colors[i * 3] = col.r;
-    colors[i * 3 + 1] = col.g;
-    colors[i * 3 + 2] = col.b;
-    sizes[i] = Math.random() * 2 + 0.5;
+/* ===== NAVIGATION ===== */
+function scrollToSection(id){
+  const el = document.getElementById(id);
+  if(el){
+    el.scrollIntoView({behavior:'smooth',block:'start'});
+    // Close mobile menu
+    document.getElementById('navLinks').classList.remove('open');
   }
+}
 
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-  geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+document.getElementById('mobileMenuBtn').addEventListener('click', function(){
+  document.getElementById('navLinks').classList.toggle('open');
+});
 
-  var material = new THREE.PointsMaterial({
-    size: 1.5,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.6,
-    sizeAttenuation: true
-  });
+// Hide nav on scroll down, show on scroll up
+let lastScroll = 0;
+window.addEventListener('scroll', function(){
+  const curr = window.scrollY;
+  const nav = document.getElementById('mainNav');
+  if(curr > lastScroll && curr > 100) nav.classList.add('hidden');
+  else nav.classList.remove('hidden');
+  lastScroll = curr;
+}, {passive:true});
 
-  var particles = new THREE.Points(geometry, material);
-  scene.add(particles);
-
-  // Connection lines (reduced on mobile)
-  var lineCount = isMobile ? 50 : 150;
-  var lineGeo = new THREE.BufferGeometry();
-  var linePos = new Float32Array(lineCount * 6);
-  for (var j = 0; j < lineCount; j++) {
-    var idx1 = Math.floor(Math.random() * particleCount);
-    var idx2 = Math.floor(Math.random() * particleCount);
-    linePos[j * 6] = positions[idx1 * 3];
-    linePos[j * 6 + 1] = positions[idx1 * 3 + 1];
-    linePos[j * 6 + 2] = positions[idx1 * 3 + 2];
-    linePos[j * 6 + 3] = positions[idx2 * 3];
-    linePos[j * 6 + 4] = positions[idx2 * 3 + 1];
-    linePos[j * 6 + 5] = positions[idx2 * 3 + 2];
-  }
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
-  var lineMat = new THREE.LineBasicMaterial({ color: 0x6366f1, transparent: true, opacity: 0.08 });
-  var lines = new THREE.LineSegments(lineGeo, lineMat);
-  scene.add(lines);
-
-  var scrollY = 0;
-  window.addEventListener('scroll', function() { scrollY = window.pageYOffset; }, { passive: true });
-
-  function animate() {
-    requestAnimationFrame(animate);
-    var time = Date.now() * 0.0003;
-    particles.rotation.y = time * 0.15;
-    particles.rotation.x = Math.sin(time * 0.5) * 0.1;
-    camera.position.y = -scrollY * 0.02;
-    camera.position.x = Math.sin(time) * 2;
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  window.addEventListener('resize', function() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-})();
-
-// ========== GSAP SCROLL ANIMATIONS ==========
+/* ===== SCROLL REVEAL ANIMATIONS ===== */
 gsap.registerPlugin(ScrollTrigger);
 
-// Hero entrance
-gsap.to('.hero-content h1', { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power3.out' });
-gsap.to('.hero-content p', { opacity: 1, y: 0, duration: 1, delay: 0.6, ease: 'power3.out' });
-gsap.to('.hero-buttons', { opacity: 1, y: 0, duration: 1, delay: 0.9, ease: 'power3.out' });
-
-// Nav scroll effect
-ScrollTrigger.create({
-  start: 'top -80',
-  onUpdate: function(self) {
-    document.getElementById('main-nav').classList.toggle('scrolled', self.progress > 0);
-  }
+// Reveal animations
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(function(el){
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 85%',
+    onEnter: function(){ el.classList.add('visible'); },
+    once: true
+  });
 });
 
 // Stats counter animation
-document.querySelectorAll('.stat-item').forEach(function(item, i) {
-  gsap.to(item, {
-    opacity: 1, y: 0, duration: 0.8, delay: i * 0.15,
-    scrollTrigger: { trigger: '#stats', start: 'top 80%' }
-  });
-});
-
-// Animate stat numbers
-function animateCounters() {
-  document.querySelectorAll('.stat-number').forEach(function(el) {
-    var target = parseInt(el.getAttribute('data-count'));
-    var suffix = el.textContent.replace(/[0-9]/g, '');
-    var obj = { val: 0 };
-    gsap.to(obj, {
-      val: target, duration: 2, ease: 'power2.out',
-      onUpdate: function() {
-        el.textContent = Math.round(obj.val) + suffix;
-      }
-    });
-  });
-}
-ScrollTrigger.create({ trigger: '#stats', start: 'top 80%', onEnter: animateCounters, once: true });
-
-// Pain cards
-document.querySelectorAll('.pain-card').forEach(function(card, i) {
-  gsap.to(card, {
-    opacity: 1, y: 0, duration: 0.7, delay: i * 0.1,
-    scrollTrigger: { trigger: card, start: 'top 85%' }
-  });
-});
-
-// Chaos items animation
-document.querySelectorAll('.chaos-item').forEach(function(item, i) {
-  gsap.to(item, {
-    opacity: 1, duration: 0.5, delay: i * 0.15,
-    scrollTrigger: { trigger: '#chaos-viz', start: 'top 70%' }
-  });
-  // Float animation
-  gsap.to(item, {
-    x: 'random(-20,20)', y: 'random(-15,15)',
-    duration: 'random(2,4)', repeat: -1, yoyo: true, ease: 'sine.inOut',
-    delay: i * 0.2
-  });
-});
-
-// Slide animations
-document.querySelectorAll('.slide-left, .slide-right').forEach(function(el) {
+document.querySelectorAll('.stat-item').forEach(function(item){
   ScrollTrigger.create({
-    trigger: el, start: 'top 80%',
-    onEnter: function() { el.classList.add('visible'); }
+    trigger: item,
+    start: 'top 85%',
+    onEnter: function(){
+      item.classList.add('visible');
+      const target = parseInt(item.dataset.target);
+      const suffix = item.dataset.suffix;
+      const numEl = item.querySelector('.stat-number');
+      let current = 0;
+      const step = target / 40;
+      const timer = setInterval(function(){
+        current += step;
+        if(current >= target){ current = target; clearInterval(timer); }
+        numEl.textContent = Math.round(current) + suffix;
+      }, 30);
+    },
+    once: true
   });
 });
 
-// Solution cards
-document.querySelectorAll('.solution-card').forEach(function(card, i) {
-  gsap.to(card, {
-    opacity: 1, y: 0, duration: 0.7, delay: i * 0.1,
-    scrollTrigger: { trigger: card, start: 'top 85%' }
+// Result metric counters
+document.querySelectorAll('.result-metric').forEach(function(el){
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 85%',
+    onEnter: function(){
+      const target = parseInt(el.dataset.count);
+      const text = el.textContent;
+      const suffix = text.replace('0','');
+      let current = 0;
+      const step = target / 30;
+      const timer = setInterval(function(){
+        current += step;
+        if(current >= target){ current = target; clearInterval(timer); }
+        el.textContent = Math.round(current) + suffix;
+      }, 40);
+    },
+    once: true
   });
 });
 
-// Result cards
-document.querySelectorAll('.result-card').forEach(function(card, i) {
-  gsap.to(card, {
-    opacity: 1, scale: 1, duration: 0.7, delay: i * 0.15,
-    scrollTrigger: { trigger: card, start: 'top 85%' }
+// Parallax on feature cards
+document.querySelectorAll('.feature-card').forEach(function(card, i){
+  gsap.from(card, {
+    scrollTrigger: { trigger: card, start: 'top 90%', once: true },
+    opacity: 0, y: 40, duration: 0.6, delay: i * 0.1, ease: 'power2.out'
   });
 });
 
-// Result metrics animation
-function animateResults() {
-  document.querySelectorAll('.result-metric').forEach(function(el) {
-    var target = el.getAttribute('data-result');
-    var num = parseInt(target);
-    var suffix = target.replace(/[0-9]/g, '');
-    var obj = { val: 0 };
-    gsap.to(obj, {
-      val: num, duration: 2, ease: 'power2.out',
-      onUpdate: function() {
-        el.textContent = Math.round(obj.val) + suffix;
-      }
-    });
-  });
-}
-ScrollTrigger.create({ trigger: '#results', start: 'top 70%', onEnter: animateResults, once: true });
-
-// Timeline items
-document.querySelectorAll('.timeline-item').forEach(function(item, i) {
-  gsap.to(item, {
-    opacity: 1, x: 0, duration: 0.8, delay: i * 0.2,
-    scrollTrigger: { trigger: item, start: 'top 85%' }
+// Testimonial cards stagger
+document.querySelectorAll('.testimonial-card').forEach(function(card, i){
+  gsap.from(card, {
+    scrollTrigger: { trigger: card, start: 'top 90%', once: true },
+    opacity: 0, x: 50, duration: 0.6, delay: i * 0.15, ease: 'power2.out'
   });
 });
 
-// ========== QUIZ LOGIC ==========
-var quizState = { step: 1, answers: {}, total: 5 };
-
-// Build progress dots
-(function() {
-  var prog = document.getElementById('quizProgress');
-  for (var d = 0; d < quizState.total; d++) {
-    var dot = document.createElement('div');
-    dot.className = 'quiz-dot' + (d === 0 ? ' active' : '');
-    prog.appendChild(dot);
+/* ===== QUIZ SYSTEM ===== */
+var quizData = [
+  {
+    question: "How many different tools and platforms do you use to run your business?",
+    options: ["1-3 tools (pretty streamlined)", "4-7 tools (manageable but messy)", "8-12 tools (it's getting chaotic)", "12+ tools (total chaos)"],
+    scores: [10, 20, 35, 50]
+  },
+  {
+    question: "How many hours per week do you spend on repetitive administrative tasks?",
+    options: ["Less than 5 hours", "5-15 hours", "15-30 hours", "30+ hours (most of my week)"],
+    scores: [5, 15, 30, 50]
+  },
+  {
+    question: "How quickly do you typically respond to new leads or inquiries?",
+    options: ["Within minutes (automated)", "Within 1-2 hours", "Within 24 hours", "Sometimes days or they fall through cracks"],
+    scores: [5, 15, 30, 50]
+  },
+  {
+    question: "How would you describe your current business operations?",
+    options: ["Mostly systematized and scalable", "Some systems but lots of manual work", "Mostly manual, flying by the seat of my pants", "Complete firefighting mode every day"],
+    scores: [5, 15, 35, 50]
+  },
+  {
+    question: "What's your biggest bottleneck for growth right now?",
+    options: ["Finding new customers", "Managing existing operations", "Lack of time and bandwidth", "All of the above"],
+    scores: [15, 25, 35, 50]
   }
-})();
+];
 
-function selectOption(el) {
-  var siblings = el.parentElement.querySelectorAll('.quiz-option');
-  siblings.forEach(function(s) { s.classList.remove('selected'); });
-  el.classList.add('selected');
-  quizState.answers[quizState.step] = parseInt(el.getAttribute('data-value'));
-  // Enable next button
-  var nextBtn = el.closest('.quiz-step').querySelector('.quiz-btn.next');
-  if (nextBtn) nextBtn.disabled = false;
-}
+var quizState = { current: 0, answers: [], selected: -1 };
 
-function nextStep() {
-  if (!quizState.answers[quizState.step]) return;
-  quizState.step++;
-  updateQuizUI();
-}
-
-function prevStep() {
-  quizState.step--;
-  updateQuizUI();
-}
-
-function updateQuizUI() {
-  document.querySelectorAll('.quiz-step').forEach(function(s) { s.classList.remove('active'); });
-  var target = document.querySelector('.quiz-step[data-step="' + quizState.step + '"]');
-  if (target) target.classList.add('active');
-
-  // Update progress dots
-  var dots = document.querySelectorAll('.quiz-dot');
-  dots.forEach(function(dot, idx) {
-    dot.className = 'quiz-dot';
-    if (idx < quizState.step - 1) dot.classList.add('done');
-    else if (idx === quizState.step - 1) dot.classList.add('active');
-  });
-
-  // Re-enable next button if already answered
-  if (target) {
-    var btn = target.querySelector('.quiz-btn.next');
-    if (btn && quizState.answers[quizState.step]) btn.disabled = false;
+function renderQuiz(){
+  var q = quizData[quizState.current];
+  // Progress dots
+  var dotsHtml = '';
+  for(var i = 0; i < quizData.length; i++){
+    var cls = 'quiz-dot';
+    if(i < quizState.current) cls += ' done';
+    if(i === quizState.current) cls += ' active';
+    dotsHtml += '<div class="'+cls+'"></div>';
   }
+  document.getElementById('quizProgress').innerHTML = dotsHtml;
+
+  // Question
+  document.getElementById('quizQuestion').textContent = 'Q' + (quizState.current+1) + '. ' + q.question;
+
+  // Options
+  var optsHtml = '';
+  var letters = ['A','B','C','D'];
+  for(var j = 0; j < q.options.length; j++){
+    var sel = quizState.selected === j ? ' selected' : '';
+    optsHtml += '<div class="quiz-option'+sel+'" onclick="selectOption('+j+')">';
+    optsHtml += '<div class="quiz-option-letter">'+letters[j]+'</div>';
+    optsHtml += '<div>'+q.options[j]+'</div></div>';
+  }
+  document.getElementById('quizOptions').innerHTML = optsHtml;
+
+  // Navigation
+  document.getElementById('quizBack').style.display = quizState.current > 0 ? 'inline-block' : 'none';
+  document.getElementById('quizNext').disabled = quizState.selected === -1;
+  document.getElementById('quizNext').textContent = quizState.current === quizData.length - 1 ? 'See My Score →' : 'Next →';
 }
 
-function showResults() {
-  if (!quizState.answers[quizState.step]) return;
-  var total = 0;
-  for (var key in quizState.answers) total += quizState.answers[key];
-  var maxScore = quizState.total * 4;
-  var pct = Math.round((total / maxScore) * 100);
+function selectOption(idx){
+  quizState.selected = idx;
+  renderQuiz();
+}
 
-  var level, color, savings, msg;
-  if (pct >= 70) {
-    level = 'Critical'; color = 'high';
-    savings = '$8,000–$15,000/month';
-    msg = 'Your business is hemorrhaging time and money on manual operations. AI automation could transform your efficiency overnight. You are an ideal candidate for the AI Business OS — the ROI would be immediate and massive.';
-  } else if (pct >= 45) {
-    level = 'Significant'; color = 'medium';
-    savings = '$4,000–$8,000/month';
-    msg = 'You have significant automation opportunities that are costing you thousands monthly. An AI Business OS would streamline your operations and free up substantial time for strategic growth.';
+function quizNextStep(){
+  if(quizState.selected === -1) return;
+  quizState.answers[quizState.current] = quizState.selected;
+
+  if(quizState.current < quizData.length - 1){
+    quizState.current++;
+    quizState.selected = quizState.answers[quizState.current] !== undefined ? quizState.answers[quizState.current] : -1;
+    renderQuiz();
   } else {
-    level = 'Moderate'; color = 'low';
-    savings = '$2,000–$4,000/month';
-    msg = 'You have a good foundation, but there are still meaningful gains to unlock with AI automation. Even moderate improvements could save you hours each week and improve client experience.';
+    showResults();
   }
-
-  var resultsEl = document.getElementById('quizResults');
-  resultsEl.innerHTML =
-    '<div class="quiz-result">' +
-    '<p style="font-size:0.9rem;color:var(--text-dim)">YOUR AUTOMATION POTENTIAL SCORE</p>' +
-    '<div class="quiz-score ' + color + '">' + pct + '%</div>' +
-    '<h3>Automation Need: ' + level + '</h3>' +
-    '<p>' + msg + '</p>' +
-    '<div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:16px;padding:20px;margin-bottom:28px">' +
-    '<p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:4px">ESTIMATED MONTHLY SAVINGS</p>' +
-    '<p style="font-size:1.8rem;font-weight:800;font-family:Space Grotesk,sans-serif;background:linear-gradient(135deg,var(--success),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">' + savings + '</p>' +
-    '</div>' +
-    '<button class="btn-primary" onclick="document.getElementById(\'contact\').scrollIntoView({behavior:\'smooth\'})" style="width:100%;justify-content:center">Claim Your Free Strategy Session →</button>' +
-    '</div>';
-
-  // Show results step
-  document.querySelectorAll('.quiz-step').forEach(function(s) { s.classList.remove('active'); });
-  resultsEl.classList.add('active');
-
-  // Update progress
-  var dots = document.querySelectorAll('.quiz-dot');
-  dots.forEach(function(dot) { dot.className = 'quiz-dot done'; });
 }
 
-// ========== CONTACT FORM ==========
-function submitForm(e) {
+function quizPrev(){
+  if(quizState.current > 0){
+    quizState.current--;
+    quizState.selected = quizState.answers[quizState.current] !== undefined ? quizState.answers[quizState.current] : -1;
+    renderQuiz();
+  }
+}
+
+function showResults(){
+  var total = 0;
+  for(var i = 0; i < quizState.answers.length; i++){
+    total += quizData[i].scores[quizState.answers[i]];
+  }
+  var score = Math.min(Math.round(total / 2.5), 100);
+
+  document.getElementById('quizBody').style.display = 'none';
+  document.getElementById('quizResults').style.display = 'block';
+
+  // Animated score counter
+  var scoreEl = document.getElementById('scoreDisplay');
+  var current = 0;
+  var step = score / 40;
+  var timer = setInterval(function(){
+    current += step;
+    if(current >= score){ current = score; clearInterval(timer); }
+    scoreEl.textContent = Math.round(current);
+  }, 30);
+
+  // Recommendation
+  var title, text;
+  if(score >= 80){
+    title = '🚨 Critical: Your Business Needs AI Automation Immediately';
+    text = 'Your score indicates severe operational inefficiency. You\'re likely losing thousands in revenue every month due to manual processes and missed opportunities. The good news? You have the MOST to gain from AI automation. A personalized consultation will show you exactly how to reclaim 40+ hours per week.';
+  } else if(score >= 50){
+    title = '⚠️ High Potential: Major Automation Opportunities Exist';
+    text = 'You\'re doing some things right, but there are significant gaps where AI automation could transform your operations. You\'re likely leaving 2-3x revenue growth on the table. Let us show you exactly where the biggest wins are hiding.';
+  } else {
+    title = '✅ Good Foundation: Smart Optimizations Available';
+    text = 'You\'ve built decent systems, but AI can take them to the next level. Even well-run businesses typically find 20-30% efficiency gains with intelligent automation. Let\'s explore the specific areas where AI can amplify your results.';
+  }
+  document.getElementById('recTitle').textContent = title;
+  document.getElementById('recText').textContent = text;
+  document.getElementById('fquizScore').value = score;
+}
+
+function showLeadForm(){
+  document.getElementById('quizResults').style.display = 'none';
+  document.getElementById('leadForm').style.display = 'block';
+  document.getElementById('fquizAnswers').value = JSON.stringify(quizState.answers);
+}
+
+function submitForm(e){
   e.preventDefault();
-  var btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Submitting...';
+  var form = document.getElementById('contactForm');
+  var data = new FormData(form);
+  var obj = {};
+  data.forEach(function(v,k){ obj[k] = v; });
 
-  // Collect form data
-  var formData = {
-    name: document.getElementById('name').value,
-    email: document.getElementById('email').value,
-    phone: document.getElementById('phone').value,
-    company: document.getElementById('company').value,
-    teamsize: document.getElementById('teamsize').value,
-    challenge: document.getElementById('challenge').value,
-    quizScore: quizState.answers,
-    timestamp: new Date().toISOString()
-  };
-
-  // Store in localStorage as a simple lead capture
+  // Store lead data in localStorage as fallback
   var leads = JSON.parse(localStorage.getItem('ai_bos_leads') || '[]');
-  leads.push(formData);
+  obj.timestamp = new Date().toISOString();
+  leads.push(obj);
   localStorage.setItem('ai_bos_leads', JSON.stringify(leads));
 
-  // Simulate submission delay
-  setTimeout(function() {
-    document.getElementById('leadForm').style.display = 'none';
-    document.getElementById('formSuccess').style.display = 'block';
-    // Scroll to show success
-    document.getElementById('formSuccess').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 1200);
+  // Show success
+  document.getElementById('leadForm').style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+
+  // Log for demo purposes
+  console.log('Lead captured:', obj);
 }
 
-// ========== MOBILE NAV ==========
-document.getElementById('mobileToggle').addEventListener('click', function() {
-  document.getElementById('navLinks').classList.toggle('open');
-  var spans = this.querySelectorAll('span');
-  this.classList.toggle('active');
-});
-
-// Close mobile nav on link click
-document.querySelectorAll('.nav-links a').forEach(function(link) {
-  link.addEventListener('click', function() {
-    document.getElementById('navLinks').classList.remove('open');
-  });
-});
-
-// ========== SMOOTH SCROLL FOR ALL ANCHOR LINKS ==========
-document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-  anchor.addEventListener('click', function(e) {
-    e.preventDefault();
-    var target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
-  });
-});
-
-console.log('AI Business OS website loaded successfully');
+// Initialize quiz
+renderQuiz();
 </script>
+
 </body>
 </html>
