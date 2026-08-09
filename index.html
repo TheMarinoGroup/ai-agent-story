@@ -3,736 +3,777 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agent Transformation — The Future of Business Automation</title>
-<meta name="description" content="Discover how AI agents like Hermes transform businesses from manual chaos to automated excellence. An immersive 3D experience.">
+<title>AI Agents — Transform Your Business | Hermes by Nous Research</title>
+<meta name="description" content="Discover how AI agents like Hermes revolutionize business operations. An immersive 3D experience showcasing the future of intelligent automation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
---bg:#050510;--text:#e8e8f0;--accent:#6c63ff;--accent2:#00d4ff;--accent3:#ff6b6b;
---gold:#ffd700;--green:#00ff88;--surface:rgba(255,255,255,0.03);
+--bg:#050510;--fg:#e8e8f0;--accent:#6c5ce7;--accent2:#00cec9;--accent3:#fd79a8;
+--glow:rgba(108,92,231,0.4);--glass:rgba(255,255,255,0.04);
 }
 html{scroll-behavior:auto;overflow-x:hidden}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--fg);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 #webgl-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-#loading-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease}
-#loading-screen.hidden{opacity:0;pointer-events:none}
-.loader-ring{width:80px;height:80px;border:3px solid rgba(108,99,255,.2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+.loading-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s,visibility .8s}
+.loading-screen.hidden{opacity:0;visibility:hidden}
+.loader-ring{width:60px;height:60px;border:3px solid rgba(108,92,231,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loader-text{margin-top:24px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.5)}
-.loader-pct{font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:12px}
+.loader-text{margin-top:24px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:3px;text-transform:uppercase;color:rgba(232,232,240,0.5)}
+.loader-progress{width:200px;height:2px;background:rgba(255,255,255,0.1);border-radius:1px;margin-top:16px;overflow:hidden}
+.loader-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .3s}
 
-/* Scroll sections */
-.scroll-section{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;z-index:1;padding:60px 24px}
-.content-wrapper{max-width:1200px;width:100%;margin:0 auto}
+/* Sections */
+section{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px}
+.content-wrapper{max-width:1200px;width:100%;margin:0 auto;position:relative}
 
 /* Navigation */
-#nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,16,.6);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.04);transform:translateY(-100%);transition:transform .4s ease}
-#nav.visible{transform:translateY(0)}
-.nav-logo{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav-links{display:flex;gap:32px}
-.nav-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:13px;letter-spacing:1px;text-transform:uppercase;transition:color .3s}
-.nav-links a:hover{color:var(--accent2)}
-.nav-progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--green));transition:width .1s linear}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(5,5,16,0.6);border-bottom:1px solid rgba(255,255,255,0.05);transition:transform .3s}
+nav.hidden{transform:translateY(-100%)}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{color:rgba(232,232,240,0.6);text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.5px;transition:color .3s}
+.nav-links a:hover{color:var(--fg)}
+.nav-cta{padding:10px 24px;background:linear-gradient(135deg,var(--accent),#8b5cf6);border:none;border-radius:8px;color:white;font-weight:600;font-size:14px;cursor:pointer;transition:transform .2s,box-shadow .2s;text-decoration:none}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--glow)}
 
 /* Hero */
-#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(108,99,255,.12) 0%,transparent 70%)}
-.hero-particles{position:absolute;inset:0;overflow:hidden}
-.hero-particle{position:absolute;border-radius:50%;background:var(--accent);opacity:.3;animation:float-particle linear infinite}
-@keyframes float-particle{0%{transform:translateY(100vh) scale(0)}50%{opacity:.6}100%{transform:translateY(-10vh) scale(1);opacity:0}}
-.hero-content{position:relative;z-index:2}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:100px;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.3);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:32px;opacity:0;transform:translateY(30px)}
-.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
-.hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(40px,8vw,96px);font-weight:800;line-height:1.05;margin-bottom:24px;opacity:0;transform:translateY(40px)}
-.hero-title .gradient{background:linear-gradient(135deg,#fff 0%,var(--accent) 40%,var(--accent2) 70%,var(--green) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-subtitle{font-size:clamp(16px,2.2vw,22px);color:rgba(255,255,255,.55);max-width:650px;margin:0 auto 48px;line-height:1.7;opacity:0;transform:translateY(30px)}
-.hero-cta{display:inline-flex;align-items:center;gap:12px;padding:18px 40px;background:linear-gradient(135deg,var(--accent),#8b5cf6);border:none;color:#fff;font-size:16px;font-weight:600;border-radius:16px;cursor:pointer;transition:all .3s;text-decoration:none;opacity:0;transform:translateY(20px);box-shadow:0 0 40px rgba(108,99,255,.3)}
-.hero-cta:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 60px rgba(108,99,255,.5)}
-.hero-scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0}
-.hero-scroll-hint span{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.3)}
-.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scroll-anim 2s ease-in-out infinite}
-@keyframes scroll-anim{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+#hero{min-height:100vh;padding-top:120px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:100px;background:var(--glass);border:1px solid rgba(108,92,231,0.3);font-size:13px;color:var(--accent2);letter-spacing:1px;text-transform:uppercase;font-weight:500;margin-bottom:32px}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1.hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(40px,8vw,96px);font-weight:800;line-height:1.05;margin-bottom:24px;letter-spacing:-2px}
+h1.hero-title .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% 200%;animation:gradientShift 4s ease infinite}
+@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-sub{font-size:clamp(16px,2vw,22px);color:rgba(232,232,240,0.6);max-width:680px;margin:0 auto 48px;line-height:1.6;font-weight:300}
+.hero-cta-group{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-primary{padding:16px 40px;background:linear-gradient(135deg,var(--accent),#8b5cf6);border:none;border-radius:12px;color:white;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px var(--glow)}
+.btn-secondary{padding:16px 40px;background:var(--glass);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:var(--fg);font-size:16px;font-weight:500;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;backdrop-filter:blur(10px)}
+.btn-secondary:hover{border-color:rgba(108,92,231,0.5);background:rgba(108,92,231,0.1)}
+.scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-indicator span{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(232,232,240,0.3)}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:1;transform:scaleY(1)}50%{opacity:.3;transform:scaleY(.5)}}
 
-/* Chapter headers */
-.chapter-label{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;opacity:0}
-.chapter-num{font-family:'Space Grotesk',sans-serif;font-size:120px;font-weight:900;position:absolute;top:-30px;left:-20px;opacity:.04;line-height:1;pointer-events:none}
+/* Stats bar */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:80px;border-radius:16px;overflow:hidden}
+.stat-item{padding:32px 24px;background:var(--glass);text-align:center;backdrop-filter:blur(10px)}
+.stat-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:700;background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block}
+.stat-label{font-size:13px;color:rgba(232,232,240,0.5);margin-top:8px;letter-spacing:1px;text-transform:uppercase}
 
-/* Story sections */
-.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
-.story-text h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,52px);font-weight:700;line-height:1.15;margin-bottom:24px;opacity:0}
-.story-text p{font-size:18px;line-height:1.8;color:rgba(255,255,255,.6);opacity:0}
-.story-visual{position:relative;opacity:0;transform:translateX(60px)}
-.story-visual img{width:100%;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.story-visual::before{content:'';position:absolute;inset:-2px;border-radius:22px;background:linear-gradient(135deg,var(--accent),var(--accent2));z-index:-1;opacity:.5}
-.glow-orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.3;pointer-events:none}
+/* Pain Points */
+#pain{background:radial-gradient(ellipse at 30% 50%,rgba(253,121,168,0.05),transparent 60%)}
+.section-label{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--accent3);font-weight:600;margin-bottom:16px}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:700;line-height:1.15;margin-bottom:24px;letter-spacing:-1px}
+.section-desc{font-size:18px;color:rgba(232,232,240,0.6);max-width:600px;line-height:1.7;font-weight:300}
 
-/* Pain points cards */
-.pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:48px}
-.pain-card{position:relative;padding:36px;border-radius:20px;background:rgba(255,107,107,.03);border:1px solid rgba(255,107,107,.1);overflow:hidden;opacity:0;transform:translateY(40px);transition:all .4s}
-.pain-card:hover{border-color:rgba(255,107,107,.3);transform:translateY(-4px)!important;box-shadow:0 20px 40px rgba(255,107,107,.1)}
-.pain-icon{font-size:36px;margin-bottom:16px}
-.pain-card h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin-bottom:12px;color:var(--accent3)}
-.pain-card p{font-size:14px;line-height:1.7;color:rgba(255,255,255,.5)}
-.pain-card .pain-stat{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:800;color:var(--accent3);margin-top:16px}
+.pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:60px}
+.pain-card{padding:36px;background:var(--glass);border:1px solid rgba(255,255,255,0.06);border-radius:16px;backdrop-filter:blur(10px);transition:all .4s;position:relative;overflow:hidden}
+.pain-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent3),transparent);opacity:0;transition:opacity .4s}
+.pain-card:hover{border-color:rgba(253,121,168,0.2);transform:translateY(-4px)}
+.pain-card:hover::before{opacity:1}
+.pain-icon{width:48px;height:48px;border-radius:12px;background:rgba(253,121,168,0.1);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px}
+.pain-card h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin-bottom:12px}
+.pain-card p{font-size:15px;color:rgba(232,232,240,0.5);line-height:1.6}
 
-/* Transformation section */
-.transform-container{text-align:center;position:relative}
-.transform-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,5vw,64px);font-weight:800;margin-bottom:24px;opacity:0}
-.transform-line{width:2px;height:0;background:linear-gradient(to bottom,var(--accent3),var(--accent),var(--green));margin:40px auto;transition:height 1.5s ease}
-.transform-arrow{font-size:40px;opacity:0;transform:scale(0)}
+/* Transformation */
+#transform{min-height:120vh}
+.transform-visual{position:relative;width:100%;max-width:900px;margin:60px auto 0;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08)}
+.transform-visual img{width:100%;height:100%;object-fit:cover}
+.transform-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,5,16,0.7),rgba(5,5,16,0.3));display:flex;align-items:center;justify-content:center}
+.transform-steps{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;padding:40px}
+.step-box{padding:24px;background:rgba(0,0,0,0.4);border-radius:12px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);text-align:center}
+.step-box.before{border-color:rgba(253,121,168,0.3)}
+.step-box.after{border-color:rgba(0,206,201,0.3)}
+.step-box h4{font-size:14px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.step-box.before h4{color:var(--accent3)}
+.step-box.after h4{color:var(--accent2)}
+.step-box p{font-size:13px;color:rgba(232,232,240,0.6);line-height:1.5}
+.arrow-icon{font-size:32px;color:var(--accent);animation:arrowPulse 2s ease infinite}
+@keyframes arrowPulse{0%,100%{transform:translateX(0);opacity:1}50%{transform:translateX(8px);opacity:.5}}
 
-/* Solution features */
-.solution-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;margin-top:56px}
-.solution-card{position:relative;padding:40px;border-radius:24px;background:var(--surface);border:1px solid rgba(255,255,255,.05);overflow:hidden;opacity:0;transform:translateY(50px);transition:all .5s}
-.solution-card:hover{border-color:rgba(108,99,255,.3);transform:translateY(-6px)!important;box-shadow:0 24px 48px rgba(108,99,255,.1)}
-.solution-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-.solution-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(108,99,255,.15),rgba(0,212,255,.1));display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:20px}
+/* Solution */
+#solution{background:radial-gradient(ellipse at 70% 50%,rgba(108,92,231,0.06),transparent 60%)}
+.solution-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;margin-top:60px}
+.solution-card{padding:40px;background:linear-gradient(135deg,var(--glass),rgba(108,92,231,0.03));border:1px solid rgba(108,92,231,0.12);border-radius:20px;backdrop-filter:blur(10px);transition:all .4s;position:relative}
+.solution-card::after{content:'';position:absolute;inset:-1px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:0;transition:opacity .4s;z-index:-1}
+.solution-card:hover::after{opacity:.15}
+.solution-card:hover{transform:translateY(-6px);border-color:rgba(108,92,231,0.3)}
+.solution-icon{font-size:36px;margin-bottom:20px;display:block}
 .solution-card h3{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;margin-bottom:12px}
-.solution-card p{font-size:15px;line-height:1.7;color:rgba(255,255,255,.5)}
+.solution-card p{font-size:15px;color:rgba(232,232,240,0.5);line-height:1.7}
+.solution-tag{display:inline-block;margin-top:16px;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;background:rgba(108,92,231,0.15);color:var(--accent);letter-spacing:.5px}
 
-/* Stats counter */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-top:64px}
-.stat-item{text-align:center;opacity:0;transform:translateY(30px)}
-.stat-num{font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,5vw,64px);font-weight:800;background:linear-gradient(135deg,var(--green),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-label{font-size:14px;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:1px;text-transform:uppercase}
+/* How it works */
+#how{min-height:100vh}
+.timeline{position:relative;margin-top:80px;padding-left:60px}
+.timeline::before{content:'';position:absolute;left:24px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--accent3))}
+.timeline-item{position:relative;margin-bottom:80px;padding-left:40px}
+.timeline-dot{position:absolute;left:-40px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px var(--glow);border:3px solid var(--bg)}
+.timeline-item:nth-child(2) .timeline-dot{background:var(--accent2)}
+.timeline-item:nth-child(3) .timeline-dot{background:var(--accent3)}
+.timeline-item:nth-child(4) .timeline-dot{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.timeline-step{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px}
+.timeline-item h3{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:600;margin-bottom:12px}
+.timeline-item p{font-size:16px;color:rgba(232,232,240,0.5);line-height:1.7;max-width:500px}
+
+/* Results */
+#results{background:radial-gradient(ellipse at 50% 50%,rgba(0,206,201,0.05),transparent 60%)}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;margin-top:60px}
+.result-card{padding:36px;text-align:center;background:var(--glass);border:1px solid rgba(255,255,255,0.06);border-radius:16px;backdrop-filter:blur(10px);transition:all .4s}
+.result-card:hover{border-color:rgba(0,206,201,0.3);transform:scale(1.03)}
+.result-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:800;background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.result-label{font-size:15px;color:rgba(232,232,240,0.6);margin-top:8px;line-height:1.5}
+.result-visual{margin-top:60px;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);aspect-ratio:16/9;position:relative}
+.result-visual img{width:100%;height:100%;object-fit:cover}
+.result-visual::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--bg),transparent 40%)}
 
 /* Testimonial */
-.testimonial-section{position:relative;text-align:center;padding:100px 24px}
-.testimonial-quote{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,3.5vw,42px);font-weight:500;line-height:1.5;max-width:900px;margin:0 auto;opacity:0;font-style:italic;color:rgba(255,255,255,.85)}
-.testimonial-author{margin-top:32px;opacity:0}
-.testimonial-author strong{display:block;font-size:18px;color:var(--accent2)}
-.testimonial-author span{font-size:14px;color:rgba(255,255,255,.4)}
+#testimonial{text-align:center;min-height:80vh}
+.quote-mark{font-size:80px;color:var(--accent);font-family:Georgia,serif;line-height:1;opacity:.3}
+blockquote{font-size:clamp(20px,3vw,32px);font-weight:300;line-height:1.6;max-width:800px;margin:0 auto 32px;font-style:italic;color:rgba(232,232,240,0.85)}
+.quote-author{font-size:16px;color:var(--accent2);font-weight:600}
+.quote-role{font-size:14px;color:rgba(232,232,240,0.4);margin-top:4px}
 
-/* Timeline */
-.timeline{position:relative;max-width:800px;margin:60px auto 0;padding-left:40px}
-.timeline::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--green))}
-.timeline-item{position:relative;margin-bottom:60px;opacity:0;transform:translateX(-30px)}
-.timeline-dot{position:absolute;left:-28px;top:8px;width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px var(--accent)}
-.timeline-item h3{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;margin-bottom:8px}
-.timeline-item p{font-size:15px;line-height:1.7;color:rgba(255,255,255,.5)}
-.timeline-item .timeline-tag{display:inline-block;padding:4px 12px;border-radius:100px;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
-
-/* CTA Section */
-.cta-section{text-align:center;position:relative;padding:120px 24px}
-.cta-section h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,5vw,60px);font-weight:800;margin-bottom:20px;opacity:0}
-.cta-section p{font-size:18px;color:rgba(255,255,255,.5);max-width:600px;margin:0 auto 40px;opacity:0}
-.cta-btn-primary{display:inline-flex;align-items:center;gap:12px;padding:20px 48px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:18px;font-weight:700;border-radius:20px;cursor:pointer;text-decoration:none;transition:all .3s;opacity:0;box-shadow:0 0 50px rgba(108,99,255,.4)}
-.cta-btn-primary:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 0 80px rgba(108,99,255,.6)}
-.cta-glow{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(108,99,255,.15),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+/* CTA */
+#cta{text-align:center;min-height:80vh;position:relative}
+#cta .section-title{max-width:700px;margin:0 auto 24px}
+#cta .section-desc{max-width:600px;margin:0 auto 48px}
+.cta-glow{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:.4}
 
 /* Footer */
-footer{border-top:1px solid rgba(255,255,255,.05);padding:40px;text-align:center;font-size:13px;color:rgba(255,255,255,.3);position:relative;z-index:1}
+footer{position:relative;z-index:1;padding:60px 40px 30px;border-top:1px solid rgba(255,255,255,0.05);text-align:center}
+footer p{font-size:13px;color:rgba(232,232,240,0.3)}
+footer a{color:var(--accent);text-decoration:none}
 
 /* Responsive */
 @media(max-width:768px){
-.story-grid{grid-template-columns:1fr;gap:40px}
-.story-visual{transform:none!important}
-.stats-row{grid-template-columns:repeat(2,1fr);gap:24px}
-.nav-links{display:none}
-#nav{padding:16px 20px}
-.pain-grid{grid-template-columns:1fr}
-.solution-grid{grid-template-columns:1fr}
-.chapter-num{font-size:80px}
+  nav{padding:16px 20px}
+  .nav-links{display:none}
+  section{padding:60px 20px}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .pain-grid,.solution-grid,.results-grid{grid-template-columns:1fr}
+  .timeline{padding-left:40px}
+  .timeline::before{left:14px}
+  .timeline-item{padding-left:24px}
+  .timeline-dot{left:-28px}
+  .transform-steps{grid-template-columns:1fr;gap:16px}
+  .arrow-icon{transform:rotate(90deg)}
+  .hero-cta-group{flex-direction:column;align-items:center}
 }
+
+/* Particle overlay */
+.particle-field{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4}
+
+/* Floating elements */
+.float-element{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;opacity:.15}
 </style>
 </head>
 <body>
 
 <!-- Loading Screen -->
-<div id="loading-screen">
-<div class="loader-ring"></div>
-<div class="loader-text">Initializing Experience</div>
-<div class="loader-pct" id="load-pct">0%</div>
+<div class="loading-screen" id="loader">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Initializing Experience</div>
+  <div class="loader-progress"><div class="loader-bar" id="loaderBar"></div></div>
 </div>
 
 <!-- WebGL Canvas -->
 <canvas id="webgl-canvas"></canvas>
 
 <!-- Navigation -->
-<nav id="nav">
-<div class="nav-logo">⬡ HERMES</div>
-<div class="nav-links">
-<a href="#pain">The Problem</a>
-<a href="#solution">The Solution</a>
-<a href="#transform">Results</a>
-<a href="#cta">Get Started</a>
-</div>
-<div class="nav-progress" id="nav-progress"></div>
+<nav id="mainNav">
+  <div class="logo">HERMES AI</div>
+  <ul class="nav-links">
+    <li><a href="#pain">The Problem</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#results">Results</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta">Get Started</a>
 </nav>
 
-<!-- HERO SECTION -->
-<section id="hero" class="scroll-section">
-<div class="hero-bg"></div>
-<div class="hero-particles" id="hero-particles"></div>
-<div class="hero-content">
-<div class="hero-badge"><span class="dot"></span> The Future of Work is Here</div>
-<h1 class="hero-title"><span class="gradient">AI Agents Are<br>Rewriting the Rules</span></h1>
-<p class="hero-subtitle">Enter a world where autonomous AI handles the complexity — so your team can focus on what truly matters. This is the story of transformation.</p>
-<a href="#pain" class="hero-cta">Begin the Journey ↓</a>
-</div>
-<div class="hero-scroll-hint">
-<span>Scroll to explore</span>
-<div class="scroll-line"></div>
-</div>
+<!-- Hero Section -->
+<section id="hero">
+  <div class="content-wrapper" style="text-align:center">
+    <div class="hero-badge"><span class="dot"></span> Now Available</div>
+    <h1 class="hero-title">
+      The Future of Work<br>Is <span class="gradient">Autonomous</span>
+    </h1>
+    <p class="hero-sub">AI agents don't just assist — they execute. Discover how Hermes transforms entire business operations with intelligent, autonomous agents that think, decide, and deliver.</p>
+    <div class="hero-cta-group">
+      <a href="#cta" class="btn-primary">Deploy Your Agent ↗</a>
+      <a href="#pain" class="btn-secondary">See the Story ↓</a>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item"><span class="stat-number" data-target="10">0</span><span class="stat-label">Hours Saved Weekly</span></div>
+      <div class="stat-item"><span class="stat-number" data-target="300">0</span><span class="stat-label">% ROI Average</span></div>
+      <div class="stat-item"><span class="stat-number" data-target="85">0</span><span class="stat-label">% Task Automation</span></div>
+      <div class="stat-item"><span class="stat-number" data-target="24">0</span><span class="stat-label">/7 Operations</span></div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll to explore</span>
+    <div class="scroll-line"></div>
+  </div>
 </section>
 
-<!-- CHAPTER 1: THE PROBLEM -->
-<section id="pain" class="scroll-section" style="padding-top:120px">
-<div class="content-wrapper">
-<div class="story-grid">
-<div class="story-text" style="position:relative">
-<span class="chapter-num">01</span>
-<div class="chapter-label">Chapter One</div>
-<h2>The Hidden Cost of<br><span style="color:var(--accent3)">Manual Processes</span></h2>
-<p>Every day, teams drown in repetitive tasks. Emails pile up. Data gets siloed. Decisions are delayed by bottlenecks that shouldn't exist. The cost isn't just financial — it's the slow erosion of innovation, creativity, and competitive advantage.</p>
-</div>
-<div class="story-visual">
-<img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/85741fb5-2ef7-42d2-bf23-ffdce62b48ee" alt="Business chaos visualization" loading="lazy">
-<div class="glow-orb" style="width:200px;height:200px;background:var(--accent3);top:-50px;right:-50px"></div>
-</div>
-</div>
-
-<div class="pain-grid" style="margin-top:100px">
-<div class="pain-card">
-<div class="pain-icon">⏰</div>
-<h3>Time Hemorrhage</h3>
-<p>Knowledge workers spend 60% of their day on tasks that add zero strategic value. That's 3 full days every week, lost forever.</p>
-<div class="pain-stat">60%</div>
-</div>
-<div class="pain-card">
-<div class="pain-icon">🔗</div>
-<h3>Data Silos</h3>
-<p>Critical information trapped across 12+ tools. Teams making decisions with 30% of the picture, flying blind through complexity.</p>
-<div class="pain-stat">12+</div>
-</div>
-<div class="pain-card">
-<div class="pain-icon">💸</div>
-<h3>Hidden Costs</h3>
-<p>Manual processes cost enterprises $4.5M annually in lost productivity. The real cost? Competitors who've already automated are pulling ahead.</p>
-<div class="pain-stat">$4.5M</div>
-</div>
-<div class="pain-card">
-<div class="pain-icon">🔥</div>
-<h3>Burnout Epidemic</h3>
-<p>76% of employees report burnout from repetitive tasks. Your best talent isn't leaving for better pay — they're leaving for better workflows.</p>
-<div class="pain-stat">76%</div>
-</div>
-</div>
-</div>
+<!-- Pain Points Section -->
+<section id="pain">
+  <div class="content-wrapper">
+    <div class="section-label">The Problem</div>
+    <div class="section-title">Your Team Is Drowning<br>in Manual Work</div>
+    <p class="section-desc">Every day, skilled professionals waste hours on repetitive tasks that drain creativity, slow growth, and cost millions in lost productivity.</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon">⏰</div>
+        <h3>Time Hemorrhage</h3>
+        <p>Teams spend 60% of their day on tasks that could be automated — data entry, report generation, email management, and scheduling.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">📊</div>
+        <h3>Data Overload</h3>
+        <p>Critical insights are buried in spreadsheets, emails, and disconnected tools. By the time you find what you need, the opportunity is gone.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🔄</div>
+        <h3>Process Chaos</h3>
+        <p>Workflows break when key people are out. Tribal knowledge creates bottlenecks. Scaling means hiring more people to do the same work.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">💸</div>
+        <h3>Hidden Costs</h3>
+        <p>Manual errors cost businesses an average of $12,900 per employee annually. Multiply that across your organization and the number is staggering.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">😰</div>
+        <h3>Talent Burnout</h3>
+        <p>Your best people didn't sign up to copy-paste data. 73% of employees say repetitive tasks make them consider leaving their jobs.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🌙</div>
+        <h3>Limited Hours</h3>
+        <p>Business doesn't stop at 5 PM. Opportunities are lost overnight, customer queries go unanswered, and competitors who automate pull ahead.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- TRANSFORMATION BRIDGE -->
-<section id="transform-bridge" class="scroll-section" style="min-height:80vh">
-<div class="transform-container content-wrapper">
-<div class="transform-title">What if there was<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">a better way?</span></div>
-<div class="transform-line" id="transform-line"></div>
-<div class="transform-arrow">⬇</div>
-</div>
+<!-- Transformation Section -->
+<section id="transform">
+  <div class="content-wrapper" style="text-align:center">
+    <div class="section-label">The Shift</div>
+    <div class="section-title">From Overwhelmed to<br>Orchestrated</div>
+    <p class="section-desc" style="margin:0 auto 0">Imagine a world where your business processes run themselves — intelligently, accurately, 24/7. That's not the future. That's now.</p>
+    <div class="transform-visual" id="transformVisual">
+      <img id="transformImg" src="" alt="AI Transformation" loading="lazy">
+      <div class="transform-overlay">
+        <div class="transform-steps">
+          <div class="step-box before">
+            <h4>Before</h4>
+            <p>Manual processes, scattered data, reactive decisions, limited capacity, human error</p>
+          </div>
+          <div class="arrow-icon">→</div>
+          <div class="step-box after">
+            <h4>After</h4>
+            <p>Automated workflows, unified intelligence, proactive insights, infinite scale, precision</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- CHAPTER 2: THE SOLUTION -->
-<section id="solution" class="scroll-section" style="padding-top:120px">
-<div class="content-wrapper">
-<div class="story-grid">
-<div class="story-visual" style="order:-1">
-<img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/295a2ead-858d-4006-b612-ed45e785e6df" alt="AI Agent Solution" loading="lazy">
-<div class="glow-orb" style="width:250px;height:250px;background:var(--accent);bottom:-50px;left:-50px"></div>
-</div>
-<div class="story-text" style="position:relative">
-<span class="chapter-num">02</span>
-<div class="chapter-label">Chapter Two</div>
-<h2>Enter <span style="color:var(--accent2)">Hermes</span><br>Your AI Agent</h2>
-<p>Hermes isn't just another chatbot. It's an autonomous AI agent that understands context, executes multi-step workflows, and integrates seamlessly with your entire tech stack. It doesn't just answer questions — it gets work done.</p>
-</div>
-</div>
-
-<div class="solution-grid">
-<div class="solution-card">
-<div class="solution-icon">🧠</div>
-<h3>Autonomous Reasoning</h3>
-<p>Hermes thinks before it acts. Multi-step planning, tool selection, and execution — all without human hand-holding. It understands intent, not just instructions.</p>
-</div>
-<div class="solution-card">
-<div class="solution-icon">🔌</div>
-<h3>Universal Integration</h3>
-<p>Connect to any API, database, or platform. Hermes bridges your entire tech ecosystem into a unified workflow engine that never sleeps.</p>
-</div>
-<div class="solution-card">
-<div class="solution-icon">⚡</div>
-<h3>Real-Time Execution</h3>
-<p>From code deployment to data analysis to customer support — tasks that took hours now happen in seconds with enterprise-grade reliability.</p>
-</div>
-<div class="solution-card">
-<div class="solution-icon">🛡️</div>
-<h3>Enterprise Security</h3>
-<p>SOC 2 compliant. End-to-end encryption. Role-based access controls. Your data stays yours, with full audit trails for every action.</p>
-</div>
-<div class="solution-card">
-<div class="solution-icon">📊</div>
-<h3>Adaptive Learning</h3>
-<p>Hermes learns your processes, preferences, and patterns. The more you use it, the smarter it gets — continuously optimizing workflows for maximum efficiency.</p>
-</div>
-<div class="solution-card">
-<div class="solution-icon">🌐</div>
-<h3>Multi-Platform</h3>
-<p>Deploy across Slack, Teams, Discord, email, webhooks, and custom interfaces. Meet your team exactly where they already work.</p>
-</div>
-</div>
-</div>
+<!-- Solution Section -->
+<section id="solution">
+  <div class="content-wrapper">
+    <div class="section-label">The Solution</div>
+    <div class="section-title">Meet Hermes —<br>Your AI Agent Platform</div>
+    <p class="section-desc">Hermes doesn't just answer questions. It connects to your tools, understands your workflows, and autonomously executes complex multi-step tasks.</p>
+    <div class="solution-grid">
+      <div class="solution-card">
+        <span class="solution-icon">🧠</span>
+        <h3>Autonomous Reasoning</h3>
+        <p>Hermes thinks through problems like your best employee — breaking complex tasks into steps, making decisions, and adapting when things change.</p>
+        <span class="solution-tag">Cognitive AI</span>
+      </div>
+      <div class="solution-card">
+        <span class="solution-icon">🔗</span>
+        <h3>Universal Integration</h3>
+        <p>Connects to 200+ tools out of the box — your CRM, email, databases, APIs, cloud services. If it has an interface, Hermes can use it.</p>
+        <span class="solution-tag">Plug & Play</span>
+      </div>
+      <div class="solution-card">
+        <span class="solution-icon">⚡</span>
+        <h3>Real-Time Execution</h3>
+        <p>Not just suggestions — real actions. Hermes writes code, deploys websites, manages databases, sends communications, and monitors systems.</p>
+        <span class="solution-tag">Action-First</span>
+      </div>
+      <div class="solution-card">
+        <span class="solution-icon">🛡️</span>
+        <h3>Enterprise Security</h3>
+        <p>SOC 2 compliant architecture with role-based access, audit trails, and sandboxed execution. Your data never leaves your control.</p>
+        <span class="solution-tag">Zero Trust</span>
+      </div>
+      <div class="solution-card">
+        <span class="solution-icon">📈</span>
+        <h3>Learns & Improves</h3>
+        <p>Skills and memories persist across sessions. Hermes gets better at your specific workflows over time, building institutional knowledge.</p>
+        <span class="solution-tag">Adaptive</span>
+      </div>
+      <div class="solution-card">
+        <span class="solution-icon">🌐</span>
+        <h3>Always Available</h3>
+        <p>Schedule tasks, set up automated workflows, and let Hermes work while you sleep. Morning reports, overnight deployments, 24/7 monitoring.</p>
+        <span class="solution-tag">24/7 Agent</span>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- CHAPTER 3: THE JOURNEY -->
-<section id="journey" class="scroll-section" style="padding-top:120px">
-<div class="content-wrapper" style="position:relative">
-<span class="chapter-num">03</span>
-<div class="chapter-label" style="text-align:center">Chapter Three</div>
-<h2 class="story-text" style="text-align:center;font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:700;margin-bottom:20px">The <span style="color:var(--green)">Implementation</span> Journey</h2>
-<p style="text-align:center;font-size:18px;color:rgba(255,255,255,.5);max-width:600px;margin:0 auto">From first contact to full deployment — a seamless path to AI-powered operations.</p>
-
-<div class="timeline">
-<div class="timeline-item">
-<div class="timeline-dot"></div>
-<div class="timeline-tag">Week 1</div>
-<h3>Discovery & Integration</h3>
-<p>We map your existing workflows, identify automation opportunities, and connect Hermes to your tech stack. Zero disruption to current operations.</p>
-</div>
-<div class="timeline-item">
-<div class="timeline-dot" style="background:var(--accent2);box-shadow:0 0 20px var(--accent2)"></div>
-<div class="timeline-tag">Week 2-3</div>
-<h3>Custom Agent Training</h3>
-<p>Hermes learns your business logic, communication style, and decision frameworks. Custom skills are built for your unique processes.</p>
-</div>
-<div class="timeline-item">
-<div class="timeline-dot" style="background:var(--green);box-shadow:0 0 20px var(--green)"></div>
-<div class="timeline-tag">Week 4</div>
-<h3>Pilot Launch</h3>
-<p>Select team deploys Hermes in production. Real-time monitoring, rapid iteration, and measurable results from day one.</p>
-</div>
-<div class="timeline-item">
-<div class="timeline-dot" style="background:var(--gold);box-shadow:0 0 20px var(--gold)"></div>
-<div class="timeline-tag">Month 2+</div>
-<h3>Scale & Optimize</h3>
-<p>Roll out across the organization. Hermes continuously learns and improves, compounding returns with every interaction.</p>
-</div>
-</div>
-</div>
+<!-- How it Works -->
+<section id="how">
+  <div class="content-wrapper">
+    <div class="section-label">How It Works</div>
+    <div class="section-title">Four Steps to<br>Transformation</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-step">Step 01</div>
+        <h3>Connect Your Ecosystem</h3>
+        <p>Link your existing tools — Slack, GitHub, Jira, Salesforce, databases, and more. Hermes maps your digital landscape and understands the relationships.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-step">Step 02</div>
+        <h3>Describe Your Workflows</h3>
+        <p>Tell Hermes what you need in plain English. "Every morning, compile sales data, generate a report, and email it to the team." It handles the rest.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-step">Step 03</div>
+        <h3>Watch It Execute</h3>
+        <p>Hermes autonomously breaks down tasks, coordinates between tools, handles errors gracefully, and delivers results — with full transparency into every step.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-step">Step 04</div>
+        <h3>Scale Without Limits</h3>
+        <p>Add new workflows, train Hermes on edge cases, and let it handle increasingly complex operations. No additional headcount required.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- CHAPTER 4: RESULTS -->
-<section id="results" class="scroll-section" style="padding-top:120px">
-<div class="content-wrapper">
-<div class="story-grid">
-<div class="story-text" style="position:relative">
-<span class="chapter-num">04</span>
-<div class="chapter-label">Chapter Four</div>
-<h2>The <span style="color:var(--green)">Transformation</span><br>in Numbers</h2>
-<p>Companies implementing AI agents don't just improve — they leap ahead. These aren't projections. They're measured results from real deployments.</p>
-</div>
-<div class="story-visual">
-<img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/9a1dfc73-89d6-4ff0-bcf3-e388f72dfceb" alt="Business transformation results" loading="lazy">
-<div class="glow-orb" style="width:200px;height:200px;background:var(--green);top:-30px;left:-30px"></div>
-</div>
-</div>
-
-<div class="stats-row">
-<div class="stat-item">
-<div class="stat-num" data-target="847" data-suffix="%">0%</div>
-<div class="stat-label">ROI in Year One</div>
-</div>
-<div class="stat-item">
-<div class="stat-num" data-target="40" data-suffix="hrs">0hrs</div>
-<div class="stat-label">Saved Per Employee / Month</div>
-</div>
-<div class="stat-item">
-<div class="stat-num" data-target="94" data-suffix="%">0%</div>
-<div class="stat-label">Task Accuracy Rate</div>
-</div>
-<div class="stat-item">
-<div class="stat-num" data-target="3" data-suffix="x">0x</div>
-<div class="stat-label">Faster Decision Making</div>
-</div>
-</div>
-</div>
+<!-- Results -->
+<section id="results">
+  <div class="content-wrapper" style="text-align:center">
+    <div class="section-label">The Results</div>
+    <div class="section-title">Measurable Impact,<br>Immediate ROI</div>
+    <p class="section-desc" style="margin:0 auto">Companies using AI agents report dramatic improvements across every metric that matters.</p>
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="result-number" data-target="10">0×</div>
+        <div class="result-label">Faster task completion</div>
+      </div>
+      <div class="result-card">
+        <div class="result-number" data-target="85">0%</div>
+        <div class="result-label">Reduction in manual errors</div>
+      </div>
+      <div class="result-card">
+        <div class="result-number" data-target="300">0%</div>
+        <div class="result-label">Average return on investment</div>
+      </div>
+      <div class="result-card">
+        <div class="result-number" data-target="40">0hrs</div>
+        <div class="result-label">Saved per employee monthly</div>
+      </div>
+    </div>
+    <div class="result-visual" id="resultVisual">
+      <img id="resultImg" src="" alt="Results Dashboard" loading="lazy">
+    </div>
+  </div>
 </section>
 
-<!-- TESTIMONIAL -->
-<section class="testimonial-section scroll-section">
-<div class="content-wrapper">
-<div style="font-size:64px;opacity:.2;margin-bottom:24px">"</div>
-<div class="testimonial-quote">Implementing Hermes was the single most impactful technology decision we made this decade. Our team went from drowning in manual tasks to operating at a level we didn't think was possible.</div>
-<div class="testimonial-author">
-<strong>Sarah Chen</strong>
-<span>VP of Operations, TechScale Inc.</span>
-</div>
-</div>
+<!-- Testimonial -->
+<section id="testimonial">
+  <div class="content-wrapper">
+    <div class="quote-mark">"</div>
+    <blockquote>Hermes didn't just automate our workflows — it reimagined them. Tasks that took our team hours now happen in minutes, autonomously. It's like having a brilliant employee who never sleeps and never makes mistakes.</blockquote>
+    <div class="quote-author">Sarah Chen</div>
+    <div class="quote-role">VP of Operations, TechScale Inc.</div>
+  </div>
 </section>
 
-<!-- CTA SECTION -->
-<section id="cta" class="cta-section scroll-section">
-<div class="cta-glow"></div>
-<div class="content-wrapper">
-<h2>Ready to <span style="background:linear-gradient(135deg,var(--accent),var(--accent2),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Transform</span><br>Your Business?</h2>
-<p>Join the companies that have already made the leap. The future of work isn't coming — it's here.</p>
-<a href="https://hermes-agent.nousresearch.com" class="cta-btn-primary" target="_blank">Deploy Your AI Agent →</a>
-</div>
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-glow"></div>
+  <div class="content-wrapper">
+    <div class="section-label">Get Started</div>
+    <div class="section-title">Ready to Deploy Your<br>AI Agent?</div>
+    <p class="section-desc" style="margin:0 auto 48px">Join hundreds of companies already transforming their operations with Hermes. Set up takes minutes, impact is immediate.</p>
+    <div class="hero-cta-group">
+      <a href="https://hermes-agent.nousresearch.com" target="_blank" class="btn-primary">Start Free Trial ↗</a>
+      <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" class="btn-secondary">Read Documentation</a>
+    </div>
+  </div>
 </section>
 
+<!-- Footer -->
 <footer>
-<p>© 2026 Hermes AI Agent by Nous Research. Crafted with passion for the future of work.</p>
+  <p>Built with ✦ by <a href="https://nousresearch.com" target="_blank">Nous Research</a> — Powering the next generation of AI agents</p>
 </footer>
 
-<!-- Three.js + GSAP from CDN -->
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
-// ═══════════════════════════════════════════
-// THREE.JS 3D PARTICLE UNIVERSE
-// ═══════════════════════════════════════════
 (function(){
+"use strict";
+
+// ============ IMAGE URLS (populated after generation) ============
+const IMAGES = {
+  hero: "https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/24deb5b3-ee14-4d95-ba7d-7bac1aca8568",
+  transform: "https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/e36ee72d-5622-467d-810b-49dd4ca3aaa7",
+  agent: "https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/c0f123e3-db1b-498e-914d-957615f087fc",
+  results: "https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/f51152f2-3f90-4f6d-bb92-642761f661dd"
+};
+
+// ============ LOADING ============
+let loadProgress = 0;
+const loaderBar = document.getElementById('loaderBar');
+const loader = document.getElementById('loader');
+function updateLoader(p){ loadProgress = Math.max(loadProgress,p); loaderBar.style.width=loadProgress+'%'; }
+
+// ============ THREE.JS SCENE ============
 const canvas = document.getElementById('webgl-canvas');
 const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
 camera.position.set(0, 0, 30);
 
-// Particle system - floating stars
-const particleCount = 2000;
+// Particle system - neural network nodes
+const particleCount = 800;
 const positions = new Float32Array(particleCount * 3);
 const colors = new Float32Array(particleCount * 3);
 const sizes = new Float32Array(particleCount);
-const speeds = new Float32Array(particleCount);
+const velocities = [];
 
-const colorPalette = [
-  new THREE.Color(0x6c63ff),
-  new THREE.Color(0x00d4ff),
-  new THREE.Color(0x00ff88),
-  new THREE.Color(0xff6b6b),
-  new THREE.Color(0xffd700)
-];
-
-for(let i = 0; i < particleCount; i++){
-  positions[i*3] = (Math.random()-0.5) * 100;
-  positions[i*3+1] = (Math.random()-0.5) * 100;
-  positions[i*3+2] = (Math.random()-0.5) * 80;
-  const c = colorPalette[Math.floor(Math.random()*colorPalette.length)];
-  colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
-  sizes[i] = Math.random() * 2 + 0.5;
-  speeds[i] = Math.random() * 0.5 + 0.2;
+for(let i=0; i<particleCount; i++){
+  positions[i*3] = (Math.random()-0.5)*80;
+  positions[i*3+1] = (Math.random()-0.5)*60;
+  positions[i*3+2] = (Math.random()-0.5)*40 - 10;
+  
+  const colorChoice = Math.random();
+  if(colorChoice < 0.4){
+    colors[i*3]=0.42; colors[i*3+1]=0.36; colors[i*3+2]=0.91; // accent purple
+  } else if(colorChoice < 0.7){
+    colors[i*3]=0; colors[i*3+1]=0.81; colors[i*3+2]=0.79; // accent teal
+  } else {
+    colors[i*3]=0.99; colors[i*3+1]=0.47; colors[i*3+2]=0.66; // accent pink
+  }
+  
+  sizes[i] = Math.random()*3 + 0.5;
+  velocities.push({
+    x: (Math.random()-0.5)*0.01,
+    y: (Math.random()-0.5)*0.01,
+    z: (Math.random()-0.5)*0.005
+  });
 }
 
-const geo = new THREE.BufferGeometry();
-geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+const particleGeom = new THREE.BufferGeometry();
+particleGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+particleGeom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+particleGeom.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-const vertexShader = `
-  attribute float size;
-  varying vec3 vColor;
-  void main(){
-    vColor = color;
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    gl_PointSize = size * (200.0 / -mvPosition.z);
-    gl_Position = projectionMatrix * mvPosition;
-  }
-`;
-const fragmentShader = `
-  varying vec3 vColor;
-  void main(){
-    float d = length(gl_PointCoord - vec2(0.5));
-    if(d > 0.5) discard;
-    float alpha = 1.0 - smoothstep(0.0, 0.5, d);
-    gl_FragColor = vec4(vColor, alpha * 0.6);
-  }
-`;
-
-const mat = new THREE.ShaderMaterial({
-  vertexShader, fragmentShader,
-  vertexColors: true, transparent: true, depthWrite: false
+const particleMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime: {value: 0},
+    uScroll: {value: 0},
+    uMouse: {value: new THREE.Vector2(0,0)}
+  },
+  vertexShader: `
+    attribute float size;
+    varying vec3 vColor;
+    uniform float uTime;
+    uniform float uScroll;
+    void main(){
+      vColor = color;
+      vec3 pos = position;
+      pos.y += sin(uTime*0.3 + position.x*0.1)*0.5;
+      pos.x += cos(uTime*0.2 + position.z*0.1)*0.3;
+      pos.z += uScroll * -0.005;
+      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+      gl_PointSize = size * (200.0 / -mvPosition.z);
+      gl_Position = projectionMatrix * mvPosition;
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vColor;
+    void main(){
+      float d = length(gl_PointCoord - 0.5);
+      if(d > 0.5) discard;
+      float alpha = 1.0 - smoothstep(0.0, 0.5, d);
+      alpha *= 0.6;
+      gl_FragColor = vec4(vColor, alpha);
+    }
+  `,
+  transparent: true,
+  vertexColors: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending
 });
-const particles = new THREE.Points(geo, mat);
+
+const particles = new THREE.Points(particleGeom, particleMat);
 scene.add(particles);
+
+// Connection lines between nearby particles
+const lineGeom = new THREE.BufferGeometry();
+const maxLines = 400;
+const linePositions = new Float32Array(maxLines * 6);
+const lineColors = new Float32Array(maxLines * 6);
+lineGeom.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+lineGeom.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
+const lineMat = new THREE.LineBasicMaterial({vertexColors:true, transparent:true, opacity:0.15, blending:THREE.AdditiveBlending});
+const lines = new THREE.LineSegments(lineGeom, lineMat);
+scene.add(lines);
 
 // Floating geometric shapes
 const shapes = [];
-const shapeMats = [
-  new THREE.MeshBasicMaterial({color:0x6c63ff, wireframe:true, transparent:true, opacity:0.15}),
-  new THREE.MeshBasicMaterial({color:0x00d4ff, wireframe:true, transparent:true, opacity:0.1}),
-  new THREE.MeshBasicMaterial({color:0x00ff88, wireframe:true, transparent:true, opacity:0.08})
-];
+const shapeMat = new THREE.MeshBasicMaterial({color:0x6c5ce7, wireframe:true, transparent:true, opacity:0.08});
 
-function addShape(geo, mat, x, y, z, s){
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.position.set(x, y, z);
-  mesh.scale.setScalar(s);
-  mesh.userData = {rotSpeed: {x: Math.random()*0.003, y: Math.random()*0.005, z: Math.random()*0.002}};
+for(let i=0; i<5; i++){
+  const geom = i%2===0 ? new THREE.IcosahedronGeometry(2+Math.random()*3, 1) : new THREE.OctahedronGeometry(2+Math.random()*2, 0);
+  const mesh = new THREE.Mesh(geom, shapeMat.clone());
+  mesh.position.set((Math.random()-0.5)*60, (Math.random()-0.5)*40, -15-Math.random()*20);
+  mesh.material.opacity = 0.04 + Math.random()*0.06;
   scene.add(mesh);
-  shapes.push(mesh);
+  shapes.push({mesh, rotSpeed:{x:0.001+Math.random()*0.003, y:0.001+Math.random()*0.003}});
 }
 
-addShape(new THREE.IcosahedronGeometry(1,1), shapeMats[0], -15, 8, -10, 3);
-addShape(new THREE.OctahedronGeometry(1), shapeMats[1], 18, -5, -15, 2.5);
-addShape(new THREE.TorusGeometry(1, 0.3, 8, 20), shapeMats[2], -20, -12, -8, 2);
-addShape(new THREE.TetrahedronGeometry(1), shapeMats[0], 12, 15, -12, 2);
-addShape(new THREE.DodecahedronGeometry(1), shapeMats[1], -8, -18, -20, 3.5);
-addShape(new THREE.TorusKnotGeometry(1, 0.3, 50, 8), shapeMats[2], 22, 10, -25, 1.5);
+updateLoader(30);
 
-// Scroll-linked camera
+// Mouse tracking
+let mouseX=0, mouseY=0;
+document.addEventListener('mousemove', e=>{
+  mouseX = (e.clientX/window.innerWidth - 0.5)*2;
+  mouseY = (e.clientY/window.innerHeight - 0.5)*2;
+});
+
+// Scroll tracking
 let scrollY = 0;
-let targetCamY = 0;
-let targetCamZ = 30;
-let mouseX = 0, mouseY = 0;
-
-window.addEventListener('scroll', () => {
-  scrollY = window.scrollY;
-  const totalHeight = document.body.scrollHeight - window.innerHeight;
-  const progress = scrollY / totalHeight;
-  targetCamY = -progress * 40;
-  targetCamZ = 30 - progress * 15;
-  
-  // Nav progress bar
-  document.getElementById('nav-progress').style.width = (progress * 100) + '%';
-  
-  // Nav visibility
-  document.getElementById('nav').classList.toggle('visible', scrollY > 300);
+let scrollProgress = 0;
+window.addEventListener('scroll', ()=>{
+  scrollY = window.pageYOffset;
+  scrollProgress = scrollY / (document.body.scrollHeight - window.innerHeight);
 });
 
-document.addEventListener('mousemove', (e) => {
-  mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-  mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-});
-
+// Animation loop
 let time = 0;
 function animate(){
   requestAnimationFrame(animate);
-  time += 0.005;
+  time += 0.016;
   
-  // Smooth camera follow
-  camera.position.y += (targetCamY - camera.position.y) * 0.05;
-  camera.position.z += (targetCamZ - camera.position.z) * 0.05;
-  camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
-  camera.rotation.x += (mouseY * 0.05 - camera.rotation.x) * 0.02;
+  particleMat.uniforms.uTime.value = time;
+  particleMat.uniforms.uScroll.value = scrollY;
+  particleMat.uniforms.uMouse.value.set(mouseX, mouseY);
   
   // Animate particles
-  const pos = geo.attributes.position.array;
-  for(let i = 0; i < particleCount; i++){
-    pos[i*3+1] += Math.sin(time + i * 0.01) * 0.01 * speeds[i];
-    pos[i*3] += Math.cos(time + i * 0.01) * 0.005 * speeds[i];
+  const pos = particleGeom.attributes.position.array;
+  for(let i=0; i<particleCount; i++){
+    pos[i*3] += velocities[i].x;
+    pos[i*3+1] += velocities[i].y;
+    if(pos[i*3] > 40 || pos[i*3] < -40) velocities[i].x *= -1;
+    if(pos[i*3+1] > 30 || pos[i*3+1] < -30) velocities[i].y *= -1;
   }
-  geo.attributes.position.needsUpdate = true;
+  particleGeom.attributes.position.needsUpdate = true;
+  
+  // Update connection lines
+  let lineIdx = 0;
+  for(let i=0; i<particleCount && lineIdx < maxLines; i+=3){
+    for(let j=i+3; j<particleCount && lineIdx < maxLines; j+=3){
+      const dx=pos[i*3]-pos[j*3], dy=pos[i*3+1]-pos[j*3+1], dz=pos[i*3+2]-pos[j*3+2];
+      const dist = Math.sqrt(dx*dx+dy*dy+dz*dz);
+      if(dist < 8){
+        const lp = lineGeom.attributes.position.array;
+        const lc = lineGeom.attributes.color.array;
+        const li = lineIdx*6;
+        lp[li]=pos[i*3]; lp[li+1]=pos[i*3+1]; lp[li+2]=pos[i*3+2];
+        lp[li+3]=pos[j*3]; lp[li+4]=pos[j*3+1]; lp[li+5]=pos[j*3+2];
+        const a = 1 - dist/8;
+        lc[li]=0.42*a; lc[li+1]=0.36*a; lc[li+2]=0.91*a;
+        lc[li+3]=0*a; lc[li+4]=0.81*a; lc[li+5]=0.79*a;
+        lineIdx++;
+      }
+    }
+  }
+  lineGeom.setDrawRange(0, lineIdx*2);
+  lineGeom.attributes.position.needsUpdate = true;
+  lineGeom.attributes.color.needsUpdate = true;
+  
+  // Camera parallax
+  camera.position.x += (mouseX*2 - camera.position.x)*0.02;
+  camera.position.y += (-mouseY*1.5 - camera.position.y)*0.02;
+  camera.position.z = 30 - scrollProgress*15;
+  camera.lookAt(0,0,-10);
   
   // Rotate shapes
-  shapes.forEach(s => {
-    s.rotation.x += s.userData.rotSpeed.x;
-    s.rotation.y += s.userData.rotSpeed.y;
-    s.rotation.z += s.userData.rotSpeed.z;
-    s.position.y += Math.sin(time * 2 + s.position.x) * 0.005;
+  shapes.forEach(s=>{
+    s.mesh.rotation.x += s.rotSpeed.x;
+    s.mesh.rotation.y += s.rotSpeed.y;
   });
-  
-  // Subtle particle field rotation
-  particles.rotation.y = time * 0.05;
-  particles.rotation.x = Math.sin(time * 0.3) * 0.02;
   
   renderer.render(scene, camera);
 }
 animate();
 
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
+window.addEventListener('resize', ()=>{
+  camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// ═══════════════════════════════════════════
-// LOADING SCREEN
-// ═══════════════════════════════════════════
-let loadProgress = 0;
-const loadEl = document.getElementById('load-pct');
-const loadScreen = document.getElementById('loading-screen');
-const loadInterval = setInterval(() => {
-  loadProgress += Math.random() * 15 + 5;
-  if(loadProgress >= 100){
-    loadProgress = 100;
-    loadEl.textContent = '100%';
-    clearInterval(loadInterval);
-    setTimeout(() => {
-      loadScreen.classList.add('hidden');
-      initAnimations();
-    }, 500);
-  } else {
-    loadEl.textContent = Math.floor(loadProgress) + '%';
+updateLoader(60);
+
+// ============ GSAP ANIMATIONS ============
+gsap.registerPlugin(ScrollTrigger);
+
+// Nav hide/show
+let lastScroll = 0;
+ScrollTrigger.create({
+  onUpdate: self => {
+    const nav = document.getElementById('mainNav');
+    if(self.direction === 1 && self.scroll() > 200) nav.classList.add('hidden');
+    else nav.classList.remove('hidden');
   }
-}, 200);
+});
 
-// ═══════════════════════════════════════════
-// GSAP SCROLL ANIMATIONS
-// ═══════════════════════════════════════════
-function initAnimations(){
-  gsap.registerPlugin(ScrollTrigger);
-  
-  // Hero entrance
-  const heroTL = gsap.timeline({delay: 0.3});
-  heroTL
-    .to('.hero-badge', {opacity:1, y:0, duration:0.8, ease:'power3.out'})
-    .to('.hero-title', {opacity:1, y:0, duration:1, ease:'power3.out'}, '-=0.4')
-    .to('.hero-subtitle', {opacity:1, y:0, duration:0.8, ease:'power3.out'}, '-=0.5')
-    .to('.hero-cta', {opacity:1, y:0, duration:0.8, ease:'power3.out'}, '-=0.4')
-    .to('.hero-scroll-hint', {opacity:1, duration:1, ease:'power2.out'}, '-=0.2');
-  
-  // Chapter labels
-  gsap.utils.toArray('.chapter-label').forEach(el => {
-    gsap.to(el, {
-      opacity:1, scrollTrigger:{trigger:el, start:'top 80%', toggleActions:'play none none reverse'}
-    });
-  });
-  
-  // Story text animations
-  gsap.utils.toArray('.story-text h2').forEach(el => {
-    gsap.to(el, {
-      opacity:1, y:0, duration:1, ease:'power3.out',
-      scrollTrigger:{trigger:el, start:'top 80%', toggleActions:'play none none reverse'}
-    });
-  });
-  gsap.utils.toArray('.story-text p').forEach(el => {
-    gsap.to(el, {
-      opacity:1, duration:0.8, delay:0.2, ease:'power2.out',
-      scrollTrigger:{trigger:el, start:'top 85%', toggleActions:'play none none reverse'}
-    });
-  });
-  
-  // Story visuals fly-in
-  gsap.utils.toArray('.story-visual').forEach(el => {
-    gsap.to(el, {
-      opacity:1, x:0, duration:1.2, ease:'power3.out',
-      scrollTrigger:{trigger:el, start:'top 80%', toggleActions:'play none none reverse'}
-    });
-  });
-  
-  // Pain cards stagger
-  gsap.utils.toArray('.pain-card').forEach((el, i) => {
-    gsap.to(el, {
-      opacity:1, y:0, duration:0.8, delay:i*0.15, ease:'power3.out',
-      scrollTrigger:{trigger:el.parentElement, start:'top 75%', toggleActions:'play none none reverse'}
-    });
-  });
-  
-  // Transform bridge
-  gsap.to('.transform-title', {
-    opacity:1, duration:1, ease:'power3.out',
-    scrollTrigger:{trigger:'.transform-container', start:'top 70%', toggleActions:'play none none reverse'}
-  });
-  
+// Hero animations
+gsap.from('.hero-badge', {opacity:0, y:30, duration:1, delay:0.5});
+gsap.from('.hero-title', {opacity:0, y:50, duration:1.2, delay:0.7});
+gsap.from('.hero-sub', {opacity:0, y:30, duration:1, delay:1});
+gsap.from('.hero-cta-group', {opacity:0, y:30, duration:1, delay:1.2});
+gsap.from('.stats-bar', {opacity:0, y:50, duration:1, delay:1.5});
+
+// Stat counter animation
+document.querySelectorAll('.stat-number[data-target]').forEach(el=>{
+  const target = parseInt(el.dataset.target);
   ScrollTrigger.create({
-    trigger:'#transform-bridge',
-    start:'top 60%',
-    onEnter:() => document.getElementById('transform-line').style.height = '120px',
-    onLeaveBack:() => document.getElementById('transform-line').style.height = '0'
+    trigger: el,
+    start: 'top 80%',
+    once: true,
+    onEnter: ()=>{
+      gsap.to({val:0},{val:target, duration:2, ease:'power2.out',
+        onUpdate:function(){ el.textContent = Math.round(this.targets()[0].val); }
+      });
+    }
   });
-  
-  gsap.to('.transform-arrow', {
-    opacity:1, scale:1, duration:0.6, delay:0.8,
-    scrollTrigger:{trigger:'#transform-bridge', start:'top 50%', toggleActions:'play none none reverse'}
+});
+
+// Pain section
+gsap.from('#pain .section-label', {scrollTrigger:{trigger:'#pain',start:'top 70%'},opacity:0,x:-50,duration:0.8});
+gsap.from('#pain .section-title', {scrollTrigger:{trigger:'#pain',start:'top 70%'},opacity:0,y:40,duration:1,delay:0.2});
+gsap.from('#pain .section-desc', {scrollTrigger:{trigger:'#pain',start:'top 60%'},opacity:0,y:30,duration:0.8,delay:0.3});
+
+gsap.from('.pain-card', {
+  scrollTrigger:{trigger:'.pain-grid',start:'top 75%',end:'bottom 20%',toggleActions:'play none none none'},
+  opacity:0, y:60, stagger:0.12, duration:0.8, ease:'power3.out'
+});
+
+// Transform section
+gsap.from('#transform .section-label', {scrollTrigger:{trigger:'#transform',start:'top 70%'},opacity:0,y:30,duration:0.8});
+gsap.from('#transform .section-title', {scrollTrigger:{trigger:'#transform',start:'top 65%'},opacity:0,y:40,duration:1});
+gsap.from('.transform-visual', {scrollTrigger:{trigger:'.transform-visual',start:'top 80%'},opacity:0,scale:0.9,duration:1.2,ease:'power2.out'});
+
+// Solution section
+gsap.from('#solution .section-label', {scrollTrigger:{trigger:'#solution',start:'top 70%'},opacity:0,x:-50,duration:0.8});
+gsap.from('#solution .section-title', {scrollTrigger:{trigger:'#solution',start:'top 65%'},opacity:0,y:40,duration:1});
+gsap.from('.solution-card', {
+  scrollTrigger:{trigger:'.solution-grid',start:'top 75%'},
+  opacity:0,y:80,scale:0.95,stagger:0.1,duration:0.9,ease:'back.out(1.2)'
+});
+
+// Timeline
+gsap.from('.timeline-item', {
+  scrollTrigger:{trigger:'.timeline',start:'top 70%'},
+  opacity:0,x:-60,stagger:0.25,duration:1,ease:'power3.out'
+});
+
+// Results
+gsap.from('.result-card', {
+  scrollTrigger:{trigger:'.results-grid',start:'top 75%'},
+  opacity:0,y:50,scale:0.9,stagger:0.1,duration:0.8,ease:'power2.out'
+});
+
+// Result numbers counter
+document.querySelectorAll('.result-number[data-target]').forEach(el=>{
+  const target = parseInt(el.dataset.target);
+  const suffix = el.textContent.replace('0','');
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 80%',
+    once: true,
+    onEnter: ()=>{
+      gsap.to({val:0},{val:target,duration:2.5,ease:'power2.out',
+        onUpdate:function(){ el.textContent = Math.round(this.targets()[0].val) + suffix; }
+      });
+    }
   });
-  
-  // Solution cards
-  gsap.utils.toArray('.solution-card').forEach((el, i) => {
-    gsap.to(el, {
-      opacity:1, y:0, duration:0.8, delay:i*0.1, ease:'power3.out',
-      scrollTrigger:{trigger:el.parentElement, start:'top 75%', toggleActions:'play none none reverse'}
-    });
+});
+
+gsap.from('.result-visual', {scrollTrigger:{trigger:'.result-visual',start:'top 80%'},opacity:0,y:60,duration:1.2});
+
+// Testimonial
+gsap.from('#testimonial .quote-mark', {scrollTrigger:{trigger:'#testimonial',start:'top 70%'},opacity:0,scale:0.5,duration:1});
+gsap.from('#testimonial blockquote', {scrollTrigger:{trigger:'#testimonial',start:'top 65%'},opacity:0,y:40,duration:1.2});
+gsap.from('#testimonial .quote-author', {scrollTrigger:{trigger:'#testimonial',start:'top 55%'},opacity:0,y:20,duration:0.8});
+
+// CTA
+gsap.from('#cta .section-title', {scrollTrigger:{trigger:'#cta',start:'top 70%'},opacity:0,y:50,duration:1.2});
+gsap.from('#cta .section-desc', {scrollTrigger:{trigger:'#cta',start:'top 65%'},opacity:0,y:30,duration:1});
+gsap.from('#cta .hero-cta-group', {scrollTrigger:{trigger:'#cta',start:'top 60%'},opacity:0,y:30,duration:1});
+
+// Parallax depth on sections
+document.querySelectorAll('section').forEach(section=>{
+  gsap.to(section.querySelector('.content-wrapper'), {
+    scrollTrigger:{trigger:section, start:'top bottom', end:'bottom top', scrub:1},
+    y: -30
   });
-  
-  // Timeline items
-  gsap.utils.toArray('.timeline-item').forEach((el, i) => {
-    gsap.to(el, {
-      opacity:1, x:0, duration:0.8, delay:i*0.2, ease:'power3.out',
-      scrollTrigger:{trigger:el, start:'top 80%', toggleActions:'play none none reverse'}
-    });
-  });
-  
-  // Stats counter animation
-  const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting){
-        gsap.utils.toArray('.stat-item').forEach((el, i) => {
-          gsap.to(el, {opacity:1, y:0, duration:0.8, delay:i*0.15, ease:'power3.out'});
-        });
-        document.querySelectorAll('.stat-num').forEach(el => {
-          const target = parseInt(el.dataset.target);
-          const suffix = el.dataset.suffix;
-          let current = 0;
-          const increment = target / 60;
-          const counter = setInterval(() => {
-            current += increment;
-            if(current >= target){
-              current = target;
-              clearInterval(counter);
-            }
-            el.textContent = Math.floor(current) + suffix;
-          }, 25);
-        });
-        statsObserver.disconnect();
-      }
-    });
-  }, {threshold:0.3});
-  statsObserver.observe(document.querySelector('.stats-row'));
-  
-  // Testimonial
-  gsap.to('.testimonial-quote', {
-    opacity:1, duration:1.2, ease:'power2.out',
-    scrollTrigger:{trigger:'.testimonial-section', start:'top 65%', toggleActions:'play none none reverse'}
-  });
-  gsap.to('.testimonial-author', {
-    opacity:1, duration:0.8, delay:0.4,
-    scrollTrigger:{trigger:'.testimonial-section', start:'top 60%', toggleActions:'play none none reverse'}
-  });
-  
-  // CTA
-  gsap.to('.cta-section h2', {
-    opacity:1, duration:1, ease:'power3.out',
-    scrollTrigger:{trigger:'.cta-section', start:'top 70%', toggleActions:'play none none reverse'}
-  });
-  gsap.to('.cta-section p', {
-    opacity:1, duration:0.8, delay:0.2,
-    scrollTrigger:{trigger:'.cta-section', start:'top 70%', toggleActions:'play none none reverse'}
-  });
-  gsap.to('.cta-btn-primary', {
-    opacity:1, duration:0.8, delay:0.4,
-    scrollTrigger:{trigger:'.cta-section', start:'top 65%', toggleActions:'play none none reverse'}
-  });
-  
-  // Parallax depth on images
-  gsap.utils.toArray('.story-visual img').forEach(img => {
-    gsap.to(img, {
-      y: -30, ease:'none',
-      scrollTrigger:{trigger:img, start:'top bottom', end:'bottom top', scrub:1}
-    });
-  });
-  
-  // Glow orbs parallax
-  gsap.utils.toArray('.glow-orb').forEach(orb => {
-    gsap.to(orb, {
-      y: -50, x: 20, ease:'none',
-      scrollTrigger:{trigger:orb.parentElement, start:'top bottom', end:'bottom top', scrub:1.5}
-    });
-  });
+});
+
+updateLoader(90);
+
+// ============ LOAD IMAGES & FINISH ============
+function setImageSrc(id, url){
+  const el = document.getElementById(id);
+  if(el && url && url !== '') el.src = url;
 }
 
-// Hero particles (CSS-based)
-const hp = document.getElementById('hero-particles');
-for(let i = 0; i < 30; i++){
-  const p = document.createElement('div');
-  p.className = 'hero-particle';
-  p.style.cssText = `left:${Math.random()*100}%;width:${Math.random()*4+1}px;height:${Math.random()*4+1}px;animation-duration:${Math.random()*8+4}s;animation-delay:${Math.random()*5}s;`;
-  hp.appendChild(p);
-}
+// Set images
+setImageSrc('transformImg', IMAGES.transform);
+setImageSrc('resultImg', IMAGES.results);
+
+// Finish loading
+setTimeout(()=>{
+  updateLoader(100);
+  setTimeout(()=>{ loader.classList.add('hidden'); }, 600);
+}, 800);
+
+// Smooth scroll for anchors
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if(target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
 
 })();
 </script>
