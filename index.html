@@ -3,779 +3,1064 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agents — Transform Your Business | Hermes by Nous Research</title>
-<meta name="description" content="Discover how AI agents like Hermes revolutionize business operations. An immersive 3D experience showcasing the future of intelligent automation.">
+<title>AI Business OS — Transform Your Business with Intelligent Automation</title>
+<meta name="description" content="Discover how AI-powered business automation eliminates chaos, reduces costs by 60%, and scales your operations effortlessly.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
---bg:#050510;--fg:#e8e8f0;--accent:#6c5ce7;--accent2:#00cec9;--accent3:#fd79a8;
---glow:rgba(108,92,231,0.4);--glass:rgba(255,255,255,0.04);
+--bg:#0a0a12;--surface:#12121f;--card:#1a1a2e;--border:#2a2a40;
+--primary:#6366f1;--primary-light:#818cf8;--accent:#22d3ee;
+--success:#10b981;--warning:#f59e0b;--danger:#ef4444;
+--text:#f1f5f9;--text-muted:#94a3b8;--text-dim:#64748b;
 }
-html{scroll-behavior:auto;overflow-x:hidden}
-body{background:var(--bg);color:var(--fg);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-#webgl-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.loading-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s,visibility .8s}
-.loading-screen.hidden{opacity:0;visibility:hidden}
-.loader-ring{width:60px;height:60px;border:3px solid rgba(108,92,231,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loader-text{margin-top:24px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:3px;text-transform:uppercase;color:rgba(232,232,240,0.5)}
-.loader-progress{width:200px;height:2px;background:rgba(255,255,255,0.1);border-radius:1px;margin-top:16px;overflow:hidden}
-.loader-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .3s}
-
-/* Sections */
-section{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px}
-.content-wrapper{max-width:1200px;width:100%;margin:0 auto;position:relative}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+canvas#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.section{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px}
+.container{max-width:1200px;width:100%;margin:0 auto}
 
 /* Navigation */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(5,5,16,0.6);border-bottom:1px solid rgba(255,255,255,0.05);transition:transform .3s}
-nav.hidden{transform:translateY(-100%)}
-.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav-links{display:flex;gap:32px;list-style:none}
-.nav-links a{color:rgba(232,232,240,0.6);text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.5px;transition:color .3s}
-.nav-links a:hover{color:var(--fg)}
-.nav-cta{padding:10px 24px;background:linear-gradient(135deg,var(--accent),#8b5cf6);border:none;border-radius:8px;color:white;font-weight:600;font-size:14px;cursor:pointer;transition:transform .2s,box-shadow .2s;text-decoration:none}
-.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--glow)}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,18,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(99,102,241,0.1);transition:all 0.3s}
+nav.scrolled{padding:10px 24px;background:rgba(10,10,18,0.95)}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--primary-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.3s}
+.nav-links a:hover{color:var(--accent)}
+.nav-cta{background:linear-gradient(135deg,var(--primary),#7c3aed);color:#fff!important;padding:10px 24px;border-radius:50px;font-weight:600;transition:transform 0.3s,box-shadow 0.3s}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,0.4)}
+.mobile-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px}
+.mobile-toggle span{width:24px;height:2px;background:var(--text);transition:all 0.3s}
 
 /* Hero */
-#hero{min-height:100vh;padding-top:120px;text-align:center}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:100px;background:var(--glass);border:1px solid rgba(108,92,231,0.3);font-size:13px;color:var(--accent2);letter-spacing:1px;text-transform:uppercase;font-weight:500;margin-bottom:32px}
-.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-h1.hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(40px,8vw,96px);font-weight:800;line-height:1.05;margin-bottom:24px;letter-spacing:-2px}
-h1.hero-title .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% 200%;animation:gradientShift 4s ease infinite}
-@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.hero-sub{font-size:clamp(16px,2vw,22px);color:rgba(232,232,240,0.6);max-width:680px;margin:0 auto 48px;line-height:1.6;font-weight:300}
-.hero-cta-group{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.btn-primary{padding:16px 40px;background:linear-gradient(135deg,var(--accent),#8b5cf6);border:none;border-radius:12px;color:white;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px var(--glow)}
-.btn-secondary{padding:16px 40px;background:var(--glass);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:var(--fg);font-size:16px;font-weight:500;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;backdrop-filter:blur(10px)}
-.btn-secondary:hover{border-color:rgba(108,92,231,0.5);background:rgba(108,92,231,0.1)}
-.scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px}
-.scroll-indicator span{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(232,232,240,0.3)}
-.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollPulse 2s ease-in-out infinite}
-@keyframes scrollPulse{0%,100%{opacity:1;transform:scaleY(1)}50%{opacity:.3;transform:scaleY(.5)}}
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.hero-bg-image{position:absolute;inset:0;background:url('https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/a7a38472-cb8d-4f2d-8b86-bb95ffd94c8a') center/cover no-repeat;opacity:0.25;z-index:0}
+.hero-content{position:relative;z-index:2;max-width:900px;padding:0 24px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);padding:8px 20px;border-radius:50px;font-size:0.85rem;color:var(--primary-light);margin-bottom:24px}
+.hero-badge .pulse{width:8px;height:8px;background:var(--success);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.5)}}
+.hero-content h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;line-height:1.1;margin-bottom:24px;opacity:0;transform:translateY(40px)}
+.hero-content h1 .gradient{background:linear-gradient(135deg,var(--primary-light),var(--accent),var(--success));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-content p{font-size:clamp(1rem,2vw,1.25rem);color:var(--text-muted);max-width:650px;margin:0 auto 40px;opacity:0;transform:translateY(30px)}
+.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(20px)}
+.btn-primary{background:linear-gradient(135deg,var(--primary),#7c3aed);color:#fff;padding:16px 36px;border-radius:50px;font-size:1.05rem;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(99,102,241,0.5)}
+.btn-secondary{background:transparent;color:var(--text);padding:16px 36px;border-radius:50px;font-size:1.05rem;font-weight:600;text-decoration:none;border:1px solid var(--border);cursor:pointer;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-3px)}
+.scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-dim);font-size:0.8rem;animation:bobble 2s ease-in-out infinite}
+@keyframes bobble{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}
+.scroll-indicator svg{width:24px;height:24px;stroke:var(--text-dim)}
 
-/* Stats bar */
-.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:80px;border-radius:16px;overflow:hidden}
-.stat-item{padding:32px 24px;background:var(--glass);text-align:center;backdrop-filter:blur(10px)}
-.stat-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:700;background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block}
-.stat-label{font-size:13px;color:rgba(232,232,240,0.5);margin-top:8px;letter-spacing:1px;text-transform:uppercase}
+/* Stats Bar */
+#stats{background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(34,211,238,0.1));border-top:1px solid rgba(99,102,241,0.2);border-bottom:1px solid rgba(99,102,241,0.2);padding:60px 24px;position:relative;z-index:1}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;max-width:1000px;margin:0 auto;text-align:center}
+.stat-item{opacity:0;transform:translateY(30px)}
+.stat-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{color:var(--text-muted);font-size:0.9rem;margin-top:4px}
 
-/* Pain Points */
-#pain{background:radial-gradient(ellipse at 30% 50%,rgba(253,121,168,0.05),transparent 60%)}
-.section-label{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--accent3);font-weight:600;margin-bottom:16px}
-.section-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:700;line-height:1.15;margin-bottom:24px;letter-spacing:-1px}
-.section-desc{font-size:18px;color:rgba(232,232,240,0.6);max-width:600px;line-height:1.7;font-weight:300}
+/* Pain Points Section */
+#pain-points{background:linear-gradient(180deg,transparent,rgba(239,68,68,0.03),transparent)}
+.section-header{text-align:center;margin-bottom:64px}
+.section-tag{display:inline-block;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:12px}
+.section-header h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:16px}
+.section-header p{color:var(--text-muted);max-width:600px;margin:0 auto;font-size:1.05rem}
+.pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.pain-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;opacity:0;transform:translateY(40px);transition:all 0.4s}
+.pain-card:hover{border-color:var(--danger);transform:translateY(-4px);box-shadow:0 20px 60px rgba(239,68,68,0.15)}
+.pain-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
+.pain-card:nth-child(1) .pain-icon{background:rgba(239,68,68,0.15)}
+.pain-card:nth-child(2) .pain-icon{background:rgba(245,158,11,0.15)}
+.pain-card:nth-child(3) .pain-icon{background:rgba(239,68,68,0.15)}
+.pain-card:nth-child(4) .pain-icon{background:rgba(245,158,11,0.15)}
+.pain-card:nth-child(5) .pain-icon{background:rgba(239,68,68,0.15)}
+.pain-card:nth-child(6) .pain-icon{background:rgba(245,158,11,0.15)}
+.pain-card h3{font-size:1.2rem;font-weight:700;margin-bottom:10px}
+.pain-card p{color:var(--text-muted);font-size:0.95rem;line-height:1.7}
+.pain-stat{display:inline-block;background:rgba(239,68,68,0.1);color:var(--danger);padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;margin-top:12px}
 
-.pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:60px}
-.pain-card{padding:36px;background:var(--glass);border:1px solid rgba(255,255,255,0.06);border-radius:16px;backdrop-filter:blur(10px);transition:all .4s;position:relative;overflow:hidden}
-.pain-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent3),transparent);opacity:0;transition:opacity .4s}
-.pain-card:hover{border-color:rgba(253,121,168,0.2);transform:translateY(-4px)}
-.pain-card:hover::before{opacity:1}
-.pain-icon{width:48px;height:48px;border-radius:12px;background:rgba(253,121,168,0.1);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px}
-.pain-card h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin-bottom:12px}
-.pain-card p{font-size:15px;color:rgba(232,232,240,0.5);line-height:1.6}
+/* Chaos Visualization */
+#chaos-viz{padding:100px 24px;overflow:hidden}
+.chaos-container{max-width:1000px;margin:0 auto;text-align:center}
+.chaos-visual{position:relative;height:400px;margin:48px 0;border-radius:24px;overflow:hidden;background:linear-gradient(135deg,rgba(239,68,68,0.05),rgba(245,158,11,0.05));border:1px solid var(--border)}
+.chaos-canvas{width:100%;height:100%}
+.chaos-item{position:absolute;padding:12px 20px;border-radius:12px;font-size:0.85rem;font-weight:600;white-space:nowrap;opacity:0}
+.chaos-item.email{background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.3)}
+.chaos-item.task{background:rgba(245,158,11,0.2);color:#fcd34d;border:1px solid rgba(245,158,11,0.3)}
+.chaos-item.call{background:rgba(168,85,247,0.2);color:#d8b4fe;border:1px solid rgba(168,85,247,0.3)}
+.chaos-item.invoice{background:rgba(34,211,238,0.2);color:#67e8f9;border:1px solid rgba(34,211,238,0.3)}
+.chaos-item.report{background:rgba(16,185,129,0.2);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3)}
 
-/* Transformation */
-#transform{min-height:120vh}
-.transform-visual{position:relative;width:100%;max-width:900px;margin:60px auto 0;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08)}
-.transform-visual img{width:100%;height:100%;object-fit:cover}
-.transform-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,5,16,0.7),rgba(5,5,16,0.3));display:flex;align-items:center;justify-content:center}
-.transform-steps{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;padding:40px}
-.step-box{padding:24px;background:rgba(0,0,0,0.4);border-radius:12px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);text-align:center}
-.step-box.before{border-color:rgba(253,121,168,0.3)}
-.step-box.after{border-color:rgba(0,206,201,0.3)}
-.step-box h4{font-size:14px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.step-box.before h4{color:var(--accent3)}
-.step-box.after h4{color:var(--accent2)}
-.step-box p{font-size:13px;color:rgba(232,232,240,0.6);line-height:1.5}
-.arrow-icon{font-size:32px;color:var(--accent);animation:arrowPulse 2s ease infinite}
-@keyframes arrowPulse{0%,100%{transform:translateX(0);opacity:1}50%{transform:translateX(8px);opacity:.5}}
+/* Transformation Section */
+#transformation{background:linear-gradient(180deg,transparent,rgba(99,102,241,0.03),transparent)}
+.transform-content{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.transform-visual{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:4/3;background:var(--card);border:1px solid var(--border)}
+.transform-visual img{width:100%;height:100%;object-fit:cover;opacity:0.7}
+.transform-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(34,211,238,0.2));display:flex;flex-direction:column;align-items:center;justify-content:center}
+.transform-anim{width:200px;height:200px;position:relative}
+.orbit-ring{position:absolute;inset:0;border:2px solid rgba(99,102,241,0.3);border-radius:50%;animation:spin 8s linear infinite}
+.orbit-ring:nth-child(2){inset:20px;border-color:rgba(34,211,238,0.3);animation-duration:12s;animation-direction:reverse}
+.orbit-ring:nth-child(3){inset:40px;border-color:rgba(16,185,129,0.3);animation-duration:6s}
+.orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 0 40px rgba(99,102,241,0.5)}
+.orbit-dot{position:absolute;width:12px;height:12px;border-radius:50%;top:-6px;left:50%;transform:translateX(-50%)}
+.orbit-ring:nth-child(1) .orbit-dot{background:var(--primary-light)}
+.orbit-ring:nth-child(2) .orbit-dot{background:var(--accent)}
+.orbit-ring:nth-child(3) .orbit-dot{background:var(--success)}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.transform-text{opacity:0;transform:translateX(40px)}
+.transform-text h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:700;margin-bottom:20px}
+.transform-text p{color:var(--text-muted);font-size:1.05rem;line-height:1.8;margin-bottom:24px}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:16px}
+.feature-list li{display:flex;align-items:flex-start;gap:14px;font-size:0.95rem}
+.feature-check{width:28px;height:28px;min-width:28px;background:rgba(16,185,129,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--success);font-weight:700;font-size:0.9rem}
 
-/* Solution */
-#solution{background:radial-gradient(ellipse at 70% 50%,rgba(108,92,231,0.06),transparent 60%)}
-.solution-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;margin-top:60px}
-.solution-card{padding:40px;background:linear-gradient(135deg,var(--glass),rgba(108,92,231,0.03));border:1px solid rgba(108,92,231,0.12);border-radius:20px;backdrop-filter:blur(10px);transition:all .4s;position:relative}
-.solution-card::after{content:'';position:absolute;inset:-1px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:0;transition:opacity .4s;z-index:-1}
-.solution-card:hover::after{opacity:.15}
-.solution-card:hover{transform:translateY(-6px);border-color:rgba(108,92,231,0.3)}
-.solution-icon{font-size:36px;margin-bottom:20px;display:block}
-.solution-card h3{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;margin-bottom:12px}
-.solution-card p{font-size:15px;color:rgba(232,232,240,0.5);line-height:1.7}
-.solution-tag{display:inline-block;margin-top:16px;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;background:rgba(108,92,231,0.15);color:var(--accent);letter-spacing:.5px}
+/* Solutions Section */
+#solutions{padding:100px 24px}
+.solutions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:28px;margin-top:64px}
+.solution-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;opacity:0;transform:translateY(40px);transition:all 0.4s;position:relative;overflow:hidden}
+.solution-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform 0.5s}
+.solution-card:hover::before{transform:scaleX(1)}
+.solution-card:hover{transform:translateY(-6px);border-color:var(--primary);box-shadow:0 24px 60px rgba(99,102,241,0.15)}
+.solution-number{font-family:'Space Grotesk',sans-serif;font-size:3rem;font-weight:800;background:linear-gradient(135deg,rgba(99,102,241,0.3),rgba(34,211,238,0.3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px;line-height:1}
+.solution-card h3{font-size:1.25rem;font-weight:700;margin-bottom:12px}
+.solution-card p{color:var(--text-muted);font-size:0.95rem;line-height:1.7;margin-bottom:16px}
+.solution-tag{display:inline-block;background:rgba(99,102,241,0.1);color:var(--primary-light);padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;margin-right:6px;margin-bottom:6px}
 
-/* How it works */
-#how{min-height:100vh}
-.timeline{position:relative;margin-top:80px;padding-left:60px}
-.timeline::before{content:'';position:absolute;left:24px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--accent3))}
-.timeline-item{position:relative;margin-bottom:80px;padding-left:40px}
-.timeline-dot{position:absolute;left:-40px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px var(--glow);border:3px solid var(--bg)}
-.timeline-item:nth-child(2) .timeline-dot{background:var(--accent2)}
-.timeline-item:nth-child(3) .timeline-dot{background:var(--accent3)}
-.timeline-item:nth-child(4) .timeline-dot{background:linear-gradient(135deg,var(--accent),var(--accent2))}
-.timeline-step{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px}
-.timeline-item h3{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:600;margin-bottom:12px}
-.timeline-item p{font-size:16px;color:rgba(232,232,240,0.5);line-height:1.7;max-width:500px}
+/* Results Section */
+#results{background:linear-gradient(180deg,transparent,rgba(16,185,129,0.03),transparent)}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;margin-top:64px}
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;text-align:center;opacity:0;transform:scale(0.9);transition:all 0.4s}
+.result-card:hover{transform:scale(1.03);border-color:var(--success);box-shadow:0 20px 60px rgba(16,185,129,0.15)}
+.result-icon{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px}
+.result-card:nth-child(1) .result-icon{background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(99,102,241,0.05))}
+.result-card:nth-child(2) .result-icon{background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(16,185,129,0.05))}
+.result-card:nth-child(3) .result-icon{background:linear-gradient(135deg,rgba(34,211,238,0.2),rgba(34,211,238,0.05))}
+.result-card:nth-child(4) .result-icon{background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(245,158,11,0.05))}
+.result-metric{font-family:'Space Grotesk',sans-serif;font-size:2.5rem;font-weight:800;margin-bottom:8px}
+.result-card:nth-child(1) .result-metric{color:var(--primary-light)}
+.result-card:nth-child(2) .result-metric{color:var(--success)}
+.result-card:nth-child(3) .result-metric{color:var(--accent)}
+.result-card:nth-child(4) .result-metric{color:var(--warning)}
+.result-card h3{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.result-card p{color:var(--text-muted);font-size:0.9rem}
 
-/* Results */
-#results{background:radial-gradient(ellipse at 50% 50%,rgba(0,206,201,0.05),transparent 60%)}
-.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;margin-top:60px}
-.result-card{padding:36px;text-align:center;background:var(--glass);border:1px solid rgba(255,255,255,0.06);border-radius:16px;backdrop-filter:blur(10px);transition:all .4s}
-.result-card:hover{border-color:rgba(0,206,201,0.3);transform:scale(1.03)}
-.result-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:800;background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.result-label{font-size:15px;color:rgba(232,232,240,0.6);margin-top:8px;line-height:1.5}
-.result-visual{margin-top:60px;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);aspect-ratio:16/9;position:relative}
-.result-visual img{width:100%;height:100%;object-fit:cover}
-.result-visual::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--bg),transparent 40%)}
+/* Timeline */
+#timeline{padding:100px 24px}
+.timeline-track{position:relative;max-width:800px;margin:64px auto 0;padding-left:40px}
+.timeline-line{position:absolute;left:16px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--primary),var(--accent),var(--success))}
+.timeline-item{position:relative;padding:0 0 48px 32px;opacity:0;transform:translateX(-30px)}
+.timeline-dot{position:absolute;left:-32px;top:4px;width:16px;height:16px;border-radius:50%;border:3px solid var(--primary);background:var(--bg)}
+.timeline-item:nth-child(2) .timeline-dot{border-color:var(--accent)}
+.timeline-item:nth-child(3) .timeline-dot{border-color:var(--success)}
+.timeline-item:nth-child(4) .timeline-dot{border-color:var(--warning)}
+.timeline-week{font-size:0.8rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.timeline-item h3{font-size:1.15rem;font-weight:700;margin-bottom:8px}
+.timeline-item p{color:var(--text-muted);font-size:0.95rem;line-height:1.7}
 
-/* Testimonial */
-#testimonial{text-align:center;min-height:80vh}
-.quote-mark{font-size:80px;color:var(--accent);font-family:Georgia,serif;line-height:1;opacity:.3}
-blockquote{font-size:clamp(20px,3vw,32px);font-weight:300;line-height:1.6;max-width:800px;margin:0 auto 32px;font-style:italic;color:rgba(232,232,240,0.85)}
-.quote-author{font-size:16px;color:var(--accent2);font-weight:600}
-.quote-role{font-size:14px;color:rgba(232,232,240,0.4);margin-top:4px}
+/* Quiz Section */
+#quiz{padding:100px 24px;background:linear-gradient(180deg,transparent,rgba(99,102,241,0.05),transparent)}
+.quiz-container{max-width:700px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:48px;position:relative;overflow:hidden}
+.quiz-container::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent),var(--success))}
+.quiz-progress{display:flex;gap:8px;margin-bottom:32px}
+.quiz-dot{flex:1;height:4px;border-radius:4px;background:var(--border);transition:all 0.5s}
+.quiz-dot.active{background:var(--primary)}
+.quiz-dot.done{background:var(--success)}
+.quiz-step{display:none}
+.quiz-step.active{display:block;animation:fadeUp 0.5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.quiz-step h3{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:8px}
+.quiz-step p{color:var(--text-muted);font-size:0.95rem;margin-bottom:24px}
+.quiz-options{display:flex;flex-direction:column;gap:12px}
+.quiz-option{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:18px 22px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:14px;font-size:0.95rem}
+.quiz-option:hover{border-color:var(--primary);background:rgba(99,102,241,0.05)}
+.quiz-option.selected{border-color:var(--primary);background:rgba(99,102,241,0.1)}
+.quiz-option .check{width:24px;height:24px;min-width:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all 0.3s;font-size:0.7rem;color:transparent}
+.quiz-option.selected .check{background:var(--primary);border-color:var(--primary);color:#fff}
+.quiz-nav{display:flex;justify-content:space-between;margin-top:28px}
+.quiz-btn{padding:12px 28px;border-radius:50px;font-size:0.95rem;font-weight:600;cursor:pointer;border:none;transition:all 0.3s}
+.quiz-btn.next{background:linear-gradient(135deg,var(--primary),#7c3aed);color:#fff}
+.quiz-btn.next:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,0.4)}
+.quiz-btn.next:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+.quiz-btn.back{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
+.quiz-btn.back:hover{border-color:var(--text-muted)}
+.quiz-result{text-align:center;animation:fadeUp 0.6s ease}
+.quiz-score{font-family:'Space Grotesk',sans-serif;font-size:4rem;font-weight:800;margin:20px 0 8px}
+.quiz-score.high{background:linear-gradient(135deg,var(--danger),var(--warning));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.quiz-score.medium{background:linear-gradient(135deg,var(--warning),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.quiz-score.low{background:linear-gradient(135deg,var(--success),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.quiz-result h3{font-size:1.5rem;font-weight:700;margin-bottom:12px}
+.quiz-result p{color:var(--text-muted);font-size:1rem;line-height:1.7;margin-bottom:28px}
 
-/* CTA */
-#cta{text-align:center;min-height:80vh;position:relative}
-#cta .section-title{max-width:700px;margin:0 auto 24px}
-#cta .section-desc{max-width:600px;margin:0 auto 48px}
-.cta-glow{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:.4}
+/* Contact / Lead Form */
+#contact{padding:100px 24px}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.contact-info h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:700;margin-bottom:16px}
+.contact-info p{color:var(--text-muted);font-size:1.05rem;line-height:1.8;margin-bottom:32px}
+.contact-benefits{list-style:none;display:flex;flex-direction:column;gap:16px}
+.contact-benefits li{display:flex;align-items:center;gap:12px;font-size:0.95rem}
+.contact-benefits .icon{width:36px;height:36px;min-width:36px;border-radius:10px;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.contact-form{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px}
+.contact-form h3{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:24px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:0.85rem;font-weight:600;color:var(--text-muted);margin-bottom:8px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:0.95rem;transition:all 0.3s;outline:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.15)}
+.form-group textarea{resize:vertical;min-height:100px}
+.form-group select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+.form-group select option{background:var(--surface);color:var(--text)}
+.submit-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--primary),#7c3aed);color:#fff;border:none;border-radius:14px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(99,102,241,0.4)}
+.submit-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.form-success{display:none;text-align:center;padding:40px 20px;animation:fadeUp 0.5s ease}
+.form-success .success-icon{width:80px;height:80px;background:rgba(16,185,129,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem}
+.form-success h3{font-size:1.4rem;font-weight:700;color:var(--success);margin-bottom:12px}
+.form-success p{color:var(--text-muted);font-size:1rem;line-height:1.7}
 
 /* Footer */
-footer{position:relative;z-index:1;padding:60px 40px 30px;border-top:1px solid rgba(255,255,255,0.05);text-align:center}
-footer p{font-size:13px;color:rgba(232,232,240,0.3)}
-footer a{color:var(--accent);text-decoration:none}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:48px 24px 32px;position:relative;z-index:1}
+.footer-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.footer-brand{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,var(--primary-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.footer-links{display:flex;gap:24px}
+.footer-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem;transition:color 0.3s}
+.footer-links a:hover{color:var(--accent)}
+.footer-copy{width:100%;text-align:center;padding-top:24px;border-top:1px solid var(--border);margin-top:24px;color:var(--text-dim);font-size:0.85rem}
 
-/* Responsive */
+/* Mobile Responsive */
 @media(max-width:768px){
-  nav{padding:16px 20px}
-  .nav-links{display:none}
-  section{padding:60px 20px}
-  .stats-bar{grid-template-columns:repeat(2,1fr)}
-  .pain-grid,.solution-grid,.results-grid{grid-template-columns:1fr}
-  .timeline{padding-left:40px}
-  .timeline::before{left:14px}
-  .timeline-item{padding-left:24px}
-  .timeline-dot{left:-28px}
-  .transform-steps{grid-template-columns:1fr;gap:16px}
-  .arrow-icon{transform:rotate(90deg)}
-  .hero-cta-group{flex-direction:column;align-items:center}
+.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,10,18,0.98);backdrop-filter:blur(20px);flex-direction:column;padding:24px;gap:16px;border-bottom:1px solid var(--border)}
+.nav-links.open{display:flex}
+.mobile-toggle{display:flex}
+.stats-grid{grid-template-columns:repeat(2,1fr);gap:20px}
+.pain-grid{grid-template-columns:1fr}
+.transform-content{grid-template-columns:1fr;gap:32px}
+.transform-text{transform:none!important}
+.solutions-grid{grid-template-columns:1fr}
+.results-grid{grid-template-columns:repeat(2,1fr)}
+.contact-grid{grid-template-columns:1fr}
+.timeline-track{padding-left:32px}
+.footer-content{flex-direction:column;text-align:center}
+.footer-links{justify-content:center}
+.chaos-visual{height:300px}
+}
+@media(max-width:480px){
+.stats-grid{grid-template-columns:1fr 1fr}
+.results-grid{grid-template-columns:1fr}
+.quiz-container{padding:28px 20px}
+.contact-form{padding:28px 20px}
 }
 
-/* Particle overlay */
-.particle-field{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4}
-
-/* Floating elements */
-.float-element{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;opacity:.15}
+/* Animations helper */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity 0.8s ease,transform 0.8s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+.slide-left{opacity:0;transform:translateX(-40px);transition:opacity 0.8s ease,transform 0.8s ease}
+.slide-left.visible{opacity:1;transform:translateX(0)}
+.slide-right{opacity:0;transform:translateX(40px);transition:opacity 0.8s ease,transform 0.8s ease}
+.slide-right.visible{opacity:1;transform:translateX(0)}
 </style>
 </head>
 <body>
 
-<!-- Loading Screen -->
-<div class="loading-screen" id="loader">
-  <div class="loader-ring"></div>
-  <div class="loader-text">Initializing Experience</div>
-  <div class="loader-progress"><div class="loader-bar" id="loaderBar"></div></div>
-</div>
-
-<!-- WebGL Canvas -->
-<canvas id="webgl-canvas"></canvas>
-
 <!-- Navigation -->
-<nav id="mainNav">
-  <div class="logo">HERMES AI</div>
-  <ul class="nav-links">
-    <li><a href="#pain">The Problem</a></li>
-    <li><a href="#solution">Solution</a></li>
-    <li><a href="#how">How It Works</a></li>
-    <li><a href="#results">Results</a></li>
-  </ul>
-  <a href="#cta" class="nav-cta">Get Started</a>
+<nav id="main-nav">
+<a href="#hero" class="nav-logo">AI Business OS</a>
+<div class="mobile-toggle" id="mobileToggle" role="button" aria-label="Toggle navigation menu" tabindex="0">
+<span></span><span></span><span></span>
+</div>
+<div class="nav-links" id="navLinks">
+<a href="#pain-points">The Problem</a>
+<a href="#solutions">Solutions</a>
+<a href="#results">Results</a>
+<a href="#quiz">Free Assessment</a>
+<a href="#contact" class="nav-cta">Get Started</a>
+</div>
 </nav>
 
+<!-- 3D Background Canvas -->
+<canvas id="bg-canvas"></canvas>
+
 <!-- Hero Section -->
-<section id="hero">
-  <div class="content-wrapper" style="text-align:center">
-    <div class="hero-badge"><span class="dot"></span> Now Available</div>
-    <h1 class="hero-title">
-      The Future of Work<br>Is <span class="gradient">Autonomous</span>
-    </h1>
-    <p class="hero-sub">AI agents don't just assist — they execute. Discover how Hermes transforms entire business operations with intelligent, autonomous agents that think, decide, and deliver.</p>
-    <div class="hero-cta-group">
-      <a href="#cta" class="btn-primary">Deploy Your Agent ↗</a>
-      <a href="#pain" class="btn-secondary">See the Story ↓</a>
-    </div>
-    <div class="stats-bar">
-      <div class="stat-item"><span class="stat-number" data-target="10">0</span><span class="stat-label">Hours Saved Weekly</span></div>
-      <div class="stat-item"><span class="stat-number" data-target="300">0</span><span class="stat-label">% ROI Average</span></div>
-      <div class="stat-item"><span class="stat-number" data-target="85">0</span><span class="stat-label">% Task Automation</span></div>
-      <div class="stat-item"><span class="stat-number" data-target="24">0</span><span class="stat-label">/7 Operations</span></div>
-    </div>
-  </div>
-  <div class="scroll-indicator">
-    <span>Scroll to explore</span>
-    <div class="scroll-line"></div>
-  </div>
+<section id="hero" class="section">
+<div class="hero-bg-image"></div>
+<div class="hero-content">
+<div class="hero-badge"><span class="pulse"></span> AI-Powered Business Automation</div>
+<h1>Stop Running Your Business<br>in <span class="gradient">Organized Chaos</span></h1>
+<p>Your business deserves an AI-powered operating system that handles operations, automates workflows, and frees you to focus on growth — not firefighting.</p>
+<div class="hero-buttons">
+<button class="btn-primary" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">Take Free Assessment <span>→</span></button>
+<button class="btn-secondary" onclick="document.getElementById('pain-points').scrollIntoView({behavior:'smooth'})">See How It Works</button>
+</div>
+</div>
+<div class="scroll-indicator">
+<span>Scroll to explore</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+</div>
 </section>
 
-<!-- Pain Points Section -->
-<section id="pain">
-  <div class="content-wrapper">
-    <div class="section-label">The Problem</div>
-    <div class="section-title">Your Team Is Drowning<br>in Manual Work</div>
-    <p class="section-desc">Every day, skilled professionals waste hours on repetitive tasks that drain creativity, slow growth, and cost millions in lost productivity.</p>
-    <div class="pain-grid">
-      <div class="pain-card">
-        <div class="pain-icon">⏰</div>
-        <h3>Time Hemorrhage</h3>
-        <p>Teams spend 60% of their day on tasks that could be automated — data entry, report generation, email management, and scheduling.</p>
-      </div>
-      <div class="pain-card">
-        <div class="pain-icon">📊</div>
-        <h3>Data Overload</h3>
-        <p>Critical insights are buried in spreadsheets, emails, and disconnected tools. By the time you find what you need, the opportunity is gone.</p>
-      </div>
-      <div class="pain-card">
-        <div class="pain-icon">🔄</div>
-        <h3>Process Chaos</h3>
-        <p>Workflows break when key people are out. Tribal knowledge creates bottlenecks. Scaling means hiring more people to do the same work.</p>
-      </div>
-      <div class="pain-card">
-        <div class="pain-icon">💸</div>
-        <h3>Hidden Costs</h3>
-        <p>Manual errors cost businesses an average of $12,900 per employee annually. Multiply that across your organization and the number is staggering.</p>
-      </div>
-      <div class="pain-card">
-        <div class="pain-icon">😰</div>
-        <h3>Talent Burnout</h3>
-        <p>Your best people didn't sign up to copy-paste data. 73% of employees say repetitive tasks make them consider leaving their jobs.</p>
-      </div>
-      <div class="pain-card">
-        <div class="pain-icon">🌙</div>
-        <h3>Limited Hours</h3>
-        <p>Business doesn't stop at 5 PM. Opportunities are lost overnight, customer queries go unanswered, and competitors who automate pull ahead.</p>
-      </div>
-    </div>
-  </div>
+<!-- Stats Bar -->
+<section id="stats">
+<div class="stats-grid">
+<div class="stat-item"><div class="stat-number" data-count="73">0%</div><div class="stat-label">of SMBs Lose Revenue to Inefficiency</div></div>
+<div class="stat-item"><div class="stat-number" data-count="40">0hrs</div><div class="stat-label">Wasted Weekly on Manual Tasks</div></div>
+<div class="stat-item"><div class="stat-number" data-count="60">0%</div><div class="stat-label">Cost Reduction with AI Agents</div></div>
+<div class="stat-item"><div class="stat-number" data-count="3">0x</div><div class="stat-label">Faster Response Times</div></div>
+</div>
+</section>
+
+<!-- Pain Points -->
+<section id="pain-points" class="section">
+<div class="container">
+<div class="section-header">
+<div class="section-tag">⚡ The Problem</div>
+<h2>Running a Business Shouldn't Feel Like This</h2>
+<p>Sound familiar? These pain points cost businesses thousands every month.</p>
+</div>
+<div class="pain-grid">
+<div class="pain-card">
+<div class="pain-icon">📧</div>
+<h3>Email & Message Overload</h3>
+<p>Drowning in emails, Slack messages, and DMs across 5+ platforms. Important requests fall through the cracks daily.</p>
+<span class="pain-stat">28% of work week spent on email</span>
+</div>
+<div class="pain-card">
+<div class="pain-icon">🔄</div>
+<h3>Repetitive Manual Processes</h3>
+<p>Copying data between spreadsheets, sending follow-up emails, and generating reports manually. The same tasks, every single day.</p>
+<span class="pain-stat">$4,500/month wasted per employee</span>
+</div>
+<div class="pain-card">
+<div class="pain-icon">📊</div>
+<h3>Scattered Data & No Visibility</h3>
+<p>Critical information lives in 10 different tools. Getting a clear picture of your business requires hours of detective work.</p>
+<span class="pain-stat">3.6 hours/day searching for info</span>
+</div>
+<div class="pain-card">
+<div class="pain-icon">🔥</div>
+<h3>Constant Firefighting</h3>
+<p>Every day is reactive. You planned to work ON the business, but you're stuck working IN it putting out fires.</p>
+<span class="pain-stat">67% of leaders feel burned out</span>
+</div>
+<div class="pain-card">
+<div class="pain-icon">💸</div>
+<h3>Revenue Leakage</h3>
+<p>Leads go cold, follow-ups are missed, invoices are late, and opportunities slip away because no one is tracking them.</p>
+<span class="pain-stat">$75K+ lost annually per business</span>
+</div>
+<div class="pain-card">
+<div class="pain-icon">📈</div>
+<h3>Can't Scale Without Breaking</h3>
+<p>Growth means hiring more people to do the same manual work. Your processes don't scale — they just get more chaotic.</p>
+<span class="pain-stat">40% of SMBs fail to scale</span>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Chaos Visualization -->
+<section id="chaos-viz">
+<div class="chaos-container">
+<div class="section-header">
+<div class="section-tag">📉 Visualized</div>
+<h2>This Is Your Business Without AI</h2>
+<p>Watch the chaos unfold — tasks colliding, deadlines missed, opportunities lost.</p>
+</div>
+<div class="chaos-visual" id="chaosVisual">
+<div class="chaos-item email" style="top:15%;left:10%">📧 Unanswered Client Email (3 days)</div>
+<div class="chaos-item task" style="top:35%;left:55%">📋 Overdue Invoice #4829</div>
+<div class="chaos-item call" style="top:60%;left:20%">📞 Missed Callback - Hot Lead</div>
+<div class="chaos-item invoice" style="top:20%;left:65%">💰 Unpaid Invoice - $12,400</div>
+<div class="chaos-item report" style="top:70%;left:60%">📊 Monthly Report - 2 Weeks Late</div>
+<div class="chaos-item email" style="top:80%;left:35%">📧 Support Ticket #892 - Escalated</div>
+<div class="chaos-item task" style="top:45%;left:8%">📋 Project Deadline - Tomorrow!</div>
+<div class="chaos-item call" style="top:10%;left:40%">📞 Vendor Follow-up Overdue</div>
+<div class="chaos-item invoice" style="top:50%;left:75%">💰 Refund Request - Waiting 9 Days</div>
+<div class="chaos-item report" style="top:85%;left:70%">📊 KPI Dashboard - Still Manual</div>
+</div>
+</div>
 </section>
 
 <!-- Transformation Section -->
-<section id="transform">
-  <div class="content-wrapper" style="text-align:center">
-    <div class="section-label">The Shift</div>
-    <div class="section-title">From Overwhelmed to<br>Orchestrated</div>
-    <p class="section-desc" style="margin:0 auto 0">Imagine a world where your business processes run themselves — intelligently, accurately, 24/7. That's not the future. That's now.</p>
-    <div class="transform-visual" id="transformVisual">
-      <img id="transformImg" src="" alt="AI Transformation" loading="lazy">
-      <div class="transform-overlay">
-        <div class="transform-steps">
-          <div class="step-box before">
-            <h4>Before</h4>
-            <p>Manual processes, scattered data, reactive decisions, limited capacity, human error</p>
-          </div>
-          <div class="arrow-icon">→</div>
-          <div class="step-box after">
-            <h4>After</h4>
-            <p>Automated workflows, unified intelligence, proactive insights, infinite scale, precision</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<section id="transformation" class="section">
+<div class="container">
+<div class="transform-content">
+<div class="transform-visual slide-left">
+<img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/8d0c135b-d362-4b1c-9379-1578e9b46355" alt="AI Business Transformation" loading="lazy">
+<div class="transform-overlay">
+<div class="transform-anim">
+<div class="orbit-ring"><div class="orbit-dot"></div></div>
+<div class="orbit-ring"><div class="orbit-dot"></div></div>
+<div class="orbit-ring"><div class="orbit-dot"></div></div>
+<div class="orbit-center">🤖</div>
+</div>
+</div>
+</div>
+<div class="transform-text slide-right">
+<div class="section-tag">🚀 The Transformation</div>
+<h2>Enter Your AI Business Operating System</h2>
+<p>Imagine having an intelligent agent that manages your entire business backend — handling communications, automating workflows, tracking every metric, and keeping everything running like clockwork.</p>
+<ul class="feature-list">
+<li><span class="feature-check">✓</span><span><strong>Intelligent Task Routing</strong> — AI reads, prioritizes, and routes every message, email, and task automatically</span></li>
+<li><span class="feature-check">✓</span><span><strong>Automated Workflows</strong> — Invoicing, follow-ups, reports, and scheduling run on autopilot</span></li>
+<li><span class="feature-check">✓</span><span><strong>Real-Time Business Dashboard</strong> — Every KPI, metric, and status in one unified view</span></li>
+<li><span class="feature-check">✓</span><span><strong>Smart Lead Management</strong> — Never miss a follow-up. AI nurtures leads while you sleep</span></li>
+<li><span class="feature-check">✓</span><span><strong>Scalable Operations</strong> — Grow 3x without hiring 3x the staff</span></li>
+</ul>
+</div>
+</div>
+</div>
 </section>
 
-<!-- Solution Section -->
-<section id="solution">
-  <div class="content-wrapper">
-    <div class="section-label">The Solution</div>
-    <div class="section-title">Meet Hermes —<br>Your AI Agent Platform</div>
-    <p class="section-desc">Hermes doesn't just answer questions. It connects to your tools, understands your workflows, and autonomously executes complex multi-step tasks.</p>
-    <div class="solution-grid">
-      <div class="solution-card">
-        <span class="solution-icon">🧠</span>
-        <h3>Autonomous Reasoning</h3>
-        <p>Hermes thinks through problems like your best employee — breaking complex tasks into steps, making decisions, and adapting when things change.</p>
-        <span class="solution-tag">Cognitive AI</span>
-      </div>
-      <div class="solution-card">
-        <span class="solution-icon">🔗</span>
-        <h3>Universal Integration</h3>
-        <p>Connects to 200+ tools out of the box — your CRM, email, databases, APIs, cloud services. If it has an interface, Hermes can use it.</p>
-        <span class="solution-tag">Plug & Play</span>
-      </div>
-      <div class="solution-card">
-        <span class="solution-icon">⚡</span>
-        <h3>Real-Time Execution</h3>
-        <p>Not just suggestions — real actions. Hermes writes code, deploys websites, manages databases, sends communications, and monitors systems.</p>
-        <span class="solution-tag">Action-First</span>
-      </div>
-      <div class="solution-card">
-        <span class="solution-icon">🛡️</span>
-        <h3>Enterprise Security</h3>
-        <p>SOC 2 compliant architecture with role-based access, audit trails, and sandboxed execution. Your data never leaves your control.</p>
-        <span class="solution-tag">Zero Trust</span>
-      </div>
-      <div class="solution-card">
-        <span class="solution-icon">📈</span>
-        <h3>Learns & Improves</h3>
-        <p>Skills and memories persist across sessions. Hermes gets better at your specific workflows over time, building institutional knowledge.</p>
-        <span class="solution-tag">Adaptive</span>
-      </div>
-      <div class="solution-card">
-        <span class="solution-icon">🌐</span>
-        <h3>Always Available</h3>
-        <p>Schedule tasks, set up automated workflows, and let Hermes work while you sleep. Morning reports, overnight deployments, 24/7 monitoring.</p>
-        <span class="solution-tag">24/7 Agent</span>
-      </div>
-    </div>
-  </div>
+<!-- Solutions -->
+<section id="solutions" class="section">
+<div class="container">
+<div class="section-header">
+<div class="section-tag">🎯 AI Solutions</div>
+<h2>How AI Agents Transform Every Part of Your Business</h2>
+<p>A complete AI-powered operating system built to run, optimize, and grow your business.</p>
+</div>
+<div class="solutions-grid">
+<div class="solution-card">
+<div class="solution-number">01</div>
+<h3>Communications Autopilot</h3>
+<p>AI monitors all channels — email, chat, social, and phone — triaging messages, drafting responses, and escalating only what needs your attention.</p>
+<span class="solution-tag">Email</span><span class="solution-tag">Chat</span><span class="solution-tag">Social</span>
+</div>
+<div class="solution-card">
+<div class="solution-number">02</div>
+<h3>Operations Automation Engine</h3>
+<p>Invoicing, scheduling, project tracking, and reporting run automatically. Set the rules once, and the AI handles execution flawlessly.</p>
+<span class="solution-tag">Invoicing</span><span class="solution-tag">Scheduling</span><span class="solution-tag">Reports</span>
+</div>
+<div class="solution-card">
+<div class="solution-number">03</div>
+<h3>Intelligent CRM & Lead Nurturing</h3>
+<p>Every lead gets followed up on time, every time. AI scores prospects, personalizes outreach, and books meetings on your calendar.</p>
+<span class="solution-tag">CRM</span><span class="solution-tag">Lead Scoring</span><span class="solution-tag">Outreach</span>
+</div>
+<div class="solution-card">
+<div class="solution-number">04</div>
+<h3>Data & Analytics Command Center</h3>
+<p>Real-time dashboards pull from every tool and data source. Get instant answers to business questions without building a single spreadsheet.</p>
+<span class="solution-tag">Analytics</span><span class="solution-tag">KPIs</span><span class="solution-tag">Insights</span>
+</div>
+<div class="solution-card">
+<div class="solution-number">05</div>
+<h3>Customer Success Automation</h3>
+<p>Onboarding sequences, support ticket routing, satisfaction surveys, and proactive check-ins — all handled by AI with a human touch.</p>
+<span class="solution-tag">Onboarding</span><span class="solution-tag">Support</span><span class="solution-tag">NPS</span>
+</div>
+<div class="solution-card">
+<div class="solution-number">06</div>
+<h3>Financial Operations AI</h3>
+<p>Expense tracking, invoice reconciliation, cash flow forecasting, and payment reminders on autopilot. Never chase a payment again.</p>
+<span class="solution-tag">Payments</span><span class="solution-tag">Forecasting</span><span class="solution-tag">Billing</span>
+</div>
+</div>
+</div>
 </section>
 
-<!-- How it Works -->
-<section id="how">
-  <div class="content-wrapper">
-    <div class="section-label">How It Works</div>
-    <div class="section-title">Four Steps to<br>Transformation</div>
-    <div class="timeline">
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-step">Step 01</div>
-        <h3>Connect Your Ecosystem</h3>
-        <p>Link your existing tools — Slack, GitHub, Jira, Salesforce, databases, and more. Hermes maps your digital landscape and understands the relationships.</p>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-step">Step 02</div>
-        <h3>Describe Your Workflows</h3>
-        <p>Tell Hermes what you need in plain English. "Every morning, compile sales data, generate a report, and email it to the team." It handles the rest.</p>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-step">Step 03</div>
-        <h3>Watch It Execute</h3>
-        <p>Hermes autonomously breaks down tasks, coordinates between tools, handles errors gracefully, and delivers results — with full transparency into every step.</p>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-step">Step 04</div>
-        <h3>Scale Without Limits</h3>
-        <p>Add new workflows, train Hermes on edge cases, and let it handle increasingly complex operations. No additional headcount required.</p>
-      </div>
-    </div>
-  </div>
+<!-- Results Section -->
+<section id="results" class="section">
+<div class="container">
+<div class="section-header">
+<div class="section-tag">📈 Proven Results</div>
+<h2>The Business Transformation by the Numbers</h2>
+<p>Real metrics from businesses that switched to AI-powered operations.</p>
+</div>
+<div class="results-grid">
+<div class="result-card">
+<div class="result-icon">⚡</div>
+<div class="result-metric" data-result="60%">0%</div>
+<h3>Cost Reduction</h3>
+<p>Average operational cost savings in the first 90 days of implementation.</p>
+</div>
+<div class="result-card">
+<div class="result-icon">🕐</div>
+<div class="result-metric" data-result="40hrs">0hrs</div>
+<h3>Hours Saved Weekly</h3>
+<p>Time reclaimed from automated tasks, emails, and reporting each week.</p>
+</div>
+<div class="result-card">
+<div class="result-icon">📈</div>
+<div class="result-metric" data-result="3x">0x</div>
+<h3>Revenue Growth</h3>
+<p>Average revenue increase within 6 months through improved lead management.</p>
+</div>
+<div class="result-card">
+<div class="result-icon">😊</div>
+<div class="result-metric" data-result="94%">0%</div>
+<h3>Client Satisfaction</h3>
+<p>Of clients report significantly improved business operations and work-life balance.</p>
+</div>
+</div>
+</div>
 </section>
 
-<!-- Results -->
-<section id="results">
-  <div class="content-wrapper" style="text-align:center">
-    <div class="section-label">The Results</div>
-    <div class="section-title">Measurable Impact,<br>Immediate ROI</div>
-    <p class="section-desc" style="margin:0 auto">Companies using AI agents report dramatic improvements across every metric that matters.</p>
-    <div class="results-grid">
-      <div class="result-card">
-        <div class="result-number" data-target="10">0×</div>
-        <div class="result-label">Faster task completion</div>
-      </div>
-      <div class="result-card">
-        <div class="result-number" data-target="85">0%</div>
-        <div class="result-label">Reduction in manual errors</div>
-      </div>
-      <div class="result-card">
-        <div class="result-number" data-target="300">0%</div>
-        <div class="result-label">Average return on investment</div>
-      </div>
-      <div class="result-card">
-        <div class="result-number" data-target="40">0hrs</div>
-        <div class="result-label">Saved per employee monthly</div>
-      </div>
-    </div>
-    <div class="result-visual" id="resultVisual">
-      <img id="resultImg" src="" alt="Results Dashboard" loading="lazy">
-    </div>
-  </div>
+<!-- Timeline -->
+<section id="timeline" class="section">
+<div class="container">
+<div class="section-header">
+<div class="section-tag">🗓️ Implementation</div>
+<h2>Your Journey to Automated Operations</h2>
+<p>A proven 4-week roadmap from chaos to clarity.</p>
+</div>
+<div class="timeline-track">
+<div class="timeline-line"></div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-week">Week 1 — Discovery</div>
+<h3>Business Audit & Strategy Session</h3>
+<p>We analyze your current operations, identify automation opportunities, and design your custom AI agent configuration. You'll receive a detailed roadmap and ROI projection.</p>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-week">Week 2 — Build</div>
+<h3>AI Agent Configuration & Integration</h3>
+<p>Your AI Business OS is configured and connected to your existing tools — email, CRM, calendar, project management, and financial systems. Custom workflows are built and tested.</p>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-week">Week 3 — Launch</div>
+<h3>Deployment & Team Training</h3>
+<p>AI agents go live handling real tasks. Your team gets hands-on training. We monitor performance closely and fine-tune automations in real-time.</p>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-week">Week 4+ — Optimize</div>
+<h3>Scale & Continuous Improvement</h3>
+<p>With the foundation in place, we expand automation coverage, add new AI capabilities, and optimize based on real performance data. Your business runs smoother every week.</p>
+</div>
+</div>
+</div>
 </section>
 
-<!-- Testimonial -->
-<section id="testimonial">
-  <div class="content-wrapper">
-    <div class="quote-mark">"</div>
-    <blockquote>Hermes didn't just automate our workflows — it reimagined them. Tasks that took our team hours now happen in minutes, autonomously. It's like having a brilliant employee who never sleeps and never makes mistakes.</blockquote>
-    <div class="quote-author">Sarah Chen</div>
-    <div class="quote-role">VP of Operations, TechScale Inc.</div>
-  </div>
+<!-- Quiz Section -->
+<section id="quiz" class="section">
+<div class="container">
+<div class="section-header">
+<div class="section-tag">🧠 Free Assessment</div>
+<h2>How Much Is Business Chaos Costing You?</h2>
+<p>Take this 60-second assessment and find out your automation potential score.</p>
+</div>
+<div class="quiz-container" id="quizBox">
+<div class="quiz-progress" id="quizProgress"></div>
+
+<!-- Step 1 -->
+<div class="quiz-step active" data-step="1">
+<h3>How many hours per week do you spend on repetitive tasks?</h3>
+<p>Think: email responses, data entry, scheduling, reporting, invoicing.</p>
+<div class="quiz-options">
+<div class="quiz-option" data-value="1" onclick="selectOption(this)"><span class="check">✓</span>Less than 5 hours</div>
+<div class="quiz-option" data-value="2" onclick="selectOption(this)"><span class="check">✓</span>5–15 hours</div>
+<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>15–30 hours</div>
+<div class="quiz-option" data-value="4" onclick="selectOption(this)"><span class="check">✓</span>30+ hours — it's my entire week</div>
+</div>
+<div class="quiz-nav"><div></div><button class="quiz-btn next" disabled onclick="nextStep()">Next →</button></div>
+</div>
+
+<!-- Step 2 -->
+<div class="quiz-step" data-step="2">
+<h3>How many different software tools does your team use daily?</h3>
+<p>Count: email, CRM, project management, spreadsheets, chat, etc.</p>
+<div class="quiz-options">
+<div class="quiz-option" data-value="1" onclick="selectOption(this)"><span class="check">✓</span>1–3 tools</div>
+<div class="quiz-option" data-value="2" onclick="selectOption(this)"><span class="check">✓</span>4–7 tools</div>
+<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>8–12 tools</div>
+<div class="quiz-option" data-value="4" onclick="selectOption(this)"><span class="check">✓</span>13+ tools — we're drowning</div>
+</div>
+<div class="quiz-nav"><button class="quiz-btn back" onclick="prevStep()">← Back</button><button class="quiz-btn next" disabled onclick="nextStep()">Next →</button></div>
+</div>
+
+<!-- Step 3 -->
+<div class="quiz-step" data-step="3">
+<h3>How often do important tasks or follow-ups fall through the cracks?</h3>
+<p>Missed client emails, late invoices, forgotten callbacks, delayed reports.</p>
+<div class="quiz-options">
+<div class="quiz-option" data-value="1" onclick="selectOption(this)"><span class="check">✓</span>Rarely — we're pretty organized</div>
+<div class="quiz-option" data-value="2" onclick="selectOption(this)"><span class="check">✓</span>Occasionally — a few times a month</div>
+<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>Frequently — weekly at least</div>
+<div class="quiz-option" data-value="4" onclick="selectOption(this)"><span class="check">✓</span>Constantly — it's our biggest problem</div>
+</div>
+<div class="quiz-nav"><button class="quiz-btn back" onclick="prevStep()">← Back</button><button class="quiz-btn next" disabled onclick="nextStep()">Next →</button></div>
+</div>
+
+<!-- Step 4 -->
+<div class="quiz-step" data-step="4">
+<h3>What's your biggest business operations challenge right now?</h3>
+<p>Pick the one that resonates most.</p>
+<div class="quiz-options">
+<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>Too much time on admin — no time for growth</div>
+<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>Leads and revenue slipping through cracks</div>
+<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>Can't scale without hiring more people</div>
+<div class="quiz-option" data-value="4" onclick="selectOption(this)"><span class="check">✓</span>All of the above — it's overwhelming</div>
+</div>
+<div class="quiz-nav"><button class="quiz-btn back" onclick="prevStep()">← Back</button><button class="quiz-btn next" disabled onclick="nextStep()">Next →</button></div>
+</div>
+
+<!-- Step 5 -->
+<div class="quiz-step" data-step="5">
+<h3>How many people are on your team?</h3>
+<p>This helps us estimate your automation ROI.</p>
+<div class="quiz-options">
+<div class="quiz-option" data-value="1" onclick="selectOption(this)"><span class="check">✓</span>Just me (solopreneur)</div>
+<div class="quiz-option" data-value="2" onclick="selectOption(this)"><span class="check">✓</span>2–5 people</div>
+<div class="quiz-option" data-value="3" onclick="selectOption(this)"><span class="check">✓</span>6–20 people</div>
+<div class="quiz-option" data-value="4" onclick="selectOption(this)"><span class="check">✓</span>20+ people</div>
+</div>
+<div class="quiz-nav"><button class="quiz-btn back" onclick="prevStep()">← Back</button><button class="quiz-btn next" disabled onclick="showResults()">See My Results →</button></div>
+</div>
+
+<!-- Results Step -->
+<div class="quiz-step" data-step="results" id="quizResults"></div>
+</div>
+</div>
 </section>
 
-<!-- CTA -->
-<section id="cta">
-  <div class="cta-glow"></div>
-  <div class="content-wrapper">
-    <div class="section-label">Get Started</div>
-    <div class="section-title">Ready to Deploy Your<br>AI Agent?</div>
-    <p class="section-desc" style="margin:0 auto 48px">Join hundreds of companies already transforming their operations with Hermes. Set up takes minutes, impact is immediate.</p>
-    <div class="hero-cta-group">
-      <a href="https://hermes-agent.nousresearch.com" target="_blank" class="btn-primary">Start Free Trial ↗</a>
-      <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" class="btn-secondary">Read Documentation</a>
-    </div>
-  </div>
+<!-- Contact / Lead Form -->
+<section id="contact" class="section">
+<div class="container">
+<div class="contact-grid">
+<div class="contact-info slide-left">
+<div class="section-tag">🤝 Let's Talk</div>
+<h2>Ready to Transform Your Business Operations?</h2>
+<p>Book a free strategy session and see exactly how an AI Business OS can automate your operations, save you 40+ hours per week, and unlock scalable growth.</p>
+<ul class="contact-benefits">
+<li><span class="icon">🎯</span>Custom automation roadmap for your business</li>
+<li><span class="icon">📊</span>ROI projection with real cost savings analysis</li>
+<li><span class="icon">🚀</span>Live demo of AI agents handling your workflows</li>
+<li><span class="icon">🔒</span>No commitment — just clarity on what's possible</li>
+</ul>
+</div>
+<div class="contact-form slide-right" id="contactForm">
+<h3>Book Your Free Strategy Session</h3>
+<form id="leadForm" onsubmit="submitForm(event)">
+<div class="form-group">
+<label for="name">Full Name *</label>
+<input type="text" id="name" name="name" placeholder="John Smith" required>
+</div>
+<div class="form-group">
+<label for="email">Business Email *</label>
+<input type="email" id="email" name="email" placeholder="john@company.com" required>
+</div>
+<div class="form-group">
+<label for="phone">Phone Number</label>
+<input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+</div>
+<div class="form-group">
+<label for="company">Company Name *</label>
+<input type="text" id="company" name="company" placeholder="Acme Inc." required>
+</div>
+<div class="form-group">
+<label for="teamsize">Team Size</label>
+<select id="teamsize" name="teamsize">
+<option value="">Select team size...</option>
+<option value="solo">Just me</option>
+<option value="2-5">2–5 people</option>
+<option value="6-20">6–20 people</option>
+<option value="20-50">20–50 people</option>
+<option value="50+">50+ people</option>
+</select>
+</div>
+<div class="form-group">
+<label for="challenge">Biggest Challenge</label>
+<textarea id="challenge" name="challenge" placeholder="Tell us about your biggest operational challenge..."></textarea>
+</div>
+<button type="submit" class="submit-btn" id="submitBtn">🚀 Book My Free Strategy Session</button>
+</form>
+<div class="form-success" id="formSuccess">
+<div class="success-icon">🎉</div>
+<h3>You're All Set!</h3>
+<p>Thank you for your interest! We've received your information and will reach out within 24 hours to schedule your free strategy session. Get ready to see what AI can do for your business.</p>
+</div>
+</div>
+</div>
+</div>
 </section>
 
 <!-- Footer -->
 <footer>
-  <p>Built with ✦ by <a href="https://nousresearch.com" target="_blank">Nous Research</a> — Powering the next generation of AI agents</p>
+<div class="footer-content">
+<div class="footer-brand">AI Business OS</div>
+<div class="footer-links">
+<a href="#pain-points">The Problem</a>
+<a href="#solutions">Solutions</a>
+<a href="#results">Results</a>
+<a href="#quiz">Assessment</a>
+<a href="#contact">Contact</a>
+</div>
+<div class="footer-copy">© 2026 AI Business OS. All rights reserved. Intelligent automation for modern businesses.</div>
+</div>
 </footer>
 
-<!-- Scripts -->
+<!-- Three.js for 3D particle background -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- GSAP for scroll animations -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
 <script>
-(function(){
-"use strict";
-
-// ============ IMAGE URLS (populated after generation) ============
-const IMAGES = {
-  hero: "https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/24deb5b3-ee14-4d95-ba7d-7bac1aca8568",
-  transform: "https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/e36ee72d-5622-467d-810b-49dd4ca3aaa7",
-  agent: "https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/c0f123e3-db1b-498e-914d-957615f087fc",
-  results: "https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/f51152f2-3f90-4f6d-bb92-642761f661dd"
-};
-
-// ============ LOADING ============
-let loadProgress = 0;
-const loaderBar = document.getElementById('loaderBar');
-const loader = document.getElementById('loader');
-function updateLoader(p){ loadProgress = Math.max(loadProgress,p); loaderBar.style.width=loadProgress+'%'; }
-
-// ============ THREE.JS SCENE ============
-const canvas = document.getElementById('webgl-canvas');
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-camera.position.set(0, 0, 30);
-
-// Particle system - neural network nodes
-const particleCount = 800;
-const positions = new Float32Array(particleCount * 3);
-const colors = new Float32Array(particleCount * 3);
-const sizes = new Float32Array(particleCount);
-const velocities = [];
-
-for(let i=0; i<particleCount; i++){
-  positions[i*3] = (Math.random()-0.5)*80;
-  positions[i*3+1] = (Math.random()-0.5)*60;
-  positions[i*3+2] = (Math.random()-0.5)*40 - 10;
-  
-  const colorChoice = Math.random();
-  if(colorChoice < 0.4){
-    colors[i*3]=0.42; colors[i*3+1]=0.36; colors[i*3+2]=0.91; // accent purple
-  } else if(colorChoice < 0.7){
-    colors[i*3]=0; colors[i*3+1]=0.81; colors[i*3+2]=0.79; // accent teal
-  } else {
-    colors[i*3]=0.99; colors[i*3+1]=0.47; colors[i*3+2]=0.66; // accent pink
-  }
-  
-  sizes[i] = Math.random()*3 + 0.5;
-  velocities.push({
-    x: (Math.random()-0.5)*0.01,
-    y: (Math.random()-0.5)*0.01,
-    z: (Math.random()-0.5)*0.005
-  });
-}
-
-const particleGeom = new THREE.BufferGeometry();
-particleGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-particleGeom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-particleGeom.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-const particleMat = new THREE.ShaderMaterial({
-  uniforms: {
-    uTime: {value: 0},
-    uScroll: {value: 0},
-    uMouse: {value: new THREE.Vector2(0,0)}
-  },
-  vertexShader: `
-    attribute float size;
-    varying vec3 vColor;
-    uniform float uTime;
-    uniform float uScroll;
-    void main(){
-      vColor = color;
-      vec3 pos = position;
-      pos.y += sin(uTime*0.3 + position.x*0.1)*0.5;
-      pos.x += cos(uTime*0.2 + position.z*0.1)*0.3;
-      pos.z += uScroll * -0.005;
-      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-      gl_PointSize = size * (200.0 / -mvPosition.z);
-      gl_Position = projectionMatrix * mvPosition;
-    }
-  `,
-  fragmentShader: `
-    varying vec3 vColor;
-    void main(){
-      float d = length(gl_PointCoord - 0.5);
-      if(d > 0.5) discard;
-      float alpha = 1.0 - smoothstep(0.0, 0.5, d);
-      alpha *= 0.6;
-      gl_FragColor = vec4(vColor, alpha);
-    }
-  `,
-  transparent: true,
-  vertexColors: true,
-  depthWrite: false,
-  blending: THREE.AdditiveBlending
-});
-
-const particles = new THREE.Points(particleGeom, particleMat);
-scene.add(particles);
-
-// Connection lines between nearby particles
-const lineGeom = new THREE.BufferGeometry();
-const maxLines = 400;
-const linePositions = new Float32Array(maxLines * 6);
-const lineColors = new Float32Array(maxLines * 6);
-lineGeom.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-lineGeom.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
-const lineMat = new THREE.LineBasicMaterial({vertexColors:true, transparent:true, opacity:0.15, blending:THREE.AdditiveBlending});
-const lines = new THREE.LineSegments(lineGeom, lineMat);
-scene.add(lines);
-
-// Floating geometric shapes
-const shapes = [];
-const shapeMat = new THREE.MeshBasicMaterial({color:0x6c5ce7, wireframe:true, transparent:true, opacity:0.08});
-
-for(let i=0; i<5; i++){
-  const geom = i%2===0 ? new THREE.IcosahedronGeometry(2+Math.random()*3, 1) : new THREE.OctahedronGeometry(2+Math.random()*2, 0);
-  const mesh = new THREE.Mesh(geom, shapeMat.clone());
-  mesh.position.set((Math.random()-0.5)*60, (Math.random()-0.5)*40, -15-Math.random()*20);
-  mesh.material.opacity = 0.04 + Math.random()*0.06;
-  scene.add(mesh);
-  shapes.push({mesh, rotSpeed:{x:0.001+Math.random()*0.003, y:0.001+Math.random()*0.003}});
-}
-
-updateLoader(30);
-
-// Mouse tracking
-let mouseX=0, mouseY=0;
-document.addEventListener('mousemove', e=>{
-  mouseX = (e.clientX/window.innerWidth - 0.5)*2;
-  mouseY = (e.clientY/window.innerHeight - 0.5)*2;
-});
-
-// Scroll tracking
-let scrollY = 0;
-let scrollProgress = 0;
-window.addEventListener('scroll', ()=>{
-  scrollY = window.pageYOffset;
-  scrollProgress = scrollY / (document.body.scrollHeight - window.innerHeight);
-});
-
-// Animation loop
-let time = 0;
-function animate(){
-  requestAnimationFrame(animate);
-  time += 0.016;
-  
-  particleMat.uniforms.uTime.value = time;
-  particleMat.uniforms.uScroll.value = scrollY;
-  particleMat.uniforms.uMouse.value.set(mouseX, mouseY);
-  
-  // Animate particles
-  const pos = particleGeom.attributes.position.array;
-  for(let i=0; i<particleCount; i++){
-    pos[i*3] += velocities[i].x;
-    pos[i*3+1] += velocities[i].y;
-    if(pos[i*3] > 40 || pos[i*3] < -40) velocities[i].x *= -1;
-    if(pos[i*3+1] > 30 || pos[i*3+1] < -30) velocities[i].y *= -1;
-  }
-  particleGeom.attributes.position.needsUpdate = true;
-  
-  // Update connection lines
-  let lineIdx = 0;
-  for(let i=0; i<particleCount && lineIdx < maxLines; i+=3){
-    for(let j=i+3; j<particleCount && lineIdx < maxLines; j+=3){
-      const dx=pos[i*3]-pos[j*3], dy=pos[i*3+1]-pos[j*3+1], dz=pos[i*3+2]-pos[j*3+2];
-      const dist = Math.sqrt(dx*dx+dy*dy+dz*dz);
-      if(dist < 8){
-        const lp = lineGeom.attributes.position.array;
-        const lc = lineGeom.attributes.color.array;
-        const li = lineIdx*6;
-        lp[li]=pos[i*3]; lp[li+1]=pos[i*3+1]; lp[li+2]=pos[i*3+2];
-        lp[li+3]=pos[j*3]; lp[li+4]=pos[j*3+1]; lp[li+5]=pos[j*3+2];
-        const a = 1 - dist/8;
-        lc[li]=0.42*a; lc[li+1]=0.36*a; lc[li+2]=0.91*a;
-        lc[li+3]=0*a; lc[li+4]=0.81*a; lc[li+5]=0.79*a;
-        lineIdx++;
-      }
-    }
-  }
-  lineGeom.setDrawRange(0, lineIdx*2);
-  lineGeom.attributes.position.needsUpdate = true;
-  lineGeom.attributes.color.needsUpdate = true;
-  
-  // Camera parallax
-  camera.position.x += (mouseX*2 - camera.position.x)*0.02;
-  camera.position.y += (-mouseY*1.5 - camera.position.y)*0.02;
-  camera.position.z = 30 - scrollProgress*15;
-  camera.lookAt(0,0,-10);
-  
-  // Rotate shapes
-  shapes.forEach(s=>{
-    s.mesh.rotation.x += s.rotSpeed.x;
-    s.mesh.rotation.y += s.rotSpeed.y;
-  });
-  
-  renderer.render(scene, camera);
-}
-animate();
-
-window.addEventListener('resize', ()=>{
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
+// ========== 3D PARTICLE BACKGROUND ==========
+(function initThreeJS() {
+  var canvas = document.getElementById('bg-canvas');
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.setSize(window.innerWidth, window.innerHeight);
-});
 
-updateLoader(60);
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 50;
 
-// ============ GSAP ANIMATIONS ============
+  // Detect mobile for performance
+  var isMobile = window.innerWidth < 768;
+  var particleCount = isMobile ? 300 : 800;
+
+  var geometry = new THREE.BufferGeometry();
+  var positions = new Float32Array(particleCount * 3);
+  var colors = new Float32Array(particleCount * 3);
+  var sizes = new Float32Array(particleCount);
+
+  var palette = [
+    new THREE.Color(0x6366f1),
+    new THREE.Color(0x818cf8),
+    new THREE.Color(0x22d3ee),
+    new THREE.Color(0x10b981)
+  ];
+
+  for (var i = 0; i < particleCount; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 120;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 120;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 80;
+    var col = palette[Math.floor(Math.random() * palette.length)];
+    colors[i * 3] = col.r;
+    colors[i * 3 + 1] = col.g;
+    colors[i * 3 + 2] = col.b;
+    sizes[i] = Math.random() * 2 + 0.5;
+  }
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+  var material = new THREE.PointsMaterial({
+    size: 1.5,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.6,
+    sizeAttenuation: true
+  });
+
+  var particles = new THREE.Points(geometry, material);
+  scene.add(particles);
+
+  // Connection lines (reduced on mobile)
+  var lineCount = isMobile ? 50 : 150;
+  var lineGeo = new THREE.BufferGeometry();
+  var linePos = new Float32Array(lineCount * 6);
+  for (var j = 0; j < lineCount; j++) {
+    var idx1 = Math.floor(Math.random() * particleCount);
+    var idx2 = Math.floor(Math.random() * particleCount);
+    linePos[j * 6] = positions[idx1 * 3];
+    linePos[j * 6 + 1] = positions[idx1 * 3 + 1];
+    linePos[j * 6 + 2] = positions[idx1 * 3 + 2];
+    linePos[j * 6 + 3] = positions[idx2 * 3];
+    linePos[j * 6 + 4] = positions[idx2 * 3 + 1];
+    linePos[j * 6 + 5] = positions[idx2 * 3 + 2];
+  }
+  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
+  var lineMat = new THREE.LineBasicMaterial({ color: 0x6366f1, transparent: true, opacity: 0.08 });
+  var lines = new THREE.LineSegments(lineGeo, lineMat);
+  scene.add(lines);
+
+  var scrollY = 0;
+  window.addEventListener('scroll', function() { scrollY = window.pageYOffset; }, { passive: true });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    var time = Date.now() * 0.0003;
+    particles.rotation.y = time * 0.15;
+    particles.rotation.x = Math.sin(time * 0.5) * 0.1;
+    camera.position.y = -scrollY * 0.02;
+    camera.position.x = Math.sin(time) * 2;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', function() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
+
+// ========== GSAP SCROLL ANIMATIONS ==========
 gsap.registerPlugin(ScrollTrigger);
 
-// Nav hide/show
-let lastScroll = 0;
+// Hero entrance
+gsap.to('.hero-content h1', { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power3.out' });
+gsap.to('.hero-content p', { opacity: 1, y: 0, duration: 1, delay: 0.6, ease: 'power3.out' });
+gsap.to('.hero-buttons', { opacity: 1, y: 0, duration: 1, delay: 0.9, ease: 'power3.out' });
+
+// Nav scroll effect
 ScrollTrigger.create({
-  onUpdate: self => {
-    const nav = document.getElementById('mainNav');
-    if(self.direction === 1 && self.scroll() > 200) nav.classList.add('hidden');
-    else nav.classList.remove('hidden');
+  start: 'top -80',
+  onUpdate: function(self) {
+    document.getElementById('main-nav').classList.toggle('scrolled', self.progress > 0);
   }
 });
 
-// Hero animations
-gsap.from('.hero-badge', {opacity:0, y:30, duration:1, delay:0.5});
-gsap.from('.hero-title', {opacity:0, y:50, duration:1.2, delay:0.7});
-gsap.from('.hero-sub', {opacity:0, y:30, duration:1, delay:1});
-gsap.from('.hero-cta-group', {opacity:0, y:30, duration:1, delay:1.2});
-gsap.from('.stats-bar', {opacity:0, y:50, duration:1, delay:1.5});
+// Stats counter animation
+document.querySelectorAll('.stat-item').forEach(function(item, i) {
+  gsap.to(item, {
+    opacity: 1, y: 0, duration: 0.8, delay: i * 0.15,
+    scrollTrigger: { trigger: '#stats', start: 'top 80%' }
+  });
+});
 
-// Stat counter animation
-document.querySelectorAll('.stat-number[data-target]').forEach(el=>{
-  const target = parseInt(el.dataset.target);
+// Animate stat numbers
+function animateCounters() {
+  document.querySelectorAll('.stat-number').forEach(function(el) {
+    var target = parseInt(el.getAttribute('data-count'));
+    var suffix = el.textContent.replace(/[0-9]/g, '');
+    var obj = { val: 0 };
+    gsap.to(obj, {
+      val: target, duration: 2, ease: 'power2.out',
+      onUpdate: function() {
+        el.textContent = Math.round(obj.val) + suffix;
+      }
+    });
+  });
+}
+ScrollTrigger.create({ trigger: '#stats', start: 'top 80%', onEnter: animateCounters, once: true });
+
+// Pain cards
+document.querySelectorAll('.pain-card').forEach(function(card, i) {
+  gsap.to(card, {
+    opacity: 1, y: 0, duration: 0.7, delay: i * 0.1,
+    scrollTrigger: { trigger: card, start: 'top 85%' }
+  });
+});
+
+// Chaos items animation
+document.querySelectorAll('.chaos-item').forEach(function(item, i) {
+  gsap.to(item, {
+    opacity: 1, duration: 0.5, delay: i * 0.15,
+    scrollTrigger: { trigger: '#chaos-viz', start: 'top 70%' }
+  });
+  // Float animation
+  gsap.to(item, {
+    x: 'random(-20,20)', y: 'random(-15,15)',
+    duration: 'random(2,4)', repeat: -1, yoyo: true, ease: 'sine.inOut',
+    delay: i * 0.2
+  });
+});
+
+// Slide animations
+document.querySelectorAll('.slide-left, .slide-right').forEach(function(el) {
   ScrollTrigger.create({
-    trigger: el,
-    start: 'top 80%',
-    once: true,
-    onEnter: ()=>{
-      gsap.to({val:0},{val:target, duration:2, ease:'power2.out',
-        onUpdate:function(){ el.textContent = Math.round(this.targets()[0].val); }
-      });
-    }
+    trigger: el, start: 'top 80%',
+    onEnter: function() { el.classList.add('visible'); }
   });
 });
 
-// Pain section
-gsap.from('#pain .section-label', {scrollTrigger:{trigger:'#pain',start:'top 70%'},opacity:0,x:-50,duration:0.8});
-gsap.from('#pain .section-title', {scrollTrigger:{trigger:'#pain',start:'top 70%'},opacity:0,y:40,duration:1,delay:0.2});
-gsap.from('#pain .section-desc', {scrollTrigger:{trigger:'#pain',start:'top 60%'},opacity:0,y:30,duration:0.8,delay:0.3});
-
-gsap.from('.pain-card', {
-  scrollTrigger:{trigger:'.pain-grid',start:'top 75%',end:'bottom 20%',toggleActions:'play none none none'},
-  opacity:0, y:60, stagger:0.12, duration:0.8, ease:'power3.out'
-});
-
-// Transform section
-gsap.from('#transform .section-label', {scrollTrigger:{trigger:'#transform',start:'top 70%'},opacity:0,y:30,duration:0.8});
-gsap.from('#transform .section-title', {scrollTrigger:{trigger:'#transform',start:'top 65%'},opacity:0,y:40,duration:1});
-gsap.from('.transform-visual', {scrollTrigger:{trigger:'.transform-visual',start:'top 80%'},opacity:0,scale:0.9,duration:1.2,ease:'power2.out'});
-
-// Solution section
-gsap.from('#solution .section-label', {scrollTrigger:{trigger:'#solution',start:'top 70%'},opacity:0,x:-50,duration:0.8});
-gsap.from('#solution .section-title', {scrollTrigger:{trigger:'#solution',start:'top 65%'},opacity:0,y:40,duration:1});
-gsap.from('.solution-card', {
-  scrollTrigger:{trigger:'.solution-grid',start:'top 75%'},
-  opacity:0,y:80,scale:0.95,stagger:0.1,duration:0.9,ease:'back.out(1.2)'
-});
-
-// Timeline
-gsap.from('.timeline-item', {
-  scrollTrigger:{trigger:'.timeline',start:'top 70%'},
-  opacity:0,x:-60,stagger:0.25,duration:1,ease:'power3.out'
-});
-
-// Results
-gsap.from('.result-card', {
-  scrollTrigger:{trigger:'.results-grid',start:'top 75%'},
-  opacity:0,y:50,scale:0.9,stagger:0.1,duration:0.8,ease:'power2.out'
-});
-
-// Result numbers counter
-document.querySelectorAll('.result-number[data-target]').forEach(el=>{
-  const target = parseInt(el.dataset.target);
-  const suffix = el.textContent.replace('0','');
-  ScrollTrigger.create({
-    trigger: el,
-    start: 'top 80%',
-    once: true,
-    onEnter: ()=>{
-      gsap.to({val:0},{val:target,duration:2.5,ease:'power2.out',
-        onUpdate:function(){ el.textContent = Math.round(this.targets()[0].val) + suffix; }
-      });
-    }
+// Solution cards
+document.querySelectorAll('.solution-card').forEach(function(card, i) {
+  gsap.to(card, {
+    opacity: 1, y: 0, duration: 0.7, delay: i * 0.1,
+    scrollTrigger: { trigger: card, start: 'top 85%' }
   });
 });
 
-gsap.from('.result-visual', {scrollTrigger:{trigger:'.result-visual',start:'top 80%'},opacity:0,y:60,duration:1.2});
-
-// Testimonial
-gsap.from('#testimonial .quote-mark', {scrollTrigger:{trigger:'#testimonial',start:'top 70%'},opacity:0,scale:0.5,duration:1});
-gsap.from('#testimonial blockquote', {scrollTrigger:{trigger:'#testimonial',start:'top 65%'},opacity:0,y:40,duration:1.2});
-gsap.from('#testimonial .quote-author', {scrollTrigger:{trigger:'#testimonial',start:'top 55%'},opacity:0,y:20,duration:0.8});
-
-// CTA
-gsap.from('#cta .section-title', {scrollTrigger:{trigger:'#cta',start:'top 70%'},opacity:0,y:50,duration:1.2});
-gsap.from('#cta .section-desc', {scrollTrigger:{trigger:'#cta',start:'top 65%'},opacity:0,y:30,duration:1});
-gsap.from('#cta .hero-cta-group', {scrollTrigger:{trigger:'#cta',start:'top 60%'},opacity:0,y:30,duration:1});
-
-// Parallax depth on sections
-document.querySelectorAll('section').forEach(section=>{
-  gsap.to(section.querySelector('.content-wrapper'), {
-    scrollTrigger:{trigger:section, start:'top bottom', end:'bottom top', scrub:1},
-    y: -30
+// Result cards
+document.querySelectorAll('.result-card').forEach(function(card, i) {
+  gsap.to(card, {
+    opacity: 1, scale: 1, duration: 0.7, delay: i * 0.15,
+    scrollTrigger: { trigger: card, start: 'top 85%' }
   });
 });
 
-updateLoader(90);
+// Result metrics animation
+function animateResults() {
+  document.querySelectorAll('.result-metric').forEach(function(el) {
+    var target = el.getAttribute('data-result');
+    var num = parseInt(target);
+    var suffix = target.replace(/[0-9]/g, '');
+    var obj = { val: 0 };
+    gsap.to(obj, {
+      val: num, duration: 2, ease: 'power2.out',
+      onUpdate: function() {
+        el.textContent = Math.round(obj.val) + suffix;
+      }
+    });
+  });
+}
+ScrollTrigger.create({ trigger: '#results', start: 'top 70%', onEnter: animateResults, once: true });
 
-// ============ LOAD IMAGES & FINISH ============
-function setImageSrc(id, url){
-  const el = document.getElementById(id);
-  if(el && url && url !== '') el.src = url;
+// Timeline items
+document.querySelectorAll('.timeline-item').forEach(function(item, i) {
+  gsap.to(item, {
+    opacity: 1, x: 0, duration: 0.8, delay: i * 0.2,
+    scrollTrigger: { trigger: item, start: 'top 85%' }
+  });
+});
+
+// ========== QUIZ LOGIC ==========
+var quizState = { step: 1, answers: {}, total: 5 };
+
+// Build progress dots
+(function() {
+  var prog = document.getElementById('quizProgress');
+  for (var d = 0; d < quizState.total; d++) {
+    var dot = document.createElement('div');
+    dot.className = 'quiz-dot' + (d === 0 ? ' active' : '');
+    prog.appendChild(dot);
+  }
+})();
+
+function selectOption(el) {
+  var siblings = el.parentElement.querySelectorAll('.quiz-option');
+  siblings.forEach(function(s) { s.classList.remove('selected'); });
+  el.classList.add('selected');
+  quizState.answers[quizState.step] = parseInt(el.getAttribute('data-value'));
+  // Enable next button
+  var nextBtn = el.closest('.quiz-step').querySelector('.quiz-btn.next');
+  if (nextBtn) nextBtn.disabled = false;
 }
 
-// Set images
-setImageSrc('transformImg', IMAGES.transform);
-setImageSrc('resultImg', IMAGES.results);
+function nextStep() {
+  if (!quizState.answers[quizState.step]) return;
+  quizState.step++;
+  updateQuizUI();
+}
 
-// Finish loading
-setTimeout(()=>{
-  updateLoader(100);
-  setTimeout(()=>{ loader.classList.add('hidden'); }, 600);
-}, 800);
+function prevStep() {
+  quizState.step--;
+  updateQuizUI();
+}
 
-// Smooth scroll for anchors
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click', e=>{
-    e.preventDefault();
-    const target = document.querySelector(a.getAttribute('href'));
-    if(target) target.scrollIntoView({behavior:'smooth'});
+function updateQuizUI() {
+  document.querySelectorAll('.quiz-step').forEach(function(s) { s.classList.remove('active'); });
+  var target = document.querySelector('.quiz-step[data-step="' + quizState.step + '"]');
+  if (target) target.classList.add('active');
+
+  // Update progress dots
+  var dots = document.querySelectorAll('.quiz-dot');
+  dots.forEach(function(dot, idx) {
+    dot.className = 'quiz-dot';
+    if (idx < quizState.step - 1) dot.classList.add('done');
+    else if (idx === quizState.step - 1) dot.classList.add('active');
+  });
+
+  // Re-enable next button if already answered
+  if (target) {
+    var btn = target.querySelector('.quiz-btn.next');
+    if (btn && quizState.answers[quizState.step]) btn.disabled = false;
+  }
+}
+
+function showResults() {
+  if (!quizState.answers[quizState.step]) return;
+  var total = 0;
+  for (var key in quizState.answers) total += quizState.answers[key];
+  var maxScore = quizState.total * 4;
+  var pct = Math.round((total / maxScore) * 100);
+
+  var level, color, savings, msg;
+  if (pct >= 70) {
+    level = 'Critical'; color = 'high';
+    savings = '$8,000–$15,000/month';
+    msg = 'Your business is hemorrhaging time and money on manual operations. AI automation could transform your efficiency overnight. You are an ideal candidate for the AI Business OS — the ROI would be immediate and massive.';
+  } else if (pct >= 45) {
+    level = 'Significant'; color = 'medium';
+    savings = '$4,000–$8,000/month';
+    msg = 'You have significant automation opportunities that are costing you thousands monthly. An AI Business OS would streamline your operations and free up substantial time for strategic growth.';
+  } else {
+    level = 'Moderate'; color = 'low';
+    savings = '$2,000–$4,000/month';
+    msg = 'You have a good foundation, but there are still meaningful gains to unlock with AI automation. Even moderate improvements could save you hours each week and improve client experience.';
+  }
+
+  var resultsEl = document.getElementById('quizResults');
+  resultsEl.innerHTML =
+    '<div class="quiz-result">' +
+    '<p style="font-size:0.9rem;color:var(--text-dim)">YOUR AUTOMATION POTENTIAL SCORE</p>' +
+    '<div class="quiz-score ' + color + '">' + pct + '%</div>' +
+    '<h3>Automation Need: ' + level + '</h3>' +
+    '<p>' + msg + '</p>' +
+    '<div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:16px;padding:20px;margin-bottom:28px">' +
+    '<p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:4px">ESTIMATED MONTHLY SAVINGS</p>' +
+    '<p style="font-size:1.8rem;font-weight:800;font-family:Space Grotesk,sans-serif;background:linear-gradient(135deg,var(--success),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">' + savings + '</p>' +
+    '</div>' +
+    '<button class="btn-primary" onclick="document.getElementById(\'contact\').scrollIntoView({behavior:\'smooth\'})" style="width:100%;justify-content:center">Claim Your Free Strategy Session →</button>' +
+    '</div>';
+
+  // Show results step
+  document.querySelectorAll('.quiz-step').forEach(function(s) { s.classList.remove('active'); });
+  resultsEl.classList.add('active');
+
+  // Update progress
+  var dots = document.querySelectorAll('.quiz-dot');
+  dots.forEach(function(dot) { dot.className = 'quiz-dot done'; });
+}
+
+// ========== CONTACT FORM ==========
+function submitForm(e) {
+  e.preventDefault();
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  // Collect form data
+  var formData = {
+    name: document.getElementById('name').value,
+    email: document.getElementById('email').value,
+    phone: document.getElementById('phone').value,
+    company: document.getElementById('company').value,
+    teamsize: document.getElementById('teamsize').value,
+    challenge: document.getElementById('challenge').value,
+    quizScore: quizState.answers,
+    timestamp: new Date().toISOString()
+  };
+
+  // Store in localStorage as a simple lead capture
+  var leads = JSON.parse(localStorage.getItem('ai_bos_leads') || '[]');
+  leads.push(formData);
+  localStorage.setItem('ai_bos_leads', JSON.stringify(leads));
+
+  // Simulate submission delay
+  setTimeout(function() {
+    document.getElementById('leadForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+    // Scroll to show success
+    document.getElementById('formSuccess').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 1200);
+}
+
+// ========== MOBILE NAV ==========
+document.getElementById('mobileToggle').addEventListener('click', function() {
+  document.getElementById('navLinks').classList.toggle('open');
+  var spans = this.querySelectorAll('span');
+  this.classList.toggle('active');
+});
+
+// Close mobile nav on link click
+document.querySelectorAll('.nav-links a').forEach(function(link) {
+  link.addEventListener('click', function() {
+    document.getElementById('navLinks').classList.remove('open');
   });
 });
 
-})();
+// ========== SMOOTH SCROLL FOR ALL ANCHOR LINKS ==========
+document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    var target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+
+console.log('AI Business OS website loaded successfully');
 </script>
 </body>
 </html>
