@@ -1096,26 +1096,46 @@ function submitContactForm(e){
 }
 
 function sendToFormBackend(data,statusElId,callback){
-  // Using FormSubmit.co - delivers directly to thejmmarinogroup@gmail.com
+  // Primary: FormSubmit.co - delivers directly to thejmmarinogroup@gmail.com
   var formsubmitUrl='https://formsubmit.co/ajax/thejmmarinogroup@gmail.com';
+  var payload=Object.assign({},data,{
+    _subject:'AI Agent Story - '+(data.type||'New Submission'),
+    _template:'table',
+    _captcha:'false'
+  });
   
   fetch(formsubmitUrl,{
     method:'POST',
     headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body:JSON.stringify(data)
+    body:JSON.stringify(payload)
   }).then(function(resp){
-    if(resp.ok){
+    return resp.json();
+  }).then(function(result){
+    if(result.success==='true'||result.success===true){
       showFormStatus(statusElId,'Sent successfully! We will be in touch soon.','success');
     }else{
-      // Fallback: use mailto
-      showFormStatus(statusElId,'Sending via alternative method...','success');
-      sendViaMailto(data);
+      // FormSubmit may need activation - use Vercel API relay as backup
+      return fetch('/api/submit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(data)
+      }).then(function(){
+        showFormStatus(statusElId,'Sent successfully! We will be in touch soon.','success');
+      });
     }
     if(callback) callback();
   }).catch(function(){
-    // Fallback: use mailto
-    showFormStatus(statusElId,'Redirecting to email...','success');
-    sendViaMailto(data);
+    // Final fallback: Vercel API
+    fetch('/api/submit',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)
+    }).then(function(){
+      showFormStatus(statusElId,'Sent successfully! We will be in touch soon.','success');
+    }).catch(function(){
+      sendViaMailto(data);
+      showFormStatus(statusElId,'Opening email client...','success');
+    });
     if(callback) callback();
   });
 }
