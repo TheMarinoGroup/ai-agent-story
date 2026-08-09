@@ -71,6 +71,17 @@ section{position:relative;z-index:1;min-height:100vh;display:flex;align-items:ce
 .transform-content{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
 .transform-visual{position:relative;height:400px;display:flex;align-items:center;justify-content:center}
 .transform-img{width:100%;max-width:500px;border-radius:1rem;opacity:.8;box-shadow:0 0 60px rgba(108,99,255,.15)}
+.transform-graphic{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;gap:1.5rem}
+.tg-circle{position:absolute;border-radius:50%;opacity:.15}
+.tg-c1{width:300px;height:300px;background:radial-gradient(circle,#6C63FF,transparent);top:50%;left:50%;transform:translate(-50%,-50%)}
+.tg-c2{width:200px;height:200px;background:radial-gradient(circle,#00D4FF,transparent);top:50%;left:50%;transform:translate(-50%,-50%);animation:pulse 4s ease-in-out infinite}
+.tg-c3{width:120px;height:120px;background:radial-gradient(circle,#fff,transparent);top:50%;left:50%;transform:translate(-50%,-50%);animation:pulse 3s ease-in-out infinite .5s}
+.tg-label{position:relative;z-index:2;font-size:1.1rem;font-weight:700;padding:.8rem 1.5rem;border-radius:.8rem;border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px)}
+.tg-l1{background:rgba(255,71,87,.1);color:#ff6b81}
+.tg-l2{background:rgba(0,212,255,.1);color:var(--accent)}
+.tg-arrow{position:relative;z-index:2;font-size:2rem;color:var(--accent);animation:arrowPulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.15}50%{transform:translate(-50%,-50%) scale(1.1);opacity:.25}}
+@keyframes arrowPulse{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(8px);opacity:1}}
 .transform-steps{display:flex;flex-direction:column;gap:1.5rem}
 .step{display:flex;gap:1.2rem;align-items:flex-start;padding:1.5rem;border-radius:1rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);transition:all .4s}
 .step:hover{background:rgba(108,99,255,.05);border-color:rgba(108,99,255,.15);transform:translateX(8px)}
@@ -306,7 +317,14 @@ footer{position:relative;z-index:1;padding:4rem 2rem 2rem;border-top:1px solid r
     </div>
     <div class="transform-content">
       <div class="transform-visual reveal-left">
-        <img src="https://fe387af6-7fc3-4170-98a3-44cd55e1314b-00-1b37rzu6z04ud.janeway.replit.dev/api/storage/objects/uploads/0df135ed-8bf4-48b2-ab62-002b6407b21d" alt="Digital Transformation Visualization" class="transform-img" loading="lazy">
+        <div class="transform-graphic" aria-label="Digital Transformation Visualization">
+          <div class="tg-circle tg-c1"></div>
+          <div class="tg-circle tg-c2"></div>
+          <div class="tg-circle tg-c3"></div>
+          <div class="tg-label tg-l1">Manual</div>
+          <div class="tg-arrow">&#10132;</div>
+          <div class="tg-label tg-l2">AI-Powered</div>
+        </div>
       </div>
       <div class="transform-steps reveal-right">
         <div class="step">
@@ -685,7 +703,7 @@ footer{position:relative;z-index:1;padding:4rem 2rem 2rem;border-top:1px solid r
 
 <script>
 // ============================================================
-// FORM BACKEND - Web3Forms (free, sends to email, no server needed)
+// FORM BACKEND - FormSubmit.co (delivers to thejmmarinogroup@gmail.com)
 // ============================================================
 async function sendFormData(formEl) {
   const data = Object.fromEntries(new FormData(formEl));
